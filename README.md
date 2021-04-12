@@ -4,3 +4,5 @@
 # Checking out now -Keane Wong
 
 # Here's my checkout. -Rachel Villamor
+
+# Hello! This is my checkout. -Mario Tafoya
