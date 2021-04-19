@@ -1,9 +1,4 @@
-######################################################################
 # Makefile: Makefile for HeroChess -  EECS22L Spring 2021
-#
-# 04/18/21 Rachel Villamor	Initial Version
-#
-######################################################################
 
 
 # design names
