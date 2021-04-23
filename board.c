@@ -10,7 +10,7 @@ PIECE **makeBoard(){
 	return board;
 }
 
-void deleteBoard(PIECE *myBoard){
+void deleteBoard(PIECE **myBoard){
 	
 }
 
@@ -27,3 +27,7 @@ void removePiece(PIECE **myBoard, int col, int row){
 
 }
 
+int movePiece(PIECE **myBoard, int col, int row, int colDest, int rowDest)
+{
+	
+}

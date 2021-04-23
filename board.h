@@ -8,12 +8,14 @@
 
 PIECE **makeBoard();
 
-void deleteBoard(PIECE *myBoard);
+void deleteBoard(PIECE **myBoard);
 
 PIECE *getPiece(PIECE **myBoard, int col, int row);
 
 void placePiece(PIECE **myBoard, PIECE *p, int col, int row);
 
 void removePiece(PIECE **myBoard, int col, int row);
+
+int movePiece(PIECE **myBoard, int col, int row, int colDest, int rowDest);
 
 #endif
