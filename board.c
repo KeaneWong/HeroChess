@@ -43,8 +43,8 @@ PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 void printBoard(PIECE** myBoard){
 	int i = 0, j = 0;
 	printf("   ----------------------------------------\n");
-	for(i = size - 1; i > 0; i--){
-		printf("%d", i+1);
+	for(i = 0; i < size; i++){
+		printf("%d", 8-i);
 		for(j = 0; j < size; j++){	
 			printf(" | %c%c", GetColor(&myBoard[i][j]), GetType(&myBoard[i][j]));
 		}
