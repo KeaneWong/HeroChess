@@ -57,3 +57,7 @@ void initializeBoard(PIECE** myBoard){
 		}
 	}
 }
+
+int isEmpty(PIECE **myBoard, int col, int row){
+	return (GetColor(&myBoard[row][col]) == ' ' && GetType(&myBoard[row][col]) == ' ');
+}
