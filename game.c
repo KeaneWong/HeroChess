@@ -21,7 +21,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		printf("Error: Destination same as beginning\n");
 		return 0;
 	}
-	if(isEmpty(myBoard,colSource,rowSource))
+	if(isEmpty(myBoard,colSource,rowSource) == 1)
 	{
 		//if there isnt anything at the selected source then it automatically fails
 		printf("Error: No piece at selected location\n");
@@ -218,6 +218,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			break;
 		}
 	}
+	printf("Error: Invalid type present \n");
+	return 0;
 
 
 }
@@ -235,7 +237,7 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	{
 		forward = -1;
 	}
-	if(isEmpty(myBoard,colDestination,rowDestination))//if the spot is empty
+	if(isEmpty(myBoard,colDestination,rowDestination) )//if the spot is empty
 	{
 		if(colSource == colDestination && (forward*(rowDestination-rowSource) == 1))//checking if pawn is moving only forward
 		{
@@ -387,7 +389,54 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 
 int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
-	if(abs(rowDestination-rowSource) <= 1 && abs(colDestination-colSource) <=1 )//ensures the king is only moving in a single square around it
+	if(GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R')//if other piece is a friendly rook
+	{
+		if(curTurnColor == 'w')
+		{
+			if(colSource == 4 && rowSource == 0 && rowDestination == 0 && (colDestination == 0 || colDestination == 7))//king and rook has to be in a hardcoded starting position
+			{
+				int forward = (colDestination-colSource) > 0 ? 1 : -1;
+				for(int i = colSource + forward; i != colDestination; i+=forward)
+				{
+					if(!isEmpty(myBoard,i,rowSource)) //if theres any pieces between the king and rook then it cant castle
+					{
+						return 0;
+					}
+				}
+				return 1;//if it made it past all the checks then it is legal move
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else if(curTurnColor == 'b')
+		{
+			if(colSource == 3 && rowSource == 7 && rowDestination == 7 && (colDestination == 0 || colDestination == 7))
+			{
+				int forward = (colDestination-colSource) > 0 ? 1 : -1;
+				for(int i = colSource + forward; i != colDestination; i+=forward)
+				{
+					if(!isEmpty(myBoard,i,rowSource)) //if theres any pieces between the king and rook then it cant castle
+					{
+						return 0;
+					}
+				}
+				return 1;//if it made it past all the checks then it is legal move
+			}
+			else
+			{
+				return 0;
+			}
+			
+		}
+		else
+		{
+			printf("Invalid color \n");
+			return 0;
+		}
+	}
+	else if(abs(rowDestination-rowSource) <= 1 && abs(colDestination-colSource) <=1 )//ensures the king is only moving in a single square around it
 	{
 		return 1;
 	}
@@ -399,8 +448,41 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 
 int makeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
-	
-
+	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor);
+	//char sPiece = GetType(getPiece(myBoard,colSource,rowSource));
+	//char dPiece = GetType(getPiece(myBoard,colDestination,rowDestination));
+	if(isLeg == 1)
+	{
+		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
+		{
+			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
+			PIECE *tempTBD = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
+			PIECE *tempTBD2 = movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the king
+			free(tempTBD);
+			free(tempTBD2);
+			return 1;
+		}
+		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
+		{
+			//en passant implementation
+		}
+		else
+		{
+			PIECE *tempTBD = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+			free(tempTBD);
+			return 1;
+		}
+	}
+	else if (isLeg == 0)
+	{
+		return 0;
+	}
+	else
+	{
+		printf("Uknown error\n");
+		return 0;
+	}
+	return 0;
 }
 
 
