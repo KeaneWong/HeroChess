@@ -399,9 +399,11 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 
 int makeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
-
+	
 
 }
+
+
 
 int Castle(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
