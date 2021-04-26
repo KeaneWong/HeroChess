@@ -1,8 +1,0 @@
-source directory, with all source code and test files
-
-examples:
-- chess.c
-- header files
-- rules.c
-- test_rulecheck.c // check the output of the rules checker for a given input
-- test_boarddisplay.c // check the display of a modified board
