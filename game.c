@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "game.h"
 #include "piece.h"
 #include "board.h"
@@ -12,6 +14,11 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 	if(colSource < 0 || colSource > 7 || rowSource < 0 || rowSource > 7 )
 	{
 		printf("Error: Out of bounds destination\n");
+		return 0;
+	}
+	if(colSource == colDestination && rowSource == rowDestination)
+	{
+		printf("Error: Destination same as beginning\n");
 		return 0;
 	}
 	if(getPiece(myBoard,colSource,rowSource) == NULL)
@@ -218,24 +225,181 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 
+	char enemyColor = curTurnColor=='w' ? 'b' : 'w';//determines enemy color
+	int forward;
+	if(getColor(getPiece(myBoard,colSource, rowSource)) == 'w')
+	{
+		forward = 1;//because white is in the front row, numbered starting from 0, we need a forward multiplier to determine which was is direction for our chosen piece
+	}
+	else
+	{
+		forward = -1;
+	}
+	if(getPiece(myBoard,colDestination,rowDestination) == NULL)//if the spot is empty
+	{
+		if(colSource == colDestination && (forward*(rowDestination-rowSource) == 1))//checking if pawn is moving only forward
+		{
+			return 1;
+		}
+		if(colSource == colDestination && (forward*(rowDestination-rowSource) == 2))//covers a 2 square jump 
+		{
+			if((curTurnColor == 'w' && rowSource == 1 )|| (curTurnColor == 'b' && rowSource == 6 ))//checks if the pawn is in initial position
+			{
+				if(getPiece(myBoard,colDestination,rowSource+forward) == NULL)//if the spot one spot forward from the pawn is empty, then it is legal
+				{
+					return 1;
+				}
+			}
+		}
+
+	}
+	else //if the spot has a piece in it. We've already checked if the piece there is friendly or not, so by this point itll always be an enemy piece
+	{
+		if ((rowDestination-rowSource == 1 || rowSource-rowDestination ==1) && (forward*(colDestination-colSource) == 1))//checks for a diagonal capture
+		{
+			return 1;
+		}	
+	}
+	return 0;//if it didnt get caught by any of the above then its invalid
 }
 
-int isLegalKnight(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor){
+int isLegalKnight(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+{
+	if( (abs(rowSource - rowDestination) == 1 && abs(colSource-colDestination) == 2) || (abs(rowSource - rowDestination) == 2 && abs(colSource-colDestination) == 1) )//we only need to check if the knight's new position is an l shape and thats it
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
-int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor){
+int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+{
+	int directionToGo;
+
+	if(rowSource == rowDestination)
+	{
+		directionToGo = colDestination-colSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
+		for(int i = colSource+directionToGo; i != colDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
+		{
+			if(getPiece(myBoard,i,rowSource) != NULL)
+			{
+				return 0;
+			}
+		}
+		return 1;//if there were all empty spaces then the path is clear and its legal
+	}
+	else if (colSource == colDestination)
+	{
+		directionToGo = rowDestination-rowSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
+		for(int i = rowSource+directionToGo; i != rowDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
+		{
+			if(getPiece(myBoard,colSource,i) != NULL)
+			{
+				return 0;
+			}
+		}
+		return 1;//if there were all empty spaces then the path is clear and its legal
+	}
+	else 
+	{
+		return 0;
+	}
 }
 
-int isLegalBishop(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor){
+int isLegalBishop(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+{
+	int directionToGoX;
+	int directionToGoY;
+	if(abs(rowSource-rowDestination) == abs(colSource - colDestination))//checking to see if the diagonal is proportional, 1:1
+	{
+		directionToGoX = colDestination-colSource > 0 ? 1 : -1;//direction the X axis moves, or by column
+		directionToGoY = rowDestination-rowSource > 0 ? 1 : -1;//direction the Y axis moves, or by row
+		int j = rowSource+directionToGoY;
+		for(int i = colSource+directionToGoX; i != colDestination; i+= directionToGoX)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
+		{
+			if(getPiece(myBoard,i,j) != NULL)
+			{
+				return 0;
+			}
+			j+=directionToGoY;
+		}
+		return 1;//if there were all empty spaces then the path is clear and its legal
+	}
+
+	else 
+	{
+		return 0;
+	}
 }
 
-int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor){
+int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)//this function is just a combination of rook and bishop
+{
+	int directionToGo; //the straight move direction check
+	int directionToGoX; //x and y directional checks
+	int directionToGoY;
+	if(rowSource == rowDestination)
+	{
+		directionToGo = colDestination-colSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
+		for(int i = colSource+directionToGo; i != colDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
+		{
+			if(getPiece(myBoard,i,rowSource) != NULL)
+			{
+				return 0;
+			}
+		}
+		return 1;//if there were all empty spaces then the path is clear and its legal
+	}
+	else if (colSource == colDestination)
+	{
+		directionToGo = rowDestination-rowSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
+		for(int i = rowSource+directionToGo; i != rowDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
+		{
+			if(getPiece(myBoard,colSource,i) != NULL)
+			{
+				return 0;
+			}
+		}
+		return 1;//if there were all empty spaces then the path is clear and its legal
+	}
+	if(abs(rowSource-rowDestination) == abs(colSource - colDestination))//checking to see if the diagonal is proportional, 1:1
+	{
+		directionToGoX = colDestination-colSource > 0 ? 1 : -1;//direction the X axis moves, or by column
+		directionToGoY = rowDestination-rowSource > 0 ? 1 : -1;//direction the Y axis moves, or by row
+		int j = rowSource+directionToGoY;
+		for(int i = colSource+directionToGoX; i != colDestination; i+= directionToGoX)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
+		{
+			if(getPiece(myBoard,i,j) != NULL)
+			{
+				return 0;
+			}
+			j+=directionToGoY;
+		}
+		return 1;//if there were all empty spaces then the path is clear and its legal
+	}
+	else 
+	{
+		return 0;
+	}
 }
 
-int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor){
+int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+{
+	if(abs(rowDestination-rowSource) <= 1 && abs(colDestination-colSource) <=1 )//ensures the king is only moving in a single square around it
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
-int makeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor){
+int makeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+{
+
 }
 
 int Castle(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
