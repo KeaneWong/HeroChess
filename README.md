@@ -1,10 +1,17 @@
-# Team19
-# I have successfully created my local checkout! -Paul Lee
+# HeroChess v1.0
+A chess software program. 
 
-# Checking out now -Keane Wong
+**Update History:**
+04/25/2021 - Initial Version
 
-# Here's my checkout. -Rachel Villamor
+**Authors:**
+* Irania Mazariegos
+* Keane Wong
+* Mario Tafoya 
+* Paul Lee
+* Rachel Villamor
 
-# Hello! This is my checkout. -Mario Tafoya
+This is the alpha version of the chess software, to install, please type "make" on the command line.
+For more detailed instructions, please refer to the user manual.
 
-# This is my checkout -Iraina Mazariegos
+Enjoy!
