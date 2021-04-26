@@ -9,7 +9,7 @@
 
 PIECE **makeBoard();
 
-void deleteBoard(PIECE *myBoard);
+void deleteBoard(PIECE **myBoard);
 
 PIECE *getPiece(PIECE **myBoard, int col, int row);
 
@@ -24,5 +24,7 @@ void printBoard(PIECE** myBoard);
 void initializeBoard(PIECE** myBoard);
 
 int isEmpty(PIECE **myBoard, int col, int row);
+
+int movePiece(PIECE **myBoard, int col, int row, int colDest, int rowDest);
 
 #endif
