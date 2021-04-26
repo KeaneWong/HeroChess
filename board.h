@@ -9,7 +9,7 @@
 
 PIECE **makeBoard();
 
-void deleteBoard(PIECE *myBoard);
+void deleteBoard(PIECE **myBoard);
 
 PIECE *getPiece(PIECE **myBoard, int col, int row);
 
