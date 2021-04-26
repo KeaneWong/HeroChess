@@ -2,6 +2,7 @@
 A chess software program. 
 
 **Update History:**
+
 04/25/2021 - Initial Version
 
 **Authors:**
