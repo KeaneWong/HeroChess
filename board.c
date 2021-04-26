@@ -11,8 +11,7 @@ PIECE **makeBoard(){
 }
 
 void deleteBoard(PIECE **myBoard){
-	assert(myBoard);
-	
+	assert(myBoard);		
 	free(myBoard);
 }
 
@@ -26,19 +25,17 @@ void placePiece(PIECE **myBoard, PIECE *p, int col, int row){
 }
 
 PIECE removePiece(PIECE **myBoard, int col, int row){
-	PIECE p = myBoard[col][row];
-	PIECE *blank = NewPiece(' ', ' ');	
-	myBoard[col][row] = *blank;
+	PIECE p = myBoard[col][row];	
+	myBoard[col][row] = makeBlank();
 	return p;
 }
 
 PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestination,int rowDestination){
 	PIECE *p = NULL;
-	PIECE *blank = NewPiece(' ', ' ');
 	p = &myBoard[colDestination][rowDestination];
 	printf("%c%c\n", GetColor(&myBoard[colDestination][rowDestination]), GetType(&myBoard[colDestination][rowDestination]));
 	myBoard[colDestination][rowDestination] = myBoard[colSource][rowSource];
-	myBoard[colSource][rowSource] = *blank;	
+	myBoard[colSource][rowSource] = makeBlank();	
 	return p;
 }
 
@@ -60,9 +57,8 @@ void printBoard(PIECE** myBoard){
 void initializeBoard(PIECE** myBoard){
 	int i = 0, j = 0;
 	for(i = 0; i < size; i++){
-		for(j = 0; j < size; j++){
-			PIECE *blank = NewPiece(' ', ' ');	
-			myBoard[i][j] = *blank;	
+		for(j = 0; j < size; j++){	
+			myBoard[i][j] = makeBlank();	
 		}
 	}
 }
