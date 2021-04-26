@@ -1,0 +1,3 @@
+bin directory
+
+when the user types make, the executable or its symbolic link should be generated here, as well as logs
