@@ -57,10 +57,7 @@ void printBoard(PIECE** myBoard){
 	printf("     a    b    c    d    e    f    g    h\n");
 }
 
-int movePiece(PIECE **myBoard, int col, int row, int colDest, int rowDest)
-{
-	return 0;
-}
+
 
 void initializeBoard(PIECE** myBoard){
 	int i = 0, j = 0;

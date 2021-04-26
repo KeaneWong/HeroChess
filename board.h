@@ -25,6 +25,6 @@ void initializeBoard(PIECE** myBoard);
 
 int isEmpty(PIECE **myBoard, int col, int row);
 
-int movePiece(PIECE **myBoard, int col, int row, int colDest, int rowDest);
+//int movePiece(PIECE **myBoard, int col, int row, int colDest, int rowDest);
 
 #endif

@@ -21,7 +21,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		printf("Error: Destination same as beginning\n");
 		return 0;
 	}
-	if(getPiece(myBoard,colSource,rowSource) == NULL)
+	if(isEmpty(myBoard,colSource,rowSource))
 	{
 		//if there isnt anything at the selected source then it automatically fails
 		printf("Error: No piece at selected location\n");
@@ -225,9 +225,9 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 
-	char enemyColor = curTurnColor=='w' ? 'b' : 'w';//determines enemy color
+	//char enemyColor = curTurnColor=='w' ? 'b' : 'w';//determines enemy color
 	int forward;
-	if(getColor(getPiece(myBoard,colSource, rowSource)) == 'w')
+	if(GetColor(getPiece(myBoard,colSource, rowSource)) == 'w')
 	{
 		forward = 1;//because white is in the front row, numbered starting from 0, we need a forward multiplier to determine which was is direction for our chosen piece
 	}
@@ -235,7 +235,7 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	{
 		forward = -1;
 	}
-	if(getPiece(myBoard,colDestination,rowDestination) == NULL)//if the spot is empty
+	if(isEmpty(myBoard,colDestination,rowDestination))//if the spot is empty
 	{
 		if(colSource == colDestination && (forward*(rowDestination-rowSource) == 1))//checking if pawn is moving only forward
 		{
@@ -243,9 +243,9 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		}
 		if(colSource == colDestination && (forward*(rowDestination-rowSource) == 2))//covers a 2 square jump 
 		{
-			if((curTurnColor == 'w' && rowSource == 1 )|| (curTurnColor == 'b' && rowSource == 6 ))//checks if the pawn is in initial position
+			if((curTurnColor == 'w' && rowSource == 1 ) || (curTurnColor == 'b' && rowSource == 6 ))//checks if the pawn is in initial position
 			{
-				if(getPiece(myBoard,colDestination,rowSource+forward) == NULL)//if the spot one spot forward from the pawn is empty, then it is legal
+				if(isEmpty(myBoard,colDestination,rowSource+forward) )//if the spot one spot forward from the pawn is empty, then it is legal
 				{
 					return 1;
 				}
@@ -284,7 +284,7 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		directionToGo = colDestination-colSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = colSource+directionToGo; i != colDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(getPiece(myBoard,i,rowSource) != NULL)
+			if(!isEmpty(myBoard,i,rowSource))
 			{
 				return 0;
 			}
@@ -296,7 +296,7 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		directionToGo = rowDestination-rowSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = rowSource+directionToGo; i != rowDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(getPiece(myBoard,colSource,i) != NULL)
+			if(isEmpty(myBoard,colSource,i))
 			{
 				return 0;
 			}
@@ -320,7 +320,7 @@ int isLegalBishop(PIECE** myBoard, int colSource, int rowSource, int colDestinat
 		int j = rowSource+directionToGoY;
 		for(int i = colSource+directionToGoX; i != colDestination; i+= directionToGoX)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(getPiece(myBoard,i,j) != NULL)
+			if(isEmpty(myBoard,i,j))
 			{
 				return 0;
 			}
@@ -345,7 +345,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 		directionToGo = colDestination-colSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = colSource+directionToGo; i != colDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(getPiece(myBoard,i,rowSource) != NULL)
+			if(isEmpty(myBoard,i,rowSource))
 			{
 				return 0;
 			}
@@ -357,7 +357,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 		directionToGo = rowDestination-rowSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = rowSource+directionToGo; i != rowDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(getPiece(myBoard,colSource,i) != NULL)
+			if(isEmpty(myBoard,colSource,i))
 			{
 				return 0;
 			}
@@ -371,7 +371,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 		int j = rowSource+directionToGoY;
 		for(int i = colSource+directionToGoX; i != colDestination; i+= directionToGoX)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(getPiece(myBoard,i,j) != NULL)
+			if(isEmpty(myBoard,i,j))
 			{
 				return 0;
 			}
