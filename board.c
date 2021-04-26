@@ -14,6 +14,7 @@ PIECE **makeBoard(){
 void deleteBoard(PIECE *myBoard){
 	assert(myBoard);
 	free(myBoard);
+
 }
 
 PIECE *getPiece(PIECE **myBoard, int col, int row){
@@ -56,7 +57,8 @@ void printBoard(PIECE** myBoard){
 	printf("     a    b    c    d    e    f    g    h\n");
 }
 
-<<<<<<< HEAD
+
+
 void initializeBoard(PIECE** myBoard){
 	int i = 0, j = 0;
 	PIECE *blank = NewPiece(' ', ' ');
@@ -67,7 +69,9 @@ void initializeBoard(PIECE** myBoard){
 	}
 }
 
-int isEmpty(PIECE **myBoard, int col, int row){
+int isEmpty(PIECE **myBoard, int col, int row)
+{
 	return (GetColor(&myBoard[row][col]) == ' ' && GetType(&myBoard[row][col]) == ' ');
+
 }
 
