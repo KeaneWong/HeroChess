@@ -13,6 +13,14 @@ PIECE *NewPiece(char type, char color){
 	p->color = color;
 	return p;
 }
+
+PIECE makeBlank(){
+	PIECE p;
+	p.type = ' ';
+	p.color = ' ';
+	return p;
+}
+
 /*return player number*/
 char GetType(PIECE *mypiece){
 	return mypiece->type;
