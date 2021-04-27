@@ -446,7 +446,7 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	}
 }
 
-int makeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor);
 	//char sPiece = GetType(getPiece(myBoard,colSource,rowSource));

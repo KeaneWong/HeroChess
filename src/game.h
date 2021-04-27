@@ -20,7 +20,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 
 int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor);
 
-int makeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor);
+int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor);
 
 int isChecked(PIECE **myBoard, char turnColor);
 
