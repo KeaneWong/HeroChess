@@ -56,7 +56,52 @@ void printBoard(PIECE** myBoard){
 
 void initializeBoard(PIECE** myBoard){
 	int i = 0, j = 0;
+	PIECE *wRl = NewPiece('R', 'w');
+	PIECE *wRr = NewPiece('R', 'w');
+	PIECE *wNl = NewPiece('N', 'w');
+	PIECE *wNr = NewPiece('N', 'w');
+	PIECE *wBl = NewPiece('B', 'w');
+	PIECE *wBr = NewPiece('B', 'w');
+	PIECE *wQ = NewPiece('Q', 'w');
+	PIECE *wK = NewPiece('K', 'w');
+
+	placePiece(myBoard, wRl, 0, 0);
+	placePiece(myBoard, wRr, 0, 7);
+	placePiece(myBoard, wNl, 0, 1);
+	placePiece(myBoard, wNr, 0, 6);
+	placePiece(myBoard, wBl, 0, 2);
+	placePiece(myBoard, wBr, 0, 5);
+	placePiece(myBoard, wK, 0, 3);
+	placePiece(myBoard, wQ, 0, 4);
+
+	PIECE *bRl = NewPiece('R', 'b');
+	PIECE *bRr = NewPiece('R', 'b');
+	PIECE *bNl = NewPiece('N', 'b');
+	PIECE *bNr = NewPiece('N', 'b');
+	PIECE *bBl = NewPiece('B', 'b');
+	PIECE *bBr = NewPiece('B', 'b');
+	PIECE *bQ = NewPiece('Q', 'b');
+	PIECE *bK = NewPiece('K', 'b');
+
+	placePiece(myBoard, bRl, 7, 0);
+	placePiece(myBoard, bRr, 7, 7);
+	placePiece(myBoard, bNl, 7, 1);
+	placePiece(myBoard, bNr, 7, 6);
+	placePiece(myBoard, bBl, 7, 2);
+	placePiece(myBoard, bBr, 7, 5);
+	placePiece(myBoard, bK, 7, 3);
+	placePiece(myBoard, bQ, 7, 4);
+
 	for(i = 0; i < size; i++){
+		PIECE *wP = NewPiece('P', 'w');
+		placePiece(myBoard, wP, 1, i);
+	}
+	for(i = 0; i < size; i++){
+        PIECE *bP = NewPiece('P', 'b');
+        placePiece(myBoard, bP, 6, i);
+    }
+
+	for(i = 2; i < size-2; i++){
 		for(j = 0; j < size; j++){	
 			myBoard[i][j] = makeBlank();	
 		}
