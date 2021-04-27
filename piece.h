@@ -13,6 +13,8 @@ typedef struct Piece PIECE;
 
 PIECE *NewPiece(char type, char color);
 
+PIECE makeBlank();
+
 char GetType(PIECE *mypiece);
 
 char GetColor(PIECE *mypiece);
