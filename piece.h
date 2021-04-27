@@ -1,4 +1,3 @@
-  
 #ifndef PIECE_H
 #define PIECE_H
 #include <stdlib.h> 
@@ -21,3 +20,4 @@ char GetType(PIECE *mypiece);
 char GetColor(PIECE *mypiece);
 
 #endif
+
