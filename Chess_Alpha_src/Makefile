@@ -1,21 +1,20 @@
 # Makefile: Makefile for HeroChess -  EECS22L Spring 2021
-
+#########################################################
 
 # design names
-DESIGN = HeroChess
+DESIGN = bin/HeroChess
 
 #libs
 
-
+# gcc and tags
 CC     = gcc
 DEBUG  = -DDEBUG 
 CFLAGS = -ansi -std=c99 -Wall -c
 LFLAGS = -ansi -std=c99 -Wall
-AR     = ar rc
-RANLIB = ranlib
 
-# replay files
-TXT	= movelog.txt 
+# executables and replay files
+TXT	= movelog.txt
+SRC	= src/*.o
 
 all: HeroChess
 
@@ -23,36 +22,36 @@ all: HeroChess
 ########### generate object files ###########
 
 #target to generate settings.o
-settings.o: settings.h settings.c
-	$(CC) $(CFLAGS) settings.c -o settings.o
+settings.o: src/settings.h src/settings.c
+	$(CC) $(CFLAGS) src/settings.c -o src/settings.o
 
 #target to generate piece.o
-piece.o: piece.h piece.c
-	$(CC) $(CFLAGS) piece.c -o piece.o 
+piece.o: src/piece.h src/piece.c
+	$(CC) $(CFLAGS) src/piece.c -o src/piece.o 
 
 #target to generate move.o
-move.o: move.h move.c
-	$(CC) $(CFLAGS) move.c -o move.o 
+move.o: src/move.h src/move.c
+	$(CC) $(CFLAGS) src/move.c -o src/move.o 
 
 #target to generate game.o
-game.o: settings.h piece.h game.h game.c 
-	$(CC) $(CFLAGS) game.c -o game.o
+game.o: src/settings.h src/piece.h src/game.h src/game.c 
+	$(CC) $(CFLAGS) src/game.c -o src/game.o
 
 #target to generate board.o
-board.o: settings.h piece.h board.h board.c 
-	$(CC) $(CFLAGS) board.c -o board.o
+board.o: src/settings.h src/piece.h src/board.h src/board.c 
+	$(CC) $(CFLAGS) src/board.c -o src/board.o
 
 #target to generate ai.o
-ai.o: settings.h piece.h ai.h ai.c
-	$(CC) $(CFLAGS) ai.c -o ai.o
+ai.o: src/settings.h src/piece.h src/ai.h src/ai.c
+	$(CC) $(CFLAGS) src/ai.c -o src/ai.o
 
 #target to generate movelist.o
-movelist.o: piece.h move.h movelist.h movelist.c
-	$(CC) $(CFLAGS) movelist.c -o movelist.o
+movelist.o: src/piece.h src/move.h src/movelist.h src/movelist.c
+	$(CC) $(CFLAGS) src/movelist.c -o src/movelist.o
 
 #target to generate main.o
-main.o: main.c settings.h piece.h move.h game.h board.h ai.h movelist.h
-	$(CC) $(CFLAGS) main.c -o main.o
+main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h
+	$(CC) $(CFLAGS) src/main.c -o src/main.o
 
 
 ########### generate library files ###########
@@ -62,9 +61,10 @@ main.o: main.c settings.h piece.h move.h game.h board.h ai.h movelist.h
 ########### generate executables ###########
 
 #target to generate HeroChess
-HeroChess: main.o 
-	$(CC) $(LFLAGS) main.o settings.o piece.o move.o game.o board.o ai.o movelist.o -o HeroChess -lm
+HeroChess: src/main.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o
+	$(CC) $(LFLAGS) src/main.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o -o bin/HeroChess -lm
 
+#delete all executables currently in the source and binary directories
 clean:
-	rm -f *.o $(DESIGN) $(TXT)
+	rm -f $(SRC) $(DESIGN) $(TXT)
 
