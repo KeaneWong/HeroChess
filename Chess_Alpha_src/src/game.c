@@ -489,12 +489,13 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 
 int Castle(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
-
+	return 0;
 }
 
 int isChecked(PIECE **myBoard, char curTurnColor){
-
+	return 0;
 }
 
 int isCheckmate(PIECE **myBoard, char curTurnColor){
+	return 0;
 }
