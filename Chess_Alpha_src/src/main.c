@@ -14,12 +14,11 @@ int convertRow(char b);
 // main function
 int main(void){
 	PIECE **board = makeBoard();
-	PIECE *p = NewPiece('P', 'w');
-	placePiece(board, p, 0, 0);
+	initializeBoard(board);
 	char str[INPUT_BUFFER];//input buffer
 
 	// welcome message prints once at the start of the first game
-	printf("Welcome to HeroChess v1.0");
+	printf("Welcome to HeroChess v1.0\n");
 
 	// main menu keeps printing after each game until user decides to exit
 	int exit = 0;
@@ -80,6 +79,7 @@ int main(void){
 							curTurnColor = (curTurnColor == 'w') ? 'b' : 'w';//flipping turn color while the game still goes on
 						}
 					}
+					printBoard(board);
 				}
 				break;
 			}

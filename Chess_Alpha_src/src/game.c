@@ -32,11 +32,13 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		printf("Error: Opponent's piece selected! It is currently player %c's turn.\n",curTurnColor);
 		return 0;
 	}
-	if(GetType(getPiece(myBoard,colSource,rowSource)) != 'R' || GetType(getPiece(myBoard,colSource,rowSource)) != 'K' )
+	if(GetType(getPiece(myBoard,colSource,rowSource)) != 'K' )//castling
 	{
 		if(GetColor(getPiece(myBoard,colSource,rowSource)) == GetColor(getPiece(myBoard,colDestination,rowDestination)) )
 		{
 			printf("Error: Destination square contains a friendly piece. Illegal move\n");
+			//printf("%c %d %d",GetColor(getPiece(myBoard,colSource,rowSource)),colSource,rowSource);
+			//printf("%c %d %d",GetColor(getPiece(myBoard,colDestination,rowDestination)),colDestination,rowDestination);
 			return 0;
 		}
 	}
@@ -458,8 +460,8 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
 			PIECE *tempTBD = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
 			PIECE *tempTBD2 = movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the king
-			free(tempTBD);
-			free(tempTBD2);
+			free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
+			free(tempTBD2);//TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
 			return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
@@ -469,7 +471,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 		else
 		{
 			PIECE *tempTBD = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
-			free(tempTBD);
+			//free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
 			return 1;
 		}
 	}
