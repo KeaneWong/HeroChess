@@ -34,9 +34,10 @@ int main(void){
 				/* print moves log? */
 				int won = 1;
 				char curTurnColor = 'w';
-				printBoard(board);
+
 				while(won!=2)
 				{
+					printBoard(board);
 					printf("Player %d pick your piece: \n", curTurnColor=='w' ? 1:2);
 					fgets(str,INPUT_BUFFER,stdin);
 					int column1;
@@ -57,11 +58,12 @@ int main(void){
 					int success = MakeMove(board,column1, row1, column2, row2,curTurnColor);
 					if(success == 0)//signifies error
 					{
-						continue;
+						printf("Error. Try again\n");
+						
 					}
 					else if (success == 1)
 					{
-						printf("Successful move. \n");
+						//printf("Successful move. \n");
 						if(isChecked(board,((curTurnColor == 'w') ? 'b' : 'w')) )//checking if the opponent is in check. 
 						{
 							if(isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w')) )//if the opponent is in check we check for checkmate
@@ -76,10 +78,10 @@ int main(void){
 						}
 						if(won!=2)
 						{
+							//printf("Flipping color\n");
 							curTurnColor = (curTurnColor == 'w') ? 'b' : 'w';//flipping turn color while the game still goes on
 						}
 					}
-					printBoard(board);
 				}
 				break;
 			}

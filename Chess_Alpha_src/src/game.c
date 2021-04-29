@@ -49,6 +49,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalPawn(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))//we create a temporary array to test the move and see if it opens up to a check
 			{
+				/*
 				PIECE **tempBoard = makeBoard();
 				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
@@ -63,6 +64,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
+				*/
+				return 1;
 			}
 			else
 			{
@@ -75,6 +78,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalRook(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
+				/*
 				PIECE **tempBoard = makeBoard();
 				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
@@ -89,6 +93,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
+				*/
+				return 1;
 			}
 			else
 			{
@@ -101,6 +107,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalKnight(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
+				/*
 				PIECE **tempBoard = makeBoard();
 				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
@@ -115,6 +122,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
+				*/
+				return 1;
 			}
 			else
 			{
@@ -127,6 +136,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalBishop(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
+				/*
 				PIECE **tempBoard = makeBoard();
 				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
@@ -141,6 +151,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
+				*/
+				return 1;
 			}
 			else
 			{
@@ -153,8 +165,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalKing(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor)) //in the event of castling, we need to do a special checl
 			{
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				/*
 				if(GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R')//this checks for castling. If we're castling we need to do a special maneuver
 				{
 					int distance = colDestination - colSource;
@@ -174,29 +185,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				{
 					movePiece(tempBoard, colSource, rowSource, colDestination,rowDestination);
 				}
-				if(!isChecked(tempBoard, curTurnColor))
-				{
-					deleteBoard(tempBoard);
-					return 1;//return a success marker
-				}
-				else
-				{
-					printf("Error: This move leaves friendly king open to check\n");
-					deleteBoard(tempBoard);
-					return 0;
-				}
-			}
-			else
-			{
-				printf("Error: Illegal move.\n");
-				return 0;
-			}
-			break;
-		}
-		case 'Q': 
-		{
-			if(isLegalQueen(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
-			{
+				
 				PIECE **tempBoard = makeBoard();
 				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
@@ -211,6 +200,37 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
+				*/
+				return 1;
+			}
+			else
+			{
+				printf("Error: Illegal move.\n");
+				return 0;
+			}
+			break;
+		}
+		case 'Q': 
+		{
+			if(isLegalQueen(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
+			{
+				/*
+				PIECE **tempBoard = makeBoard();
+				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
+				if(!isChecked(tempBoard, curTurnColor))//if its not checked
+				{
+					deleteBoard(tempBoard);
+					return 1;//return a success marker
+				}
+				else
+				{
+					printf("Error: This move leaves friendly king open to check\n");
+					deleteBoard(tempBoard);
+					return 0;
+				}
+				*/
+				return 1;
 			}
 			else
 			{
@@ -259,11 +279,12 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	}
 	else //if the spot has a piece in it. We've already checked if the piece there is friendly or not, so by this point itll always be an enemy piece
 	{
-		if ((rowDestination-rowSource == 1 || rowSource-rowDestination ==1) && (forward*(colDestination-colSource) == 1))//checks for a diagonal capture
+		if ((colDestination-colSource == 1 || colSource-colDestination ==1) && (forward*(rowDestination-rowSource) == 1))//checks for a diagonal capture
 		{
 			return 1;
 		}	
 	}
+    //printf("What is this\n");
 	return 0;//if it didnt get caught by any of the above then its invalid
 }
 
@@ -290,6 +311,9 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		{
 			if(!isEmpty(myBoard,i,rowSource))
 			{
+				printf("Piece in the way at %d %d \n",i,rowSource);
+				printf("Piece type is \"%c\" \"%c\" \n", GetColor(getPiece(myBoard,i,rowSource)),GetType(getPiece(myBoard,i,rowSource)) );
+
 				return 0;
 			}
 		}
@@ -300,8 +324,10 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		directionToGo = rowDestination-rowSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = rowSource+directionToGo; i != rowDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(isEmpty(myBoard,colSource,i))
+			if(!isEmpty(myBoard,colSource,i))
 			{
+				printf("Piece in the way at %d %d \n",colSource,i);
+				printf("Piece type is \"%c\" \"%c\" \n", GetColor(getPiece(myBoard,i,rowSource)),GetType(getPiece(myBoard,i,rowSource)) );
 				return 0;
 			}
 		}
@@ -324,7 +350,7 @@ int isLegalBishop(PIECE** myBoard, int colSource, int rowSource, int colDestinat
 		int j = rowSource+directionToGoY;
 		for(int i = colSource+directionToGoX; i != colDestination; i+= directionToGoX)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(isEmpty(myBoard,i,j))
+			if(!isEmpty(myBoard,i,j))
 			{
 				return 0;
 			}
@@ -349,7 +375,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 		directionToGo = colDestination-colSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = colSource+directionToGo; i != colDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(isEmpty(myBoard,i,rowSource))
+			if(!isEmpty(myBoard,i,rowSource))
 			{
 				return 0;
 			}
@@ -361,7 +387,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 		directionToGo = rowDestination-rowSource > 0 ? 1 : -1;//if destination is greater than source, we need to go forward and if its less than or behind source, we go backwards
 		for(int i = rowSource+directionToGo; i != rowDestination; i+= directionToGo)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(isEmpty(myBoard,colSource,i))
+			if(!isEmpty(myBoard,colSource,i))
 			{
 				return 0;
 			}
@@ -375,7 +401,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 		int j = rowSource+directionToGoY;
 		for(int i = colSource+directionToGoX; i != colDestination; i+= directionToGoX)//starts at one square towards destination and repeatedly checks for empty spaces between then and here
 		{
-			if(isEmpty(myBoard,i,j))
+			if(!isEmpty(myBoard,i,j))
 			{
 				return 0;
 			}
@@ -451,26 +477,30 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor);
-	//char sPiece = GetType(getPiece(myBoard,colSource,rowSource));
-	//char dPiece = GetType(getPiece(myBoard,colDestination,rowDestination));
+	
 	if(isLeg == 1)
 	{
 		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
 		{
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
-			PIECE *tempTBD = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
-			PIECE *tempTBD2 = movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the king
-			free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
-			free(tempTBD2);//TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
+			//PIECE *tempTBD =  movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
+			//PIECE *tempTBD2 = movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the king
+			movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
+			movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the kin
+			//free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
+			//free(tempTBD2);//TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
 			return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
 		{
 			//en passant implementation
+			movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+			return 1;
 		}
 		else
 		{
-			PIECE *tempTBD = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+			//PIECE *tempTBD = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+			movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
 			//free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
 			return 1;
 		}
@@ -484,7 +514,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 		printf("Uknown error\n");
 		return 0;
 	}
-	return 0;
+	//return 0;
 }
 
 
