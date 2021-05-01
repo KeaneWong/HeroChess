@@ -60,11 +60,17 @@ main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h 
 
 ########### generate executables ###########
 
-#target to generate HeroChess
+# target to generate HeroChess
 HeroChess: src/main.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o
 	$(CC) $(LFLAGS) src/main.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o -o bin/HeroChess -lm
 
-#delete all executables currently in the source and binary directories
+# delete all executables currently in the source and binary directories
 clean:
 	rm -f $(SRC) $(DESIGN) $(TXT)
 
+# test game
+test: 
+
+# make a new tarball from the Chess_Alpha directory
+tar: 
+	tar zcvf Chess_Alpha.tar.gz ../Chess_Alpha
