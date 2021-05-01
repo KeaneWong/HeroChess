@@ -27,8 +27,11 @@ int isChecked(PIECE **myBoard, char turnColor);
 int isCheckmate(PIECE **myBoard, char turnColor);
 
 
-//private function
-int Castle(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor);
+//private functions
+int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//used to check for rooks or queens horizontal or vertical of the piece at colKing and rowKing
+int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//used to check for bishops or queens diagonal in all directions of the piece at colKing and rowKing
+int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//checks for nights
+int isCheckedByP(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
 
 
 
