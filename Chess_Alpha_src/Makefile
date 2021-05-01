@@ -34,7 +34,7 @@ move.o: src/move.h src/move.c
 	$(CC) $(CFLAGS) src/move.c -o src/move.o 
 
 #target to generate game.o
-game.o: src/settings.h src/piece.h src/game.h src/game.c 
+game.o: src/settings.h src/piece.h src/movelist.h src/game.h src/game.c  
 	$(CC) $(CFLAGS) src/game.c -o src/game.o
 
 #target to generate board.o

@@ -3,8 +3,9 @@
 #include "game.h"
 #include "piece.h"
 #include "board.h"
+#include "movelist.h"
 
-int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 	if( colDestination < 0 || colDestination > 7 || rowDestination < 0 || rowDestination > 7 )
 	{
@@ -47,7 +48,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 	{
 		case 'P': 
 		{
-			if(isLegalPawn(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))//we create a temporary array to test the move and see if it opens up to a check
+			if(isLegalPawn(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor, myList))//we create a temporary array to test the move and see if it opens up to a check
 			{
 				/*
 				PIECE **tempBoard = makeBoard();
@@ -246,7 +247,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 
 }
 
-int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 
 	//char enemyColor = curTurnColor=='w' ? 'b' : 'w';//determines enemy color
@@ -259,8 +260,19 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	{
 		forward = -1;
 	}
+	char enemyColor = curTurnColor=='w' ? 'b' : 'w';
 	if(isEmpty(myBoard,colDestination,rowDestination) )//if the spot is empty
 	{
+		if(abs(colSource-colDestination) == 1 && (forward*(rowDestination-rowSource)) == 1 )//checking for en passant, this covers a diagonal move
+		{
+			if(GetType(getPiece(myBoard,colDestination,rowDestination-forward)) == 'P' && GetColor(getPiece(myBoard,colDestination,rowDestination-forward)) == enemyColor)//if the piece right behind destination is an enemy pawn we can capture it
+			{
+				if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '0'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
+				{
+					return 1;
+				}
+			}
+		}
 		if(colSource == colDestination && (forward*(rowDestination-rowSource) == 1))//checking if pawn is moving only forward
 		{
 			return 1;
@@ -474,9 +486,9 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	}
 }
 
-int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
+int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
-	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor);
+	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);
 	
 	if(isLeg == 1)
 	{
@@ -486,14 +498,29 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 			//PIECE *tempTBD =  movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
 			//PIECE *tempTBD2 = movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the king
 			movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
-			movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the kin
+			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
 			//free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
 			//free(tempTBD2);//TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
 			return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
 		{
-			//en passant implementation
+			int forward = curTurnColor == 'w' ? 1 : -1;
+			char enemyColor = curTurnColor=='w' ? 'b' : 'w';
+			//REPEATING CODE FROM ISLEGALPAWN FUNCTION. THIS IS USED TO DETERMINE IF WE DO THE EXTRA STEP OF REMOVING THE PAWN AS PER EN PASSANT
+			if(isEmpty(myBoard,colDestination,rowDestination) )//if the spot is empty
+			{
+				if(abs(colSource-colDestination) == 1 && (forward*(rowDestination-rowSource)) == 1 )//checking for en passant, this covers a diagonal move
+				{
+					if(GetType(getPiece(myBoard,colDestination,rowDestination-forward)) == 'P' && GetColor(getPiece(myBoard,colDestination,rowDestination-forward)) == enemyColor)//if the piece right behind destination is an enemy pawn we can capture it
+					{
+						if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '0'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
+						{
+							removePiece(myBoard,colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
+						}
+					}
+				}
+			}
 			movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
 			return 1;
 		}
@@ -518,7 +545,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 }
 
 
-
+//wrapper function that calls the other ischecked functions much like how the islegal function works. 
 int isChecked(PIECE **myBoard, char curTurnColor){
 	int found = 0;
 	int colKing;
@@ -528,7 +555,7 @@ int isChecked(PIECE **myBoard, char curTurnColor){
 	{
 		for(int j = 0; j< 8 && !found; j++)
 		{
-			if(GetType(getPiece(myBoard,i,j)) == 'K' )
+			if(GetType(getPiece(myBoard,i,j)) == 'K'  && GetColor(getPiece(myBoard,i,j)) == curTurnColor)
 			{
 				found =1;
 				colKing = i;
@@ -544,7 +571,7 @@ int isChecked(PIECE **myBoard, char curTurnColor){
 
 
 
-int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
+int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//checks if the king at colKing is checked by a rook or queen
 {
 
 	//HORIZONTAL ROW CHECKS FOR ROOKS AND QUEENS. CHECKS ALL PIECES UP DOWN LEFT AND RIGHT
@@ -685,7 +712,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 	return 0;//if we found nothing then we return 0
 }
 
-int isCheckedByN(PIECE **myBoard,char enemyColor, int colKing, int rowKing)//checks for nights
+int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//checks for nights
 {
 	if(colKing+4<8 && rowKing+2<8)
 	{
@@ -750,12 +777,12 @@ int isCheckedByP(PIECE **myBoard,char enemyColor, int colKing, int rowKing)
 {
 	int forward = (enemyColor == 'w' ? 1 : -1);//determines the forward direction for the enemy piece
 	//a pawn can only check a king diagonally in one direction so this helps keep things simple.
-	if(colKing+1 < 8 && GetType(getPiece(myBoard,colKing+1,rowKing - forward)) == 'P')
+	if(colKing+1 < 8 && GetType(getPiece(myBoard,colKing+1,rowKing - forward)) == 'P' && GetColor(getPiece(myBoard,colKing+1,rowKing-forward)) == enemyColor)
 	{
 		printf("Checked at %d %d by Pawn\n",colKing+1,rowKing);
 		return 1;
 	}
-	if(colKing-1 >= 0 && GetType(getPiece(myBoard,colKing-1,rowKing - forward)) == 'P')
+	if(colKing-1 >= 0 && GetType(getPiece(myBoard,colKing-1,rowKing - forward)) == 'P' && GetColor(getPiece(myBoard,colKing+1,rowKing-forward)) == enemyColor)
 	{
 		printf("Checked at %d %d by Pawn\n",colKing-1,rowKing);
 		return 1;

@@ -6,6 +6,7 @@
 #include "piece.h"
 #include "board.h"
 #include "game.h"
+#include "movelist.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
@@ -15,6 +16,9 @@ int convertRow(char b);
 int main(void){
 	PIECE **board = makeBoard();
 	initializeBoard(board);
+	MLIST *myList = NewMoveList();
+
+	#ifndef DEBUG				///MAIN PROGRAM: NON-DEBUG MODE
 	char str[INPUT_BUFFER];//input buffer
 
 	// welcome message prints once at the start of the first game
@@ -55,7 +59,7 @@ int main(void){
 					int row2;
 					column2 = convertColumn(str[0]);
 					row2 = convertRow(str[1]);
-					int success = MakeMove(board,column1, row1, column2, row2,curTurnColor);
+					int success = MakeMove(board,column1, row1, column2, row2,curTurnColor,myList);
 					if(success == 0)//signifies error
 					{
 						printf("Error. Try again\n");
@@ -107,6 +111,13 @@ int main(void){
 		}
 		
 	}
+	#endif
+
+
+	#ifdef DEBUG
+	printf("Hello World\n");
+
+	#endif
 
 	/* free memory of structs? */
 }
