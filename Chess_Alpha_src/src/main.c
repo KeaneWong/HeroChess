@@ -100,7 +100,7 @@ int main(void){
 			case 3:
 			{
 				/* settings function */
-				int valid_input = 0;
+				int invalid_input = 0;
 				int option = 0;
 				int mainmenu = 0;
 				
@@ -113,7 +113,7 @@ int main(void){
 					scanf("%d", &option);
 					getchar();
 					
-					while (valid_input == 0)
+					while (invalid_input == 0)
 					{
 						switch(option)
 						{
@@ -135,7 +135,7 @@ int main(void){
 							default:
 							{
 								printf("Invalid input!\n");
-								valid_input = 1;
+								invalid_input = 1;
 								break;
 							}
 						}
