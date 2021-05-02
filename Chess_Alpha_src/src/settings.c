@@ -35,9 +35,9 @@ int whitepnum(void)
 }
 
 /* black pieces are automatically assigned based off input from whitepnum() */
-int blackpnum(int wp)
+/*int blackpnum(int wp)
 {
 	int bp;
 	printf("Player %d has the black pieces.\n", wp==1 ? 2:1);
 	return bp;
-}
+}*/
