@@ -100,46 +100,36 @@ int main(void){
 			case 3:
 			{
 				/* settings function */
-				int invalid_input = 0;
 				int option = 0;
-				int mainmenu = 0;
+				int done = 0;
 				
 				/* settings menu keeps printing until user decides to go back to the main menu */
-				while (mainmenu == 0)
+				while (done == 0)
 				{
 					printf("Welcome to Settings!\n");
 					printf("1. Change Player Colors\n");
 					printf("2. Go Back to Main Menu\n");
 					scanf("%d", &option);
 					getchar();
-					
-					while (invalid_input == 0)
+				
+					switch(option)
 					{
-						switch(option)
+						case 1:
 						{
-							case 1:
-							{
-								/* remind user of chess's color rule and ask for the changes */
-    			    					printf("Please keep in mind that by the rules of chess, the player with white pieces goes first!\n");
-								//wp = whitepnum();
-								//bp = blackpnum();
-								break;
-							}
-							
-							case 2:
-							{
-								mainmenu = 1;
-								break;
-							}
-						
-							default:
-							{
-								printf("Invalid input!\n");
-								invalid_input = 1;
-								break;
-							}
+							int wp = whitepnum();
+							int bp = blackpnum(wp);
+							done = 1;
+							break;
 						}
+						
+						case 2:
+						{
+							done = 1;
+							break;
+						}
+		
 					}
+				
 				}
 				break;
 			}
