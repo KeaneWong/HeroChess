@@ -7,6 +7,7 @@
 #include "board.h"
 #include "game.h"
 #include "movelist.h"
+//#include "settings.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
@@ -100,8 +101,12 @@ int main(void){
 			case 3:
 			{
 				/* settings function */
+				
 				int option = 0;
 				int done = 0;
+				/* defaults: white - player 1, black - player 2 */
+				int wp = 1;
+				int bp = 2;
 				
 				/* settings menu keeps printing until user decides to go back to the main menu */
 				while (done == 0)
