@@ -108,7 +108,7 @@ int main(void){
 				int wp = 1;
 				int bp = 2;
 				
-				/* settings menu keeps printing until user decides to go back to the main menu */
+				/* settings menu keeps printing until user decides to go back to the main menu or makes changes */
 				while (done == 0)
 				{
 					printf("Welcome to Settings!\n");
