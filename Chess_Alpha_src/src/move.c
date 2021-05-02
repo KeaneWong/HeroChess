@@ -11,8 +11,10 @@ MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination
 	} /* fi */
 	m->piece = piece;
 	m->removedPiece = removedPiece;
-	m->source = source;
-	m->destination = destination;
+	m->source = malloc(sizeof(char)*2);
+	m->destination = malloc(sizeof(char)*2);
+	strcpy(m->source, source);
+	strcpy(m->destination, destination);
 	return m;
 } 
 /* delete move */
@@ -31,7 +33,7 @@ char *GetMove(MOVE *m){
 
 void PrintMove(MOVE *m){
 	assert(m);
-	printf("%c%c %2s %2s\n", m->piece->color, m->piece->type, m->source, m->destination);
+	printf("%c%c %2s %2s \n", m->piece->type, m->piece->color, m->source, m->destination);
 	if(m->removedPiece != NULL){
 		printf("%c%c\n",m->removedPiece->color, m->removedPiece->type);
 	}
