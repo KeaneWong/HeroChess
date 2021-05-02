@@ -40,13 +40,9 @@ int main(void){
 				int won = 1;
 				char curTurnColor = 'w';
 
-				//int one;
-				//int two; 
-
 				while(won!=2)
 				{
 					printBoard(board);	
-					//printf("Player %d pick your piece: \n", curTurnColor == 'w' ? one:two);
 					printf("Player %d pick your piece: \n", curTurnColor=='w' ? 1:2);
 					fgets(str,INPUT_BUFFER,stdin);
 					int column1;
