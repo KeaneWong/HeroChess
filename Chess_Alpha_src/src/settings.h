@@ -1,6 +1,6 @@
 /**************************************************************************/
 /*  settings.h: declarations of functions in settings.c                   */
-/* 								                                                      	*/
+/*                                                                        */
 /* Modifications:                                                         */
 /* Date         Author                        Description                 */
 /* 2021/05/01		Rachel Villamor               Initial Version             */
