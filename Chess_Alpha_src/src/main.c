@@ -117,8 +117,8 @@ int main(void){
 					{
 						case 1:
 						{
-							int wp = whitepnum();
-							int bp = blackpnum(wp);
+							//int wp = whitepnum();
+							//int bp = blackpnum(wp);
 							done = 1;
 							break;
 						}
