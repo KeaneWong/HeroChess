@@ -3,7 +3,7 @@
 /*                                                                        */
 /* Modifications:                                                         */
 /* Date         Author                        Description                 */
-/* 2021/05/01		Rachel Villamor               Initial Version             */
+/* 2021/05/01   Rachel Villamor               Initial Version             */
 /**************************************************************************/
 
 #ifndef SETTINGS_H
