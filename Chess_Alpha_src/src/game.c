@@ -516,7 +516,8 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 					{
 						if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '0'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
 						{
-							removePiece(myBoard,colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
+							PIECE removedPawn = removePiece(myBoard,colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
+							//MOVE *newMove = NewMove(getPiece(myBoard,colSource,rowSource),removedPawn), 
 						}
 					}
 				}
