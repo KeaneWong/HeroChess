@@ -7,7 +7,6 @@
 #include "board.h"
 #include "game.h"
 #include "movelist.h"
-#include "settings.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
