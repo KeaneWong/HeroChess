@@ -7,7 +7,7 @@
 #include "board.h"
 #include "game.h"
 #include "movelist.h"
-//#include "settings.h"
+#include "settings.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
@@ -40,9 +40,13 @@ int main(void){
 				int won = 1;
 				char curTurnColor = 'w';
 
+				//int one;
+				//int two; 
+
 				while(won!=2)
 				{
-					printBoard(board);
+					printBoard(board);	
+					//printf("Player %d pick your piece: \n", curTurnColor == 'w' ? one:two);
 					printf("Player %d pick your piece: \n", curTurnColor=='w' ? 1:2);
 					fgets(str,INPUT_BUFFER,stdin);
 					int column1;
@@ -121,8 +125,8 @@ int main(void){
 					{
 						case 1:
 						{
-							//int wp = whitepnum();
-							//int bp = blackpnum(wp);
+							wp = whitepnum();
+							bp = blackpnum(wp);
 							done = 1;
 							break;
 						}
