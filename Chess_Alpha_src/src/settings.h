@@ -24,16 +24,16 @@ int whitepnum(void);
 int blackpnum(int wp);
 
 /* timer handling */
-/* */
+/* adds delay when timer is counting down */
 void delay(int ms);
 
-/* */
+/* counts down from time inputted by user */
 int timer(void);
 
-/* */
+/* prints timer to terminal */
 int printTime(void);
 
-/* */
+/* asks user if timer is enabled or disabled */
 int selection(void);
 
 #endif
