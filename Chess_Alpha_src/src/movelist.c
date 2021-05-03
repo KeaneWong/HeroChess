@@ -140,5 +140,7 @@ void PrintMoveList(MLIST *l){
 	}
 } /* end of PrintStudentList */
 
-
+int GetLength(MLIST *l){
+	return l->length;
+}
 
