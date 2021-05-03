@@ -25,7 +25,7 @@ int blackpnum(int wp);
 
 /* timer handling */
 /* adds delay when timer is counting down */
-void delay(int ms);
+void delay(int sec);
 
 /* counts down from time inputted by user */
 int timer(void);
@@ -33,7 +33,7 @@ int timer(void);
 /* prints timer to terminal */
 int printTime(void);
 
-/* asks user if timer is enabled or disabled */
+/* asks user for timer value */
 int selection(void);
 
 #endif
