@@ -34,7 +34,7 @@ void DeleteMoveList(MLIST *l);
 void PrintMoveList(MLIST *l);
 
 /* append a move at end of list */
-void AppendMove(MLIST *l, MOVE *m);
+void AppendMove(MLIST *l, PIECE *piece, PIECE *removedpiece, int colS, int rowS, int colD, int rowD);
 
 void PrependStudent(MLIST *l, MOVE *m);
 
