@@ -63,18 +63,19 @@ int timer()
 		if (sec != 0)
 		{
 			sec--;
+			delay(1000);
 		}
 
 		if (sec == 0 && min != 0)
 		{
 			sec = 59;
+			delay(1000);
 			min--;
 		}
 
 		if (sec == 0 && min == 0)
 		{
 			flag = 1;
-			exit(10);
 		}
 		
 		printTime();
