@@ -60,8 +60,17 @@ void DeleteMoveList(MLIST *l){
 	free(l);
 }
 
-void AppendMove(MLIST *l, MOVE *m){
+void AppendMove(MLIST *l, PIECE *piece, PIECE *removedPiece, int colS, int rowS, int colD, int rowD){
 	MENTRY *e = NULL; 
+	MOVE *m = NULL;
+	char source[] = "  "; 
+	char destination[] = "  ";
+	source[0] = (char)('A'+colS);
+	source[1] = (char)('1'+rowS);
+	destination[0] = (char)('A'+colD);
+	destination[1] = (char)('1'+rowD);
+	m = NewMove(piece, removedPiece, source, destination);	
+
 	assert(l); 
 	assert(m); 
 	e = NewMoveEntry(m); 
