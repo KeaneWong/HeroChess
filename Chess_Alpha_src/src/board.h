@@ -12,6 +12,8 @@ PIECE **makeBoard();
 
 void deleteBoard(PIECE **myBoard);
 
+PIECE **copyBoard(PIECE **myBoard);
+
 PIECE *getPiece(PIECE **myBoard, int col, int row);
 
 void placePiece(PIECE **myBoard, PIECE *p, int col, int row);

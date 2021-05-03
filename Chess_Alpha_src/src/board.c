@@ -15,6 +15,17 @@ void deleteBoard(PIECE **myBoard){
 	free(myBoard);
 }
 
+PIECE **copyBoard(PIECE **myBoard){
+	int i = 0, j = 0;
+	PIECE **newBoard = makeBoard();
+	for(i = 0; i<size; i++){
+	    for(j = 0; j < size; j++){
+			newBoard[i][j] = myBoard[i][j];
+        }
+    }
+	return newBoard;
+}
+
 PIECE *getPiece(PIECE **myBoard, int col, int row){
 	PIECE *p = &myBoard[col][row];
 	return p;
@@ -113,3 +124,4 @@ void initializeBoard(PIECE** myBoard){
 int isEmpty(PIECE **myBoard, int col, int row){
 	return (GetColor(&myBoard[col][row]) == ' ' && GetType(&myBoard[col][row]) == ' ');
 }
+

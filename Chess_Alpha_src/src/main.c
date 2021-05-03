@@ -7,6 +7,7 @@
 #include "board.h"
 #include "game.h"
 #include "movelist.h"
+#include "settings.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
@@ -23,6 +24,10 @@ int main(void){
 
 	// welcome message prints once at the start of the first game
 	printf("Welcome to HeroChess v1.0\n");
+
+	// default settings: white - player 1, black - player 2
+	int wp = 1;
+	int bp = 2;
 
 	// main menu keeps printing after each game until user decides to exit
 	int exit = 0;
@@ -41,8 +46,8 @@ int main(void){
 
 				while(won!=2)
 				{
-					printBoard(board);
-					printf("Player %d pick your piece: \n", curTurnColor=='w' ? 1:2);
+					printBoard(board);	
+					printf("Player %d pick your piece: \n", curTurnColor=='w' ? wp:bp);
 					fgets(str,INPUT_BUFFER,stdin);
 					int column1;
 					int row1;
@@ -72,7 +77,7 @@ int main(void){
 						{
 							if(isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w')) )//if the opponent is in check we check for checkmate
 							{
-								printf("Checkmate. Winner is player %d!", curTurnColor=='w' ? 1:2);
+								printf("Checkmate. Winner is player %d!", curTurnColor=='w' ? wp:bp);
 								won = 2;
 							}
 							else
@@ -99,7 +104,47 @@ int main(void){
 			}
 			case 3:
 			{
-				/* player settings func */
+				/* settings function */
+				
+				int option = 0;
+				int done = 0;	
+				
+				/* settings menu keeps printing until user decides to go back to the main menu or makes changes */
+				while (done == 0)
+				{
+					printf("Welcome to Settings!\n");
+					printf("1. Change Player Colors\n");
+					printf("2. Change Timer Settings\n");
+					printf("3. Go Back to Main Menu\n");
+					scanf("%d", &option);
+					getchar();
+				
+					switch(option)
+					{
+						case 1:
+						{
+							wp = whitepnum();
+							bp = blackpnum(wp);
+							done = 1;
+							break;
+						}
+						
+						case 2:
+						{
+							selection();
+							done = 1;
+							break;
+						}
+						
+						case 3:
+						{
+							done = 1;
+							break;
+						}
+		
+					}
+				
+				}
 				break;
 			}
 			case 4:

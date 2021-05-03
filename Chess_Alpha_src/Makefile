@@ -13,7 +13,7 @@ CFLAGS = -ansi -std=c99 -Wall -c
 LFLAGS = -ansi -std=c99 -Wall
 
 # executables and replay files
-TXT	= movelog.txt
+TXT	= bin/movelog.txt
 SRC	= src/*.o
 
 all: HeroChess
@@ -71,6 +71,6 @@ clean:
 # test game
 test: 
 
-# make a new tarball from the Chess_Alpha directory
-tar: 
-	tar zcvf Chess_Alpha.tar.gz ../Chess_Alpha
+# tar the source code package
+tar:
+	tar zcvf Chess_Beta_src.tar.gz Chess_Beta_src   

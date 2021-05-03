@@ -19,7 +19,7 @@ struct Move{
 typedef struct Move MOVE;
 
 /* Create struct that contains each moves */
-MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char* destination);
+MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination);
 
 /* Delete Move */
 void DeleteMove(MOVE *m);
