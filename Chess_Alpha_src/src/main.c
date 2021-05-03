@@ -25,6 +25,10 @@ int main(void){
 	// welcome message prints once at the start of the first game
 	printf("Welcome to HeroChess v1.0\n");
 
+	// default settings: white - player 1, black - player 2
+	int wp = 1;
+	int bp = 2;
+
 	// main menu keeps printing after each game until user decides to exit
 	int exit = 0;
 	while(exit == 0)
@@ -43,7 +47,7 @@ int main(void){
 				while(won!=2)
 				{
 					printBoard(board);	
-					printf("Player %d pick your piece: \n", curTurnColor=='w' ? 1:2);
+					printf("Player %d pick your piece: \n", curTurnColor=='w' ? wp:bp);
 					fgets(str,INPUT_BUFFER,stdin);
 					int column1;
 					int row1;
@@ -73,7 +77,7 @@ int main(void){
 						{
 							if(isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w')) )//if the opponent is in check we check for checkmate
 							{
-								printf("Checkmate. Winner is player %d!", curTurnColor=='w' ? 1:2);
+								printf("Checkmate. Winner is player %d!", curTurnColor=='w' ? wp:bp);
 								won = 2;
 							}
 							else
@@ -103,10 +107,7 @@ int main(void){
 				/* settings function */
 				
 				int option = 0;
-				int done = 0;
-				/* defaults: white - player 1, black - player 2 */
-				int wp = 1;
-				int bp = 2;
+				int done = 0;	
 				
 				/* settings menu keeps printing until user decides to go back to the main menu or makes changes */
 				while (done == 0)
