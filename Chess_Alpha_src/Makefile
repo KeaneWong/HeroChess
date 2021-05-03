@@ -71,5 +71,6 @@ clean:
 # test game
 test: 
 
-# make a new tarball from the Chess_Alpha directory
-tar: 
+# tar the source code package
+tar:
+	tar zcvf Chess_Beta_src.tar.gz Chess_Beta_src   
