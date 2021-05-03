@@ -48,12 +48,18 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 	{
 		case 'P': 
 		{
-			if(isLegalPawn(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor, myList))//we create a temporary array to test the move and see if it opens up to a check
+			int p = isLegalPawn(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor, myList);
+			if(p)//we create a temporary array to test the move and see if it opens up to a check
 			{
-				/*
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				
+				PIECE **tempBoard = copyBoard(myBoard);
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
+				int forward;
+				if(p ==2)
+				{
+					forward = curTurnColor=='w' ? 1 : -1;
+					movePiece(tempBoard,colSource, rowSource, colDestination, rowDestination-forward);
+				}
 				if(!isChecked(tempBoard, curTurnColor))//if its not checked
 				{
 					deleteBoard(tempBoard);
@@ -65,7 +71,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
-				*/
+				
 				return 1;
 			}
 			else
@@ -79,9 +85,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalRook(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
-				/*
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				PIECE **tempBoard = copyBoard(myBoard);
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
 				if(!isChecked(tempBoard, curTurnColor))//if its not checked
 				{
@@ -94,7 +98,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
-				*/
+				
 				return 1;
 			}
 			else
@@ -108,9 +112,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalKnight(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
-				/*
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				
+				PIECE **tempBoard = copyBoard(myBoard);
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
 				if(!isChecked(tempBoard, curTurnColor))//if its not checked
 				{
@@ -123,7 +126,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
-				*/
+				
 				return 1;
 			}
 			else
@@ -137,9 +140,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalBishop(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
-				/*
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				PIECE **tempBoard = copyBoard(myBoard);
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
 				if(!isChecked(tempBoard, curTurnColor))//if its not checked
 				{
@@ -152,7 +153,6 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
-				*/
 				return 1;
 			}
 			else
@@ -166,7 +166,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalKing(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor)) //in the event of castling, we need to do a special checl
 			{
-				/*
+
+				PIECE **tempBoard = copyBoard(myBoard);
 				if(GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R')//this checks for castling. If we're castling we need to do a special maneuver
 				{
 					int distance = colDestination - colSource;
@@ -182,14 +183,11 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 						movePiece(tempBoard, colDestination, rowDestination, colDestination - (distance-1),rowDestination);
 					}
 				}
-				else
+				else//if we arent castling
 				{
 					movePiece(tempBoard, colSource, rowSource, colDestination,rowDestination);
 				}
-				
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
-				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
+
 				if(!isChecked(tempBoard, curTurnColor))//if its not checked
 				{
 					deleteBoard(tempBoard);
@@ -201,7 +199,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
-				*/
+				
 				return 1;
 			}
 			else
@@ -215,9 +213,8 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 		{
 			if(isLegalQueen(myBoard,colSource,rowSource,colDestination,rowDestination, curTurnColor))
 			{
-				/*
-				PIECE **tempBoard = makeBoard();
-				memcpy(tempBoard, myBoard,sizeof(PIECE)*8*8);//copying array
+				
+				PIECE **tempBoard = copyBoard(myBoard);
 				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
 				if(!isChecked(tempBoard, curTurnColor))//if its not checked
 				{
@@ -230,7 +227,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 0;
 				}
-				*/
+				
 				return 1;
 			}
 			else
@@ -267,9 +264,9 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		{
 			if(GetType(getPiece(myBoard,colDestination,rowDestination-forward)) == 'P' && GetColor(getPiece(myBoard,colDestination,rowDestination-forward)) == enemyColor)//if the piece right behind destination is an enemy pawn we can capture it
 			{
-				if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '0'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
+				if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '1'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
 				{
-					return 1;
+					return 2;
 				}
 			}
 		}
@@ -515,12 +512,17 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 				{
 					if(GetType(getPiece(myBoard,colDestination,rowDestination-forward)) == 'P' && GetColor(getPiece(myBoard,colDestination,rowDestination-forward)) == enemyColor)//if the piece right behind destination is an enemy pawn we can capture it
 					{
-						if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '0'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
+						if(myList->last->move->source[0] == ('A' + colDestination) && myList->last->move->source[1] == ('1'+rowDestination+forward))//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
 						{
-							removedPiece = removePiece(myBoard,colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
+							movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+							removedPiece = movePiece(myBoard,colSource, rowSource, colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
 							//MOVE *newMove = NewMove(getPiece(myBoard,colSource,rowSource),removedPawn), 
 							enPassant = 1;
 
+						}
+						else
+						{
+							printf("No en passant, list contents: %c, %c\n", myList->last->move->source[0],myList->last->move->source[1]);
 						}
 					}
 				}
