@@ -114,8 +114,8 @@ int main(void){
 				{
 					printf("Welcome to Settings!\n");
 					printf("1. Change Player Colors\n");
-					printf("2. Change Timer Settings\n");
-					printf("3. Go Back to Main Menu\n");
+					//printf("2. Change Timer Settings\n");
+					printf("2. Go Back to Main Menu\n");
 					scanf("%d", &option);
 					getchar();
 				
@@ -129,14 +129,14 @@ int main(void){
 							break;
 						}
 						
-						case 2:
-						{
-							selection();
-							done = 1;
-							break;
-						}
+						//case 2:
+						//{
+						//	selection();
+						//	done = 1;
+						//	break;
+						//}
 						
-						case 3:
+						case 2:
 						{
 							done = 1;
 							break;
