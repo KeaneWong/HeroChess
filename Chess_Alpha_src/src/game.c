@@ -53,9 +53,9 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			{
 				
 				PIECE **tempBoard = copyBoard(myBoard);
-				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);
+				movePiece(tempBoard,colSource,rowSource,colDestination,rowDestination);//move piece to destination
 				int forward;
-				if(p ==2)
+				if(p ==2)//if en passant we move the pawn right behind the destination
 				{
 					forward = curTurnColor=='w' ? 1 : -1;
 					movePiece(tempBoard,colSource, rowSource, colDestination, rowDestination-forward);
@@ -65,7 +65,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					deleteBoard(tempBoard);
 					return 1;//return a success marker
 				}
-				else
+				else	//if it is checked
 				{
 					printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
@@ -799,10 +799,174 @@ int isCheckedByP(PIECE **myBoard,char enemyColor, int colKing, int rowKing)
 	return 0;
 }
 
-int isCheckmate(PIECE **myBoard, char turnColor)
+int isCheckedByK(PIECE **myBoard,char enemyColor, int colKing, int rowKing)//checking all legal spaces around king to see if its another king
 {
-	return 0;
+	if(colKing-1 >= 0 && rowKing-1 >= 0)
+	{
+		if(getType(getPiece(myBoard,colKing-1,rowKing-1)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(colKing-1 >= 0 && rowKing+1 < 8)
+	{
+		if(getType(getPiece(myBoard,colKing-1,rowKing+1)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(colKing+1 < 8 && rowKing-1 >= 0)
+	{
+		if(getType(getPiece(myBoard,colKing+1,rowKing-1)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(colKing+1 < 8 && rowKing+1 < 8)
+	{
+		if(getType(getPiece(myBoard,colKing+1,rowKing+1)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(rowKing-1 >= 0)
+	{
+		if(getType(getPiece(myBoard,colKing,rowKing-1)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(rowKing+1 < 8)
+	{
+		if(getType(getPiece(myBoard,colKing,rowKing+1)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(colKing-1 >= 0)
+	{
+		if(getType(getPiece(myBoard,colKing-1,rowKing)) == 'K')
+		{
+			return 1;
+		}
+	}
+	if(colKing+1 < 8)
+	{
+		if(getType(getPiece(myBoard,colKing+1,rowKing)) == 'K')
+		{
+			return 1;
+		}
+	}
+
 }
+
+int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)
+{
+	if(!isChecked(myBoard,curTurnColor))//if theres no check at all then it cant be a checkmate and it returns a 1
+	{
+		return 0;
+	}
+	PIECE **tempBoard = copyBoard(myBoard);
+	int found = 0;	///finding the king
+	int colKing;
+	int rowKing;
+	char enemyColor = (curTurnColor == 'w') ? 'b' : 'w';//swapping color
+	for(int i =0; i < 8 && !found; i++)//finding coordinates for the king
+	{
+		for(int j = 0; j< 8 && !found; j++)
+		{
+			if(GetType(getPiece(tempBoard,i,j)) == 'K'  && GetColor(getPiece(tempBoard,i,j)) == curTurnColor)
+			{
+				found =1;
+				colKing = i;
+				rowKing = j;
+			}
+		}
+	}
+	for(int i = -1; i <=1; i++)//the following nested for loop checks for available spaces around king it can move to and sees if any of them escapes check
+	{
+		for(int j = -1; j <=1; j++)
+		{
+			if(int i != 0 || int j != 0)//as long as its not both 0, we are checking all squares around the king
+			{
+				if(isLegal(tempBoard,colKing,rowKing, colKing+i, rowKing+j,curTurnColor,myList))//checking for legal positions the king can go to
+				{
+					MakeMove(tempBoard,colKing,rowKing,colKing+i,rowKing+j,curTurnColor,myList);
+					if(!isChecked(tempBoard,curTurnColor))//if its not checked then its a valid move
+					{
+						deleteBoard(tempBoard);
+						return 1;
+					}
+					else
+					{
+						deleteBoard(tempBoard);
+						tempBoard = copyBoard(myBoard);//setting the temporary board back to the original copy
+
+					}
+				}
+			}
+		}
+	}
+
+	if(isLegal(tempBoard,colKing,rowKing, colKing-4,rowKing))//checking if castling is legal and will bring us out of check
+	{
+		MakeMove(tempBoard,colKing,rowKing,colKing-4,rowKing);
+		if(!isChecked(tempBoard,curTurnColor))
+		{
+			deleteBoard(tempBoard);
+			return 1;
+		}
+		else
+		{
+			deleteBoard(teempBoard);
+			tempBoard = copyBoard(myBoard);
+		}
+	}	
+	else if(isLegal(tempBoard,colKing,rowKing, colKing+3,rowKing))//checking if castling is legal on the other side
+	{
+		MakeMove(tempBoard,colKing,rowKing,colKing-4,rowKing);
+		if(!isChecked(tempBoard,curTurnColor))//checking if castling takes us out of check
+		{
+			deleteBoard(tempBoard);
+			return 1;
+		}
+		else
+		{
+			deleteBoard(tempBoard);
+			tempBoard = copyBoard(myBoard);
+		}
+	}
+
+
+
+
+	return 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
