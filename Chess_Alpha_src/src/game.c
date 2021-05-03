@@ -492,19 +492,20 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 	
 	if(isLeg == 1)
 	{
+		PIECE *removedPiece;//tracking removed piece
+		PIECE *movedPiece = getPiece(myBoard,colSource,rowSource);
+
 		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
 		{
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
-			//PIECE *tempTBD =  movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
-			//PIECE *tempTBD2 = movePiece(myBoard,colDestination,rowDestination,colSource-directionToGo,rowDestination);//moving rook to space right next to the king
-			movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook
+			removedPiece = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook. The removedPiece should be a blank square
 			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
-			//free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
-			//free(tempTBD2);//TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
+			AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colSource+directionToGo*2, rowDestination);
 			return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
 		{
+			int enPassant = 0;  //variable to track whether we did en passant or not
 			int forward = curTurnColor == 'w' ? 1 : -1;
 			char enemyColor = curTurnColor=='w' ? 'b' : 'w';
 			//REPEATING CODE FROM ISLEGALPAWN FUNCTION. THIS IS USED TO DETERMINE IF WE DO THE EXTRA STEP OF REMOVING THE PAWN AS PER EN PASSANT
@@ -516,22 +517,27 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 					{
 						if(myList->last->move->source[0] == 'A' + colDestination && myList->last->move->source[1] == '0'+rowDestination+forward)//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
 						{
-							PIECE removedPawn = removePiece(myBoard,colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
+							removedPiece = removePiece(myBoard,colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
 							//MOVE *newMove = NewMove(getPiece(myBoard,colSource,rowSource),removedPawn), 
+							enPassant = 1;
+
 						}
 					}
 				}
 			}
-			movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
-			return 1;
+			if(enPassant != 1)//if en passant didnt happen
+			{
+				removedPiece = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+			}
+
 		}
 		else
 		{
-			//PIECE *tempTBD = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
-			movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
-			//free(tempTBD); //TO BE IMPLEMENTED: Currently causing an error: Pointer freed was not allocated. Unusual. Needs to be fixed to prevent memory leaks
-			return 1;
+			removedPiece = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+
 		}
+		AppendMove(myList,movedPiece,removedPiece, colSource, rowSource, colDestination, rowDestination);
+		return 1;
 	}
 	else if (isLeg == 0)
 	{
