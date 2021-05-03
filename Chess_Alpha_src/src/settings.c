@@ -47,12 +47,14 @@ int blackpnum(int wp)
 }
 
 /* timer handling */
+/* adds delay when timer is counting down */
 void delay(int ms)
 {
 	clock_t timeDelay = ms + clock();
 	while (timeDelay > clock());
 }
 
+/* counts down from time inputted by user */
 int timer()
 {
 	while (flag == 0)
@@ -82,6 +84,7 @@ int timer()
 	return 0;
 }
 
+/* prints timer to terminal */
 int printTime()
 {	
 	printf("\r%d:%d\n", min, sec);
@@ -89,6 +92,7 @@ int printTime()
 	return 0;
 }
 
+/* asks user if timer is enabled or disabled */
 int selection()
 {
 	printf("Please enter the minutes: ");
