@@ -48,11 +48,7 @@ int blackpnum(int wp)
 
 /* timer handling */
 /* adds delay when timer is counting down */
-<<<<<<< HEAD
 void delay(int sec)
-=======
-void delay(int ms)
->>>>>>> 9b660bca875cbe118581e5a428ad0744536d8fa7
 {
 	int ms = 1000 * sec;
 	clock_t timeDelay = ms + clock();
@@ -89,17 +85,14 @@ int timer()
 
 /* prints timer to terminal */
 int printTime()
-{	
+{
 	printf("%d:%d\n", min, sec);
-	
+
 	return 0;
 }
 
-<<<<<<< HEAD
+
 /* asks user for timer value */
-=======
-/* asks user if timer is enabled or disabled */
->>>>>>> 9b660bca875cbe118581e5a428ad0744536d8fa7
 int selection()
 {
 	printf("Please enter the minutes: ");
