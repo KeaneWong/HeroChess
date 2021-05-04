@@ -572,7 +572,35 @@ int isChecked(PIECE **myBoard, char curTurnColor){
 			}
 		}
 	}
-	return isCheckedByRQ(myBoard, enemyColor, colKing, rowKing) || isCheckedByBQ(myBoard, enemyColor, colKing, rowKing) || isCheckedByN(myBoard, enemyColor, colKing, rowKing) || isCheckedByP(myBoard, enemyColor, colKing, rowKing);
+	
+	//Returns location of piece that is checking the king
+	int RQ = isCheckedByRQ(myBoard, enemyColor, colKing, rowKing);
+	if(RQ)
+	{
+		return RQ;
+	}
+	int BQ = isCheckedByBQ(myBoard, enemyColor, colKing, rowKing);
+	if(BQ)
+	{
+		return BQ;
+	}
+	int N  = isCheckedByN(myBoard, enemyColor, colKing, rowKing);
+	if(N)
+	{
+		return N;
+	}
+	int P  = isCheckedByP(myBoard, enemyColor, colKing, rowKing);
+	if(p)
+	{
+		return P;
+	}
+	int K  = isCheckedByK(myBoard, enemyColor, colKing, rowKing);
+	if(K)
+	{
+		return K;
+	}
+
+	return 0;//if its not checked at all return 0
 
 }
 
@@ -591,7 +619,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 			if(GetColor(getPiece(myBoard,i,rowKing)) == enemyColor && (GetType(getPiece(myBoard,i,rowKing)) == 'Q' || GetType(getPiece(myBoard,i,rowKing)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
 				printf("Checked at %d %d by a queen or rook\n", i, rowKing);
-				return 1;//this implies that the rook or king is in line with the king and therefore checking it
+				return (i*10+rowKing);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
 			{
@@ -608,7 +636,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 			if(GetColor(getPiece(myBoard,i,rowKing)) == enemyColor && (GetType(getPiece(myBoard,i,rowKing)) == 'Q' || GetType(getPiece(myBoard,i,rowKing)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
 				printf("Checked at %d %d by a queen or rook\n", i, rowKing);
-				return 1;//this implies that the rook or king is in line with the king and therefore checking it
+				return (i*10 + rowKing);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
 			{
@@ -625,7 +653,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 			if(GetColor(getPiece(myBoard,colKing,j)) == enemyColor && (GetType(getPiece(myBoard,colKing,j)) == 'Q' || GetType(getPiece(myBoard,colKing,j)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
 				printf("Checked at %d %d by a queen or rook\n", colKing, j);
-				return 1;//this implies that the rook or king is in line with the king and therefore checking it
+				return (colKing*10 + j);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
 			{
@@ -642,7 +670,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 			if(GetColor(getPiece(myBoard,colKing,j)) == enemyColor && (GetType(getPiece(myBoard,colKing,j)) == 'Q' || GetType(getPiece(myBoard,colKing,j)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
 				printf("Checked at %d %d by a queen or rook\n", colKing, j);
-				return 1;//this implies that the rook or king is in line with the king and therefore checking it
+				return (colKing*10 + j);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
 			{
@@ -665,7 +693,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
 				printf("Checked at %d %d by a bishop or queen\n",i,j);
-				return 1;
+				return (i*10+j);
 			}
 			else
 			{
@@ -680,7 +708,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
 				printf("Checked at %d %d by a bishop or queen\n",i,j);
-				return 1;
+				return (i*10+j);
 			}
 			else
 			{
@@ -695,7 +723,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
 				printf("Checked at %d %d by a bishop or queen\n",i,j);
-				return 1;
+				return (i*10+j);
 			}
 			else
 			{
@@ -710,7 +738,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
 				printf("Checked at %d %d by a bishop or queen\n",i,j);
-				return 1;
+				return (i*10+j);
 			}
 			else
 			{
@@ -727,56 +755,56 @@ int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//ch
 	{
 		if(GetColor(getPiece(myBoard,colKing+4,rowKing+2)) == enemyColor && GetType(getPiece(myBoard,colKing+4,rowKing+2)) == 'N')
 		{
-			return 1;
+			return ((colKing+4)*10 + rowKing+2);
 		}
 	}
 	if(colKing+2<8 && rowKing+4<8)
 	{
 		if(GetColor(getPiece(myBoard,colKing+2,rowKing+4)) == enemyColor && GetType(getPiece(myBoard,colKing+2,rowKing+4)) == 'N')
 		{
-			return 1;
+			return ((colKing+2)*10 + rowKing+4);
 		}
 	}
 	if(colKing-2>=0 && rowKing+4<8)
 	{
 		if(GetColor(getPiece(myBoard,colKing-2,rowKing+4)) == enemyColor && GetType(getPiece(myBoard,colKing-2,rowKing+4)) == 'N')
 		{
-			return 1;
+			return ((colKing-2)*10 + rowKing+4);
 		}
 	}
 	if(colKing+4<8 && rowKing-2>=0)
 	{
 		if(GetColor(getPiece(myBoard,colKing+4,rowKing-2)) == enemyColor && GetType(getPiece(myBoard,colKing+4,rowKing-2)) == 'N')
 		{
-			return 1;
+			return ((colKing+4)*10 + rowKing-2);
 		}
 	}
 	if(colKing+2<8 && rowKing-4>=0)
 	{
 		if(GetColor(getPiece(myBoard,colKing+2,rowKing-4)) == enemyColor && GetType(getPiece(myBoard,colKing+2,rowKing-4)) == 'N')
 		{
-			return 1;
+			return ((colKing+2)*10 + rowKing-4);
 		}
 	}
 	if(colKing-4>=0 && rowKing+2<8)
 	{
 		if(GetColor(getPiece(myBoard,colKing-4,rowKing+2)) == enemyColor && GetType(getPiece(myBoard,colKing-4,rowKing+2)) == 'N')
 		{
-			return 1;
+			return ((colKing-4)*10 + rowKing+2);
 		}
 	}
 	if(colKing-2>=0 && rowKing-4>=0)
 	{
 		if(GetColor(getPiece(myBoard,colKing-2,rowKing-4)) == enemyColor && GetType(getPiece(myBoard,colKing-2,rowKing-4)) == 'N')
-		{
-			return 1;
+		
+			return ((colKing-2)*10 + rowKing-4);
 		}
 	}
 	if(colKing-4>=0 && rowKing-2>=0)
 	{
 		if(GetColor(getPiece(myBoard,colKing-4,rowKing-2)) == enemyColor && GetType(getPiece(myBoard,colKing-4,rowKing-2)) == 'N')
 		{
-			return 1;
+			return ((colKing-4)*10 + rowKing-2);
 		}
 	}
 	return 0;
@@ -789,12 +817,12 @@ int isCheckedByP(PIECE **myBoard,char enemyColor, int colKing, int rowKing)
 	if(colKing+1 < 8 && GetType(getPiece(myBoard,colKing+1,rowKing - forward)) == 'P' && GetColor(getPiece(myBoard,colKing+1,rowKing-forward)) == enemyColor)
 	{
 		printf("Checked at %d %d by Pawn\n",colKing+1,rowKing);
-		return 1;
+		return ((colKing+1)*10 + rowKing);
 	}
 	if(colKing-1 >= 0 && GetType(getPiece(myBoard,colKing-1,rowKing - forward)) == 'P' && GetColor(getPiece(myBoard,colKing+1,rowKing-forward)) == enemyColor)
 	{
 		printf("Checked at %d %d by Pawn\n",colKing-1,rowKing);
-		return 1;
+		return ((colKing-1)*10 + rowKing);
 	}
 	return 0;
 }
@@ -803,151 +831,285 @@ int isCheckedByK(PIECE **myBoard,char enemyColor, int colKing, int rowKing)//che
 {
 	if(colKing-1 >= 0 && rowKing-1 >= 0)
 	{
-		if(getType(getPiece(myBoard,colKing-1,rowKing-1)) == 'K')
+		if(GetType(getPiece(myBoard,colKing-1,rowKing-1)) == 'K' && GetColor(getPiece(myBoard,colKing-1,rowKing-1)) == enemyColor)
 		{
-			return 1;
+			return ((colKing-1)*10 + rowKing-1);
 		}
 	}
 	if(colKing-1 >= 0 && rowKing+1 < 8)
 	{
-		if(getType(getPiece(myBoard,colKing-1,rowKing+1)) == 'K')
+		if(GetType(getPiece(myBoard,colKing-1,rowKing+1)) == 'K' && GetColor(getPiece(myBoard,colKing-1,rowKing+1)) == enemyColor)
 		{
-			return 1;
+			return ((colKing-1)*10 + rowKing+1);
 		}
 	}
 	if(colKing+1 < 8 && rowKing-1 >= 0)
 	{
-		if(getType(getPiece(myBoard,colKing+1,rowKing-1)) == 'K')
+		if(GetType(getPiece(myBoard,colKing+1,rowKing-1)) == 'K' && GetColor(getPiece(myBoard,colKing+1,rowKing-1)) == enemyColor)
 		{
-			return 1;
+			return ((colKing+1)*10 + rowKing-1);
 		}
 	}
 	if(colKing+1 < 8 && rowKing+1 < 8)
 	{
-		if(getType(getPiece(myBoard,colKing+1,rowKing+1)) == 'K')
+		if(GetType(getPiece(myBoard,colKing+1,rowKing+1)) == 'K' && GetColor(getPiece(myBoard,colKing+1,rowKing+1)) == enemyColor)
 		{
-			return 1;
+			return ((colKing+1)*10 + rowKing+1);
 		}
 	}
 	if(rowKing-1 >= 0)
 	{
-		if(getType(getPiece(myBoard,colKing,rowKing-1)) == 'K')
+		if(GetType(getPiece(myBoard,colKing,rowKing-1)) == 'K' && GetColor(getPiece(myBoard,colKing,rowKing-1)) == enemyColor)
 		{
-			return 1;
+			return ((colKing)*10 + rowKing-1);
 		}
 	}
 	if(rowKing+1 < 8)
 	{
-		if(getType(getPiece(myBoard,colKing,rowKing+1)) == 'K')
+		if(GetType(getPiece(myBoard,colKing,rowKing+1)) == 'K' && GetColor(getPiece(myBoard,colKing,rowKing+1)) == enemyColor)
 		{
-			return 1;
+			return ((colKing)*10 + rowKing+1);
 		}
 	}
 	if(colKing-1 >= 0)
 	{
-		if(getType(getPiece(myBoard,colKing-1,rowKing)) == 'K')
+		if(GetType(getPiece(myBoard,colKing-1,rowKing)) == 'K' && GetColor(getPiece(myBoard,colKing-1,rowKing)) == enemyColor)
 		{
-			return 1;
+			return ((colKing-1)*10 + rowKing);
 		}
 	}
 	if(colKing+1 < 8)
 	{
-		if(getType(getPiece(myBoard,colKing+1,rowKing)) == 'K')
+		if(GetType(getPiece(myBoard,colKing+1,rowKing)) == 'K' && GetColor(getPiece(myBoard,colKing+1,rowKing)) == enemyColor)
 		{
-			return 1;
+			return ((colKing+1)*10 + rowKing);
 		}
 	}
-
+	return 0;
 }
 
-int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)
+int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates no checks, 1 indicates a check, 2 indicates a checkmate
 {
+	char enemyColor = (curTurnColor== 'w' ? 'b' : 'w');
 	if(!isChecked(myBoard,curTurnColor))//if theres no check at all then it cant be a checkmate and it returns a 1
 	{
-		return 0;
+		return 0;	//indicates no check
 	}
 	PIECE **tempBoard = copyBoard(myBoard);
-	int found = 0;	///finding the king
-	int colKing;
-	int rowKing;
-	char enemyColor = (curTurnColor == 'w') ? 'b' : 'w';//swapping color
-	for(int i =0; i < 8 && !found; i++)//finding coordinates for the king
+	for(int i = 0 ; i < 8; i++0)//nested loop that goes through entire board, looking for friendly pieces that could potentially end check
 	{
-		for(int j = 0; j< 8 && !found; j++)
+		for(int j = 0; j < 8; j++)
 		{
-			if(GetType(getPiece(tempBoard,i,j)) == 'K'  && GetColor(getPiece(tempBoard,i,j)) == curTurnColor)
+			if(GetColor(getPiece(tempBoard,i,j)) != curTurnColor)//if its an enemy piece we cant manipulate it to do things so we skip it
 			{
-				found =1;
-				colKing = i;
-				rowKing = j;
+				continue;
 			}
-		}
-	}
-	for(int i = -1; i <=1; i++)//the following nested for loop checks for available spaces around king it can move to and sees if any of them escapes check
-	{
-		for(int j = -1; j <=1; j++)
-		{
-			if(int i != 0 || int j != 0)//as long as its not both 0, we are checking all squares around the king
+			switch(GetType)
 			{
-				if(isLegal(tempBoard,colKing,rowKing, colKing+i, rowKing+j,curTurnColor,myList))//checking for legal positions the king can go to
+				case 'K':
 				{
-					MakeMove(tempBoard,colKing,rowKing,colKing+i,rowKing+j,curTurnColor,myList);
-					if(!isChecked(tempBoard,curTurnColor))//if its not checked then its a valid move
+					if(MakeMove(tempBoard,i,j,i-4,j,curTurnColor,myList))
 					{
-						deleteBoard(tempBoard);
-						return 1;
+						if(!isChecked(tempBoard,curTurnColor))
+						{
+							return 1;
+						}
+						else
+						{
+							deleteBoard(tempBoard);				//current way to reset board. Not very efficient of course, but can replace with the undo function once implemented
+							tempBoard = copyBoard(myBoard);
+						}
 					}
-					else
+					if(MakeMove(tempBoard,i,j,i-4,j,curTurnColor,myList))
 					{
-						deleteBoard(tempBoard);
-						tempBoard = copyBoard(myBoard);//setting the temporary board back to the original copy
+						if(!isChecked(tempBoard,curTurnColor))
+						{
+							return 1;
+						}
+						else
+						{
+							deleteBoard(tempBoard);				//current way to reset board. Not very efficient of course, but can replace with the undo function once implemented
+							tempBoard = copyBoard(myBoard);
+						}
+					}
+					for(int p = -1; p <=1; p++)//checking if we can move to any of the adjacent squares as the king and if we can, if we're still in check after moving. If we are then continue, but if we're out of check then return 1
+					{
+						for(int o = -1; o <=1; o++)
+						{
+							if(o !=0 || p != 0)
+							{
+								if(MakeMove(tempBoard,i,j,i+p,j+o,curTurnColor,myList))
+								{
+									if(!isChecked(tempBoard,curTurnColor))
+									{
+										return 1;
+									}
+									else
+									{
+										deleteBoard(tempBoard);
+										tempBoard = copyBoard(myBoard);
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				case 'R':
+				{
+					for(int p = 0; p < 8; p++)
+					{
+						if(p != i)///checking all adjacent columns on the current row j
+						{
+							if(MakeMove(tempBoard,i, j, p, j,curTurnColor,myList))
+							{
+									if(!isChecked(tempBoard,curTurnColor))
+									{
+										return 1;
+									}
+									else
+									{
+										deleteBoard(tempBoard);
+										tempBoard = copyBoard(myBoard);
+									}
+							}
+						}
+						if(p != j)
+						{
+							if(MakeMove(tempBoard,i,j,i,p,curTurnColor,myList))
+							{
+								if(!isChecked(tempBoard,curTurnColor))
+									{
+										return 1;
+									}
+									else
+									{
+										deleteBoard(tempBoard);
+										tempBoard = copyBoard(myBoard);
+									}
+							}
+						}
+					}
+					break;
+				}
+				case 'P':
+				{
 
+					break;
+				}
+				case 'B':
+				{
+					int startingCol = i<j ? 0 : i-j;
+					int startingRow = i<j ? j-i : 0;
+					int r = startingCol;
+					int p;
+					for(p = startingRow; p < 8 && r < 8; p++)
+					{
+						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						{
+							if(!isChecked(tempBoard,curTurnColor))
+									{
+										return 1;
+									}
+									else
+									{
+										deleteBoard(tempBoard);
+										tempBoard = copyBoard(myBoard);
+									}
+						}
+						r++;
 					}
+					r = startingCol;
+					for(p = startingRow; p >= 0 && r<8; p-- )
+					{
+						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						{
+							if(!isChecked(tempBoard,curTurnColor))
+									{
+										return 1;
+									}
+									else
+									{
+										deleteBoard(tempBoard);
+										tempBoard = copyBoard(myBoard);
+									}
+						}
+						r++;
+					}
+					r = startingCol;
+					for(p = startingRow; p < 8 && r>=0; p++ )
+					{
+						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						{
+							if(!isChecked(tempBoard,curTurnColor))
+									{
+										return 1;
+									}
+									else
+									{
+										deleteBoard(tempBoard);
+										tempBoard = copyBoard(myBoard);
+									}
+						}
+						r--;
+					}
+					break;
+				}
+				case 'N':
+				{
+					
+					break;
+				}
+				case 'Q':
+				{
+					break;
 				}
 			}
 		}
 	}
 
-	if(isLegal(tempBoard,colKing,rowKing, colKing-4,rowKing))//checking if castling is legal and will bring us out of check
-	{
-		MakeMove(tempBoard,colKing,rowKing,colKing-4,rowKing);
-		if(!isChecked(tempBoard,curTurnColor))
-		{
-			deleteBoard(tempBoard);
-			return 1;
-		}
-		else
-		{
-			deleteBoard(teempBoard);
-			tempBoard = copyBoard(myBoard);
-		}
-	}	
-	else if(isLegal(tempBoard,colKing,rowKing, colKing+3,rowKing))//checking if castling is legal on the other side
-	{
-		MakeMove(tempBoard,colKing,rowKing,colKing-4,rowKing);
-		if(!isChecked(tempBoard,curTurnColor))//checking if castling takes us out of check
-		{
-			deleteBoard(tempBoard);
-			return 1;
-		}
-		else
-		{
-			deleteBoard(tempBoard);
-			tempBoard = copyBoard(myBoard);
-		}
-	}
-
-
-
 
 	return 2;
 }
 
+/*
+int isCheckedPiece(PIECE **myBoard, char curTurnColor, int colPiece, int rowPiece){//identical to the isChecked function but it doesnt check for checks around the king of curTurnColor. 
+																	//Instead it checks to see if a specific spot or piece is checked, regardless of whether its a king or not
+	char enemyColor = (curTurnColor == 'w') ? 'b' : 'w';//swapping color
+	
+	//Returns location of piece that is checking the king
+	int RQ = isCheckedByRQ(myBoard, enemyColor, colPiece, rowPiece);
+	if(RQ)
+	{
+		return RQ;
+	}
+	int BQ = isCheckedByBQ(myBoard, enemyColor, colPiece, rowPiece);
+	if(BQ)
+	{
+		return BQ;
+	}
+	int N  = isCheckedByN(myBoard, enemyColor, colPiece, rowPiece);
+	if(N)
+	{
+		return N;
+	}
+	int P  = isCheckedByP(myBoard, enemyColor, colPiece, rowPiece);
+	if(p)
+	{
+		return P;
+	}
+	int K  = isCheckedByK(myBoard, enemyColor, colPiece, rowPiece);
+	if(K)
+	{
+		return K;
+	}
+
+	return 0;//if its not checked at all return 0
+
+}
 
 
-
-
-
+*/
 
 
 
