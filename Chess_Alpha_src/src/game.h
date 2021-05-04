@@ -33,7 +33,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//
 int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//used to check for bishops or queens diagonal in all directions of the piece at colKing and rowKing
 int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//checks for nights
 int isCheckedByP(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
-
+int isCheckedByK(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
 
 
 #endif
