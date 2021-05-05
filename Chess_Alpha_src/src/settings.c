@@ -9,7 +9,7 @@
 
 #include "settings.h"
 
-int min = 0, sec = 0, flag = 0;
+int min = 2, sec = 0, flag = 0;
 
 /* player color handling */
 /* user chooses which playes gets the white pieces */
@@ -48,14 +48,14 @@ int blackpnum(int wp)
 
 /* timer handling */
 /* adds delay when timer is counting down */
-void delay(int sec)
+/* void delay(int sec)
 {
 	int ms = 1000 * sec;
 	clock_t timeDelay = ms + clock();
 	while (timeDelay > clock());
 }
 
-/* counts down from time inputted by user */
+ counts down from time inputted by user 
 int timer()
 {
 	while (flag == 0)
@@ -84,7 +84,7 @@ int timer()
 	return 0;
 }
 
-/* prints timer to terminal */
+ prints timer to terminal 
 int printTime()
 {
 	printf("%d:%d\n", min, sec);
@@ -93,7 +93,7 @@ int printTime()
 }
 
 
-/* asks user for timer value */
+ asks user for timer value 
 int selection()
 {
 	printf("Please enter the minutes: ");
@@ -103,6 +103,6 @@ int selection()
 	scanf("%d", &sec);
 
 	return 0;
-}
+} */
 
 // EOF //
