@@ -9,37 +9,37 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 {
 	if( colDestination < 0 || colDestination > 7 || rowDestination < 0 || rowDestination > 7 )
 	{
-		printf("Error: Out of bounds destination\n");
+		//printf("Error: Out of bounds destination\n");
 		return 0;
 	}
 	if(colSource < 0 || colSource > 7 || rowSource < 0 || rowSource > 7 )
 	{
-		printf("Error: Out of bounds destination\n");
+		//printf("Error: Out of bounds destination\n");
 		return 0;
 	}
 	if(colSource == colDestination && rowSource == rowDestination)
 	{
-		printf("Error: Destination same as beginning\n");
+		//printf("Error: Destination same as beginning\n");
 		return 0;
 	}
 	if(isEmpty(myBoard,colSource,rowSource) == 1)
 	{
 		//if there isnt anything at the selected source then it automatically fails
-		printf("Error: No piece at selected location\n");
+		//printf("Error: No piece at selected location\n");
 		return 0;
 	}
 	if(GetColor(getPiece(myBoard,colSource,rowSource)) != curTurnColor)
 	{
-		printf("Error: Opponent's piece selected! It is currently player %c's turn.\n",curTurnColor);
+		//printf("Error: Opponent's piece selected! It is currently player %c's turn.\n",curTurnColor);
 		return 0;
 	}
 	if(GetType(getPiece(myBoard,colSource,rowSource)) != 'K' )//castling
 	{
 		if(GetColor(getPiece(myBoard,colSource,rowSource)) == GetColor(getPiece(myBoard,colDestination,rowDestination)) )
 		{
-			printf("Error: Destination square contains a friendly piece. Illegal move\n");
-			//printf("%c %d %d",GetColor(getPiece(myBoard,colSource,rowSource)),colSource,rowSource);
-			//printf("%c %d %d",GetColor(getPiece(myBoard,colDestination,rowDestination)),colDestination,rowDestination);
+			//printf("Error: Destination square contains a friendly piece. Illegal move\n");
+			////printf("%c %d %d",GetColor(getPiece(myBoard,colSource,rowSource)),colSource,rowSource);
+			////printf("%c %d %d",GetColor(getPiece(myBoard,colDestination,rowDestination)),colDestination,rowDestination);
 			return 0;
 		}
 	}
@@ -67,7 +67,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				}
 				else	//if it is checked
 				{
-					printf("Error: This move leaves friendly king open to check\n");
+					//printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
 					return 0;
 				}
@@ -76,7 +76,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			}
 			else
 			{
-				printf("Error: Illegal move.\n");
+				//printf("Error: Illegal move.\n");
 				return 0;
 			}
 			break;
@@ -94,7 +94,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				}
 				else
 				{
-					printf("Error: This move leaves friendly king open to check\n");
+					//printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
 					return 0;
 				}
@@ -103,7 +103,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			}
 			else
 			{
-				printf("Error: Illegal move.\n");
+				//printf("Error: Illegal move.\n");
 				return 0;
 			}
 			break;
@@ -122,7 +122,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				}
 				else
 				{
-					printf("Error: This move leaves friendly king open to check\n");
+					//printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
 					return 0;
 				}
@@ -131,7 +131,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			}
 			else
 			{
-				printf("Error: Illegal move.\n");
+				//printf("Error: Illegal move.\n");
 				return 0;
 			}
 			break;
@@ -149,7 +149,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				}
 				else
 				{
-					printf("Error: This move leaves friendly king open to check\n");
+					//printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
 					return 0;
 				}
@@ -157,7 +157,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			}
 			else
 			{
-				printf("Error: Illegal move.\n");
+				//printf("Error: Illegal move.\n");
 				return 0;
 			}
 			break;
@@ -195,7 +195,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				}
 				else
 				{
-					printf("Error: This move leaves friendly king open to check\n");
+					//printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
 					return 0;
 				}
@@ -204,7 +204,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			}
 			else
 			{
-				printf("Error: Illegal move.\n");
+				//printf("Error: Illegal move.\n");
 				return 0;
 			}
 			break;
@@ -223,7 +223,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 				}
 				else
 				{
-					printf("Error: This move leaves friendly king open to check\n");
+					//printf("Error: This move leaves friendly king open to check\n");
 					deleteBoard(tempBoard);
 					return 0;
 				}
@@ -232,13 +232,13 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			}
 			else
 			{
-				printf("Error: Illegal move.\n");
+				//printf("Error: Illegal move.\n");
 				return 0;
 			}
 			break;
 		}
 	}
-	printf("Error: Invalid type present \n");
+	//printf("Error: Invalid type present \n");
 	return 0;
 
 
@@ -293,7 +293,7 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 			return 1;
 		}	
 	}
-    //printf("What is this\n");
+    ////printf("What is this\n");
 	return 0;//if it didnt get caught by any of the above then its invalid
 }
 
@@ -320,8 +320,8 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		{
 			if(!isEmpty(myBoard,i,rowSource))
 			{
-				printf("Piece in the way at %d %d \n",i,rowSource);
-				printf("Piece type is \"%c\" \"%c\" \n", GetColor(getPiece(myBoard,i,rowSource)),GetType(getPiece(myBoard,i,rowSource)) );
+				//printf("Piece in the way at %d %d \n",i,rowSource);
+				//printf("Piece type is \"%c\" \"%c\" \n", GetColor(getPiece(myBoard,i,rowSource)),GetType(getPiece(myBoard,i,rowSource)) );
 
 				return 0;
 			}
@@ -335,8 +335,8 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		{
 			if(!isEmpty(myBoard,colSource,i))
 			{
-				printf("Piece in the way at %d %d \n",colSource,i);
-				printf("Piece type is \"%c\" \"%c\" \n", GetColor(getPiece(myBoard,i,rowSource)),GetType(getPiece(myBoard,i,rowSource)) );
+				//printf("Piece in the way at %d %d \n",colSource,i);
+				//printf("Piece type is \"%c\" \"%c\" \n", GetColor(getPiece(myBoard,i,rowSource)),GetType(getPiece(myBoard,i,rowSource)) );
 				return 0;
 			}
 		}
@@ -469,7 +469,7 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		}
 		else
 		{
-			printf("Invalid color \n");
+			//printf("Invalid color \n");
 			return 0;
 		}
 	}
@@ -522,7 +522,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 						}
 						else
 						{
-							printf("No en passant, list contents: %c, %c\n", myList->last->move->source[0],myList->last->move->source[1]);
+							//printf("No en passant, list contents: %c, %c\n", myList->last->move->source[0],myList->last->move->source[1]);
 						}
 					}
 				}
@@ -547,7 +547,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 	}
 	else
 	{
-		printf("Uknown error\n");
+		//printf("Uknown error\n");
 		return 0;
 	}
 	//return 0;
@@ -618,7 +618,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 		{
 			if(GetColor(getPiece(myBoard,i,rowKing)) == enemyColor && (GetType(getPiece(myBoard,i,rowKing)) == 'Q' || GetType(getPiece(myBoard,i,rowKing)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
-				printf("Checked at %d %d by a queen or rook\n", i, rowKing);
+				//printf("Checked at %d %d by a queen or rook\n", i, rowKing);
 				return (i*10+rowKing);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
@@ -635,7 +635,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 		{
 			if(GetColor(getPiece(myBoard,i,rowKing)) == enemyColor && (GetType(getPiece(myBoard,i,rowKing)) == 'Q' || GetType(getPiece(myBoard,i,rowKing)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
-				printf("Checked at %d %d by a queen or rook\n", i, rowKing);
+				//printf("Checked at %d %d by a queen or rook\n", i, rowKing);
 				return (i*10 + rowKing);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
@@ -652,7 +652,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 		{
 			if(GetColor(getPiece(myBoard,colKing,j)) == enemyColor && (GetType(getPiece(myBoard,colKing,j)) == 'Q' || GetType(getPiece(myBoard,colKing,j)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
-				printf("Checked at %d %d by a queen or rook\n", colKing, j);
+				//printf("Checked at %d %d by a queen or rook\n", colKing, j);
 				return (colKing*10 + j);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
@@ -669,7 +669,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 		{
 			if(GetColor(getPiece(myBoard,colKing,j)) == enemyColor && (GetType(getPiece(myBoard,colKing,j)) == 'Q' || GetType(getPiece(myBoard,colKing,j)) == 'R') )//checks for an enemy and simultaneously checks if its non-empty
 			{
-				printf("Checked at %d %d by a queen or rook\n", colKing, j);
+				//printf("Checked at %d %d by a queen or rook\n", colKing, j);
 				return (colKing*10 + j);//this implies that the rook or king is in line with the king and therefore checking it
 			}
 			else 
@@ -692,7 +692,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 		{
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
-				printf("Checked at %d %d by a bishop or queen\n",i,j);
+				//printf("Checked at %d %d by a bishop or queen\n",i,j);
 				return (i*10+j);
 			}
 			else
@@ -707,7 +707,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 		{
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
-				printf("Checked at %d %d by a bishop or queen\n",i,j);
+				//printf("Checked at %d %d by a bishop or queen\n",i,j);
 				return (i*10+j);
 			}
 			else
@@ -722,7 +722,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 		{
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
-				printf("Checked at %d %d by a bishop or queen\n",i,j);
+				//printf("Checked at %d %d by a bishop or queen\n",i,j);
 				return (i*10+j);
 			}
 			else
@@ -737,7 +737,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 		{
 			if(GetColor(getPiece(myBoard,i,j)) == enemyColor && (GetType(getPiece(myBoard,i,j)) == 'Q' ||GetType(getPiece(myBoard,i,j)) == 'B' ))
 			{
-				printf("Checked at %d %d by a bishop or queen\n",i,j);
+				//printf("Checked at %d %d by a bishop or queen\n",i,j);
 				return (i*10+j);
 			}
 			else
@@ -817,12 +817,12 @@ int isCheckedByP(PIECE **myBoard,char enemyColor, int colKing, int rowKing)
 	//a pawn can only check a king diagonally in one direction so this helps keep things simple.
 	if(colKing+1 < 8 && GetType(getPiece(myBoard,colKing+1,rowKing - forward)) == 'P' && GetColor(getPiece(myBoard,colKing+1,rowKing-forward)) == enemyColor)
 	{
-		printf("Checked at %d %d by Pawn\n",colKing+1,rowKing);
+		//printf("Checked at %d %d by Pawn\n",colKing+1,rowKing);
 		return ((colKing+1)*10 + rowKing);
 	}
 	if(colKing-1 >= 0 && GetType(getPiece(myBoard,colKing-1,rowKing - forward)) == 'P' && GetColor(getPiece(myBoard,colKing+1,rowKing-forward)) == enemyColor)
 	{
-		printf("Checked at %d %d by Pawn\n",colKing-1,rowKing);
+		//printf("Checked at %d %d by Pawn\n",colKing-1,rowKing);
 		return ((colKing-1)*10 + rowKing);
 	}
 	return 0;

@@ -77,7 +77,7 @@ int main(void){
 						{
 							if(isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w'), myList ))//if the opponent is in check we check for checkmate
 							{
-								printf("Checkmate. Winner is player %d!", curTurnColor=='w' ? wp:bp);
+								printf("Checkmate. Winner is player %d!\n", curTurnColor=='w' ? wp:bp);
 								won = 2;
 							}
 							else

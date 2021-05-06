@@ -25,6 +25,10 @@ all: HeroChess
 settings.o: src/settings.h src/settings.c
 	$(CC) $(CFLAGS) src/settings.c -o src/settings.o
 
+#target to generate tree.o
+tree.o: src/tree.h src/tree.c
+	$(CC) $(CFLAGS) src/tree.c -o src/tree.o
+
 #target to generate piece.o
 piece.o: src/piece.h src/piece.c
 	$(CC) $(CFLAGS) src/piece.c -o src/piece.o 
@@ -42,7 +46,7 @@ board.o: src/settings.h src/piece.h src/board.h src/board.c
 	$(CC) $(CFLAGS) src/board.c -o src/board.o
 
 #target to generate ai.o
-ai.o: src/settings.h src/piece.h src/ai.h src/ai.c
+ai.o: src/settings.h src/piece.h src/ai.h src/ai.c src/tree.h
 	$(CC) $(CFLAGS) src/ai.c -o src/ai.o
 
 #target to generate movelist.o
