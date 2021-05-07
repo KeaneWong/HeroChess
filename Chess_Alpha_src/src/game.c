@@ -25,7 +25,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 	if(isEmpty(myBoard,colSource,rowSource) == 1)
 	{
 		//if there isnt anything at the selected source then it automatically fails
-		//printf("Error: No piece at selected location\n");
+		//printf("Error: No piece at selected location\n");  
 		return 0;
 	}
 	if(GetColor(getPiece(myBoard,colSource,rowSource)) != curTurnColor)
