@@ -8,17 +8,20 @@ void replay(MLIST *l){
 	PIECE **copyBoard = makeBoard();
 	initializeBoard(copyBoard);
 
-	printf("\n////////////////////////////////\n");
+	fprintf(fptr, "\n////////////////////////////////\n");
 	MOVE *m = NULL;
 	int x= 0;
 	while(GetLength(l) > 0){
+		int turn = 0;
+		turn = turn%2;
 		m = RemoveFirstMove(l);
-		printf("%2s %2s", GetSource(m), GetDestination(m));
+		fprintf(fptr, "Player %d moved from %2s to %2s.\n", turn, GetSource(m), GetDestination(m));
 		removePiece(copyBoard, getColD(m), getRowD(m));
 		movePiece(copyBoard, getColS(m), getRowS(m), getColD(m), getRowD(m));
-		printBoard(copyBoard);
-		printf("%2s %2s", GetSource(m), GetDestination(m));
-	}	
+		printReplayBoard(copyBoard);
+		turn++;
+	}
+	printf("\n/////////////////////////////////\n")	
 }
 
 void printFormat(FILE *fptr, char *fname){
