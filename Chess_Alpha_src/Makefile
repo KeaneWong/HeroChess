@@ -26,7 +26,7 @@ settings.o: src/settings.h src/settings.c
 	$(CC) $(CFLAGS) src/settings.c -o src/settings.o
 
 #target to generate tree.o
-tree.o: src/tree.h src/tree.c
+tree.o: src/move.h src/tree.h src/tree.c
 	$(CC) $(CFLAGS) src/tree.c -o src/tree.o
 
 #target to generate piece.o
@@ -46,8 +46,8 @@ board.o: src/settings.h src/piece.h src/board.h src/board.c
 	$(CC) $(CFLAGS) src/board.c -o src/board.o
 
 #target to generate ai.o
-ai.o: src/settings.h src/piece.h src/ai.h src/ai.c src/tree.h
-	$(CC) $(CFLAGS) src/ai.c -o src/ai.o
+ai.o:	src/tree.h src/movelist.h src/game.h src/settings.h src/piece.h src/ai.h src/ai.c
+	$(CC) $(CFLAGS) src/tree.c src/ai.c -o src/ai.o
 
 #target to generate movelist.o
 movelist.o: src/piece.h src/move.h src/movelist.h src/movelist.c
@@ -65,8 +65,8 @@ main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h 
 ########### generate executables ###########
 
 # target to generate HeroChess
-HeroChess: src/main.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o
-	$(CC) $(LFLAGS) src/main.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o -o bin/HeroChess -lm
+HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o
+	$(CC) $(LFLAGS) src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o -o bin/HeroChess -lm
 
 # delete all executables currently in the source and binary directories
 clean:

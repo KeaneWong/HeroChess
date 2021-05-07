@@ -553,6 +553,76 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 	//return 0;
 }
 
+int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
+{
+	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);
+	
+	if(isLeg == 1)
+	{
+		PIECE *removedPiece;//tracking removed piece
+		PIECE *movedPiece = getPiece(myBoard,colSource,rowSource);
+
+		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
+		{
+			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
+			removedPiece = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook. The removedPiece should be a blank square
+			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
+			AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colSource+directionToGo*2, rowDestination);
+			return 1;
+		}
+		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
+		{
+			int enPassant = 0;  //variable to track whether we did en passant or not
+			int forward = curTurnColor == 'w' ? 1 : -1;
+			char enemyColor = curTurnColor=='w' ? 'b' : 'w';
+			//REPEATING CODE FROM ISLEGALPAWN FUNCTION. THIS IS USED TO DETERMINE IF WE DO THE EXTRA STEP OF REMOVING THE PAWN AS PER EN PASSANT
+			if(isEmpty(myBoard,colDestination,rowDestination) )//if the spot is empty
+			{
+				if(abs(colSource-colDestination) == 1 && (forward*(rowDestination-rowSource)) == 1 )//checking for en passant, this covers a diagonal move
+				{
+					if(GetType(getPiece(myBoard,colDestination,rowDestination-forward)) == 'P' && GetColor(getPiece(myBoard,colDestination,rowDestination-forward)) == enemyColor)//if the piece right behind destination is an enemy pawn we can capture it
+					{
+						if(myList->last->move->source[0] == ('A' + colDestination) && myList->last->move->source[1] == ('1'+rowDestination+forward))//checking if enemypawn was previously in space in front of the destination square. If it is then the move is en passant and is legal
+						{
+							movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+							removedPiece = movePiece(myBoard,colSource, rowSource, colDestination,rowDestination-forward);//remove the piece right behind the destination square to capture en passant
+							//MOVE *newMove = NewMove(getPiece(myBoard,colSource,rowSource),removedPawn), 
+							enPassant = 1;
+
+						}
+						else
+						{
+							//printf("No en passant, list contents: %c, %c\n", myList->last->move->source[0],myList->last->move->source[1]);
+						}
+					}
+				}
+			}
+			if(enPassant != 1)//if en passant didnt happen
+			{
+				removedPiece = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+			}
+
+		}
+		else
+		{
+			removedPiece = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
+
+		}
+		//AppendMove(myList,movedPiece,removedPiece, colSource, rowSource, colDestination, rowDestination);
+		return 1;
+	}
+	else if (isLeg == 0)
+	{
+		return 0;
+	}
+	else
+	{
+		//printf("Uknown error\n");
+		return 0;
+	}
+	//return 0;
+}
+
 
 //wrapper function that calls the other ischecked functions much like how the islegal function works. 
 int isChecked(PIECE **myBoard, char curTurnColor){
@@ -909,7 +979,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 			{
 				case 'K':
 				{
-					if(MakeMove(tempBoard,i,j,i-4,j,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j,curTurnColor,myList))//see if we can castle our way out of check
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -922,7 +992,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i-4,j,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+3,j,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -941,7 +1011,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						{
 							if(o !=0 || p != 0)
 							{
-								if(MakeMove(tempBoard,i,j,i+p,j+o,curTurnColor,myList))
+								if(MakeMoveNoAppend(tempBoard,i,j,i+p,j+o,curTurnColor,myList))
 								{
 									if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -965,7 +1035,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					{
 						if(p != i)///checking all adjacent columns on the current row j
 						{
-							if(MakeMove(tempBoard,i, j, p, j,curTurnColor,myList))
+							if(MakeMoveNoAppend(tempBoard,i, j, p, j,curTurnColor,myList))
 							{
 									if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -981,7 +1051,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						}
 						if(p != j)
 						{
-							if(MakeMove(tempBoard,i,j,i,p,curTurnColor,myList))
+							if(MakeMoveNoAppend(tempBoard,i,j,i,p,curTurnColor,myList))
 							{
 								if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -1002,7 +1072,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 				{
 					int forward = curTurnColor == 'w' ? 1 : -1;
 
-					if(MakeMove(tempBoard,i,j,i+1,j+forward,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+1,j+forward,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1015,7 +1085,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i-1,j+forward,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-1,j+forward,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1028,7 +1098,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i,j + 2*forward,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i,j + 2*forward,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1052,7 +1122,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					int p;
 					for(p = startingRow; p < 8 && r < 8; p++)
 					{
-						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						if(MakeMoveNoAppend(tempBoard,i,j,r,p,curTurnColor,myList))
 						{
 							if(!isChecked(tempBoard,curTurnColor))
 							{
@@ -1070,7 +1140,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					r = startingCol;
 					for(p = startingRow; p >= 0 && r<8; p-- )
 					{
-						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						if(MakeMoveNoAppend(tempBoard,i,j,r,p,curTurnColor,myList))
 						{
 							if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -1088,7 +1158,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					r = startingCol;
 					for(p = startingRow; p < 8 && r>=0; p++ )
 					{
-						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						if(MakeMoveNoAppend(tempBoard,i,j,r,p,curTurnColor,myList))
 						{
 							if(!isChecked(tempBoard,curTurnColor))
 							{
@@ -1107,7 +1177,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 				}
 				case 'N':
 				{
-					if(MakeMove(tempBoard,i,j,i+4,j+2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+4,j+2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1120,7 +1190,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i+2,j+4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j+4,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1133,7 +1203,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i-4,j+2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j+2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1146,7 +1216,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i+2,j-4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j-4,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1159,7 +1229,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i+4,j-2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+4,j-2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1172,7 +1242,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i-2,j+4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j+4,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1185,7 +1255,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i-4,j-2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j-2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1198,7 +1268,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMove(tempBoard,i,j,i-2,j-4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j-4,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1221,7 +1291,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					int p;
 					for(p = startingRow; p < 8 && r < 8; p++)
 					{
-						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						if(MakeMoveNoAppend(tempBoard,i,j,r,p,curTurnColor,myList))
 						{
 							if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -1239,7 +1309,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					r = startingCol;
 					for(p = startingRow; p >= 0 && r<8; p-- )
 					{
-						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						if(MakeMoveNoAppend(tempBoard,i,j,r,p,curTurnColor,myList))
 						{
 							if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -1257,7 +1327,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					r = startingCol;
 					for(p = startingRow; p < 8 && r>=0; p++ )
 					{
-						if(MakeMove(tempBoard,i,j,r,p,curTurnColor,myList))
+						if(MakeMoveNoAppend(tempBoard,i,j,r,p,curTurnColor,myList))
 						{
 							if(!isChecked(tempBoard,curTurnColor))
 							{
@@ -1277,7 +1347,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 					{
 						if(q != i)///checking all adjacent columns on the current row j
 						{
-							if(MakeMove(tempBoard,i, j, q, j,curTurnColor,myList))
+							if(MakeMoveNoAppend(tempBoard,i, j, q, j,curTurnColor,myList))
 							{
 									if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -1293,7 +1363,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						}
 						if(q != j)
 						{
-							if(MakeMove(tempBoard,i,j,i,q,curTurnColor,myList))
+							if(MakeMoveNoAppend(tempBoard,i,j,i,q,curTurnColor,myList))
 							{
 								if(!isChecked(tempBoard,curTurnColor))
 									{
@@ -1317,6 +1387,8 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 
 	return 2;
 }
+
+
 
 /*
 int isCheckedPiece(PIECE **myBoard, char curTurnColor, int colPiece, int rowPiece){//identical to the isChecked function but it doesnt check for checks around the king of curTurnColor. 

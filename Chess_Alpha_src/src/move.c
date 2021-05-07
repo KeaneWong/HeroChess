@@ -17,6 +17,8 @@ MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination
 	strcpy(m->destination, destination);
 	return m;
 } 
+
+
 /* delete move */
 void DeleteMove(MOVE *m){
 	assert(m);	

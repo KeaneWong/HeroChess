@@ -35,6 +35,7 @@ int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing);//c
 int isCheckedByP(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
 int isCheckedByK(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
 
+int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList);//makeMove but doesnt modify myList
 
 #endif
 
