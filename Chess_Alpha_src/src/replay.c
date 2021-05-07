@@ -44,7 +44,7 @@ void printFormat(FILE *fptr, char *fname){
 
 	fptr = fopen(fname, "w");
 
-	fprintf(fptr, "#TicTacToeWowWeeWow\n");
+	fprintf(fptr, "#HeroChess\n");
 	fprintf(fptr, "Version: v1.0\n");
 	fprintf(fptr, "Filename: %s\n", fname);
 	fprintf(fptr, "Date: %d/%d/%d %d:%d:%d\n", year, month, day, hours, minutes, seconds);
