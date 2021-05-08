@@ -43,6 +43,10 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 			return 0;
 		}
 	}
+	else if(GetType(getPiece(myBoard,colDestination,rowDestination)) != 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)
+	{
+		return 0;
+	}
 
 	switch(GetType(getPiece(myBoard,colSource,rowSource)))
 	{
@@ -821,61 +825,61 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 
 int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//checks for nights
 {
-	if(colKing+4<8 && rowKing+2<8)
+	if(colKing+2<8 && rowKing+1<8)
 	{
-		if(GetColor(getPiece(myBoard,colKing+4,rowKing+2)) == enemyColor && GetType(getPiece(myBoard,colKing+4,rowKing+2)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing+2,rowKing+1)) == enemyColor && GetType(getPiece(myBoard,colKing+2,rowKing+1)) == 'N')
 		{
-			return ((colKing+4)*10 + rowKing+2);
+			return ((colKing+2)*10 + rowKing+1);
 		}
 	}
-	if(colKing+2<8 && rowKing+4<8)
+	if(colKing+1<8 && rowKing+2<8)
 	{
-		if(GetColor(getPiece(myBoard,colKing+2,rowKing+4)) == enemyColor && GetType(getPiece(myBoard,colKing+2,rowKing+4)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing+1,rowKing+2)) == enemyColor && GetType(getPiece(myBoard,colKing+1,rowKing+2)) == 'N')
 		{
-			return ((colKing+2)*10 + rowKing+4);
+			return ((colKing+1)*10 + rowKing+2);
 		}
 	}
-	if(colKing-2>=0 && rowKing+4<8)
+	if(colKing-1>=0 && rowKing+2<8)
 	{
-		if(GetColor(getPiece(myBoard,colKing-2,rowKing+4)) == enemyColor && GetType(getPiece(myBoard,colKing-2,rowKing+4)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing-1,rowKing+2)) == enemyColor && GetType(getPiece(myBoard,colKing-1,rowKing+2)) == 'N')
 		{
-			return ((colKing-2)*10 + rowKing+4);
+			return ((colKing-1)*10 + rowKing+2);
 		}
 	}
-	if(colKing+4<8 && rowKing-2>=0)
+	if(colKing+2<8 && rowKing-1>=0)
 	{
-		if(GetColor(getPiece(myBoard,colKing+4,rowKing-2)) == enemyColor && GetType(getPiece(myBoard,colKing+4,rowKing-2)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing+2,rowKing-1)) == enemyColor && GetType(getPiece(myBoard,colKing+2,rowKing-1)) == 'N')
 		{
-			return ((colKing+4)*10 + rowKing-2);
+			return ((colKing+2)*10 + rowKing-1);
 		}
 	}
-	if(colKing+2<8 && rowKing-4>=0)
+	if(colKing+1<8 && rowKing-2>=0)
 	{
-		if(GetColor(getPiece(myBoard,colKing+2,rowKing-4)) == enemyColor && GetType(getPiece(myBoard,colKing+2,rowKing-4)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing+1,rowKing-2)) == enemyColor && GetType(getPiece(myBoard,colKing+1,rowKing-2)) == 'N')
 		{
-			return ((colKing+2)*10 + rowKing-4);
+			return ((colKing+1)*10 + rowKing-2);
 		}
 	}
-	if(colKing-4>=0 && rowKing+2<8)
+	if(colKing-2>=0 && rowKing+1<8)
 	{
-		if(GetColor(getPiece(myBoard,colKing-4,rowKing+2)) == enemyColor && GetType(getPiece(myBoard,colKing-4,rowKing+2)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing-2,rowKing+1)) == enemyColor && GetType(getPiece(myBoard,colKing-2,rowKing+1)) == 'N')
 		{
-			return ((colKing-4)*10 + rowKing+2);
+			return ((colKing-2)*10 + rowKing+1);
 		}
 	}
-	if(colKing-2>=0 && rowKing-4>=0)
+	if(colKing-1>=0 && rowKing-2>=0)
 	{
-		if(GetColor(getPiece(myBoard,colKing-2,rowKing-4)) == enemyColor && GetType(getPiece(myBoard,colKing-2,rowKing-4)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing-1,rowKing-2)) == enemyColor && GetType(getPiece(myBoard,colKing-1,rowKing-2)) == 'N')
 		{
-			return ((colKing-2)*10 + rowKing-4);
+			return ((colKing-1)*10 + rowKing-2);
 
 		}
 	}
-	if(colKing-4>=0 && rowKing-2>=0)
+	if(colKing-2>=0 && rowKing-1>=0)
 	{
-		if(GetColor(getPiece(myBoard,colKing-4,rowKing-2)) == enemyColor && GetType(getPiece(myBoard,colKing-4,rowKing-2)) == 'N')
+		if(GetColor(getPiece(myBoard,colKing-2,rowKing-1)) == enemyColor && GetType(getPiece(myBoard,colKing-2,rowKing-1)) == 'N')
 		{
-			return ((colKing-4)*10 + rowKing-2);
+			return ((colKing-2)*10 + rowKing-1);
 		}
 	}
 	return 0;
@@ -1098,6 +1102,19 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
+					if(MakeMoveNoAppend(tempBoard,i,j,i,j + forward,curTurnColor,myList))
+					{
+						if(!isChecked(tempBoard,curTurnColor))
+						{
+							deleteBoard(tempBoard);
+							return 1;
+						}
+						else
+						{
+							deleteBoard(tempBoard);
+							tempBoard = copyBoard(myBoard);
+						}
+					}
 					if(MakeMoveNoAppend(tempBoard,i,j,i,j + 2*forward,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
@@ -1177,7 +1194,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 				}
 				case 'N':
 				{
-					if(MakeMoveNoAppend(tempBoard,i,j,i+4,j+2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j+1,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1190,7 +1207,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j+4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+1,j+2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1203,7 +1220,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j+2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j+1,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1216,7 +1233,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j-4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+1,j-2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1229,7 +1246,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i+4,j-2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j-1,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1242,7 +1259,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j+4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-1,j+2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1255,7 +1272,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j-2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j-1,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{
@@ -1268,7 +1285,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j-4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-1,j-2,curTurnColor,myList))
 					{
 						if(!isChecked(tempBoard,curTurnColor))
 						{

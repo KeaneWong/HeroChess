@@ -8,6 +8,7 @@
 #include "game.h"
 #include "movelist.h"
 #include "settings.h"
+#include "replay.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
@@ -92,6 +93,7 @@ int main(void){
 						}
 					}
 				}
+				replay(myList);
 				break;
 			}
 			case 2:
@@ -199,3 +201,6 @@ int convertRow(char b)
 {
 	return b-'1';
 }
+
+
+

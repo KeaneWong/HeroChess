@@ -63,8 +63,6 @@ int GetTurn(PIECE **myBoard, char computerColor, MLIST *myList)
 
 
 
-
-
 return 0;
 
 }
@@ -316,21 +314,7 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 				}
 				case 'N':
 				{
-					if(MakeMoveNoAppend(tempBoard,i,j,i+4,j+2,curTurnColor,myList))
-					{
-						tValue = SumBoard(tempBoard,curTurnColor);
-						if(tValue>bestMoveValue)
-						{
-							bestMoveValue = tValue;
-							colS = i;
-							rowS = j;
-							colD = i+4;
-							rowD = j+2;
-						}
-						deleteBoard(tempBoard);
-						tempBoard = copyBoard(myBoard);
-					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j+4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j+1,curTurnColor,myList))
 					{
 						tValue = SumBoard(tempBoard,curTurnColor);
 						if(tValue>bestMoveValue)
@@ -339,12 +323,12 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 							colS = i;
 							rowS = j;
 							colD = i+2;
-							rowD = j+4;
+							rowD = j+1;
 						}
 						deleteBoard(tempBoard);
 						tempBoard = copyBoard(myBoard);
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j+2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+1,j+2,curTurnColor,myList))
 					{
 						tValue = SumBoard(tempBoard,curTurnColor);
 						if(tValue>bestMoveValue)
@@ -352,13 +336,13 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 							bestMoveValue = tValue;
 							colS = i;
 							rowS = j;
-							colD = i+4;
+							colD = i+1;
 							rowD = j+2;
 						}
 						deleteBoard(tempBoard);
 						tempBoard = copyBoard(myBoard);
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j-4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j+1,curTurnColor,myList))
 					{
 						tValue = SumBoard(tempBoard,curTurnColor);
 						if(tValue>bestMoveValue)
@@ -367,12 +351,12 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 							colS = i;
 							rowS = j;
 							colD = i+2;
-							rowD = j-4;
+							rowD = j+1;
 						}
 						deleteBoard(tempBoard);
 						tempBoard = copyBoard(myBoard);
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i+4,j-2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+1,j-2,curTurnColor,myList))
 					{
 						tValue = SumBoard(tempBoard,curTurnColor);
 						if(tValue>bestMoveValue)
@@ -380,13 +364,41 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 							bestMoveValue = tValue;
 							colS = i;
 							rowS = j;
-							colD = i+4;
+							colD = i+1;
 							rowD = j-2;
 						}
 						deleteBoard(tempBoard);
 						tempBoard = copyBoard(myBoard);
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j+4,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i+2,j-1,curTurnColor,myList))
+					{
+						tValue = SumBoard(tempBoard,curTurnColor);
+						if(tValue>bestMoveValue)
+						{
+							bestMoveValue = tValue;
+							colS = i;
+							rowS = j;
+							colD = i+2;
+							rowD = j-1;
+						}
+						deleteBoard(tempBoard);
+						tempBoard = copyBoard(myBoard);
+					}
+					if(MakeMoveNoAppend(tempBoard,i,j,i-1,j+2,curTurnColor,myList))
+					{
+						tValue = SumBoard(tempBoard,curTurnColor);
+						if(tValue>bestMoveValue)
+						{
+							bestMoveValue = tValue;
+							colS = i;
+							rowS = j;
+							colD = i-1;
+							rowD = j+2;
+						}
+						deleteBoard(tempBoard);
+						tempBoard = copyBoard(myBoard);
+					}
+					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j-1,curTurnColor,myList))
 					{
 						tValue = SumBoard(tempBoard,curTurnColor);
 						if(tValue>bestMoveValue)
@@ -395,12 +407,12 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 							colS = i;
 							rowS = j;
 							colD = i-2;
-							rowD = j+4;
+							rowD = j-1;
 						}
 						deleteBoard(tempBoard);
 						tempBoard = copyBoard(myBoard);
 					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-4,j-2,curTurnColor,myList))
+					if(MakeMoveNoAppend(tempBoard,i,j,i-1,j-2,curTurnColor,myList))
 					{
 						tValue = SumBoard(tempBoard,curTurnColor);
 						if(tValue>bestMoveValue)
@@ -408,22 +420,8 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 							bestMoveValue = tValue;
 							colS = i;
 							rowS = j;
-							colD = i-4;
+							colD = i-1;
 							rowD = j-2;
-						}
-						deleteBoard(tempBoard);
-						tempBoard = copyBoard(myBoard);
-					}
-					if(MakeMoveNoAppend(tempBoard,i,j,i-2,j-4,curTurnColor,myList))
-					{
-						tValue = SumBoard(tempBoard,curTurnColor);
-						if(tValue>bestMoveValue)
-						{
-							bestMoveValue = tValue;
-							colS = i;
-							rowS = j;
-							colD = i-2;
-							rowD = j-4;
 						}
 						deleteBoard(tempBoard);
 						tempBoard = copyBoard(myBoard);
@@ -571,7 +569,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 			{
 				case 'K':
 				{
-					
+					//printf("Found a k\n");
 					if(MakeMoveAppendNode(tempBoard,i,j,i-4,j,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
@@ -611,6 +609,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 				}
 				case 'R':
 				{
+					//printf("Found a r\n");
 					for(int p = 0; p < 8; p++)
 					{
 						if(p != i)///checking all adjacent columns on the current row j
@@ -642,7 +641,8 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 				}
 				case 'P':
 				{
-					int forward = curTurnColor == 'w' ? 1 : -1;
+					//printf("Found a p\n");
+					int forward = ((curTurnColor == 'w') ? 1 : -1);
 
 					
 					if(MakeMoveAppendNode(tempBoard,i,j,i+1,j+forward,curTurnColor,myList,curNode))
@@ -663,6 +663,14 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
+					if(MakeMoveAppendNode(tempBoard,i,j,i,j + forward,curTurnColor,myList,curNode))
+					{
+						TREENODE *newNodee = EmptyNode();
+						SetNext(curNode,newNodee);
+						curNode = newNodee;
+						deleteBoard(tempBoard);
+						tempBoard = copyBoard(myBoard);
+					}
 					if(MakeMoveAppendNode(tempBoard,i,j,i,j + 2*forward,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
@@ -676,6 +684,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 				}
 				case 'B':
 				{
+					//printf("Found a b\n");
 					int startingCol = i<j ? 0 : i-j;
 					int startingRow = i<j ? j-i : 0;
 					int r = startingCol;
@@ -725,8 +734,8 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 				}
 				case 'N':
 				{
-					
-					if(MakeMoveAppendNode(tempBoard,i,j,i+4,j+2,curTurnColor,myList,curNode))
+					//printf("Found a n\n");
+					if(MakeMoveAppendNode(tempBoard,i,j,i+2,j+1,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -735,7 +744,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i+2,j+4,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i+1,j+2,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -744,7 +753,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i-4,j+2,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i-2,j+1,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -753,7 +762,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i+2,j-4,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i+1,j-2,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -762,7 +771,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i+4,j-2,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i+2,j-1,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -771,7 +780,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i-2,j+4,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i-1,j+2,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -780,7 +789,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i-4,j-2,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i-2,j-1,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -789,7 +798,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 						tempBoard = copyBoard(myBoard);
 					}
 					
-					if(MakeMoveAppendNode(tempBoard,i,j,i-2,j-4,curTurnColor,myList,curNode))
+					if(MakeMoveAppendNode(tempBoard,i,j,i-1,j-2,curTurnColor,myList,curNode))
 					{
 						TREENODE *newNodee = EmptyNode();
 						SetNext(curNode,newNodee);
@@ -801,6 +810,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 				}
 				case 'Q'://just repeating code from bishop and rook
 				{
+					//printf("Found a q\n");
 					int startingCol = i<j ? 0 : i-j;
 					int startingRow = i<j ? j-i : 0;
 					int r = startingCol;
@@ -894,7 +904,7 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 	
 	if(isLeg == 1)
 	{
-		PIECE *removedPiece;//tracking removed piece
+		PIECE *removedPiece = NULL;//tracking removed piece
 		PIECE *movedPiece = getPiece(myBoard,colSource,rowSource);
 
 		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
@@ -902,8 +912,8 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
 			removedPiece = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook. The removedPiece should be a blank square
 			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
-			AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colSource+directionToGo*2, rowDestination);
-			return 1;
+			//AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colSource+directionToGo*2, rowDestination);
+			//return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
 		{
@@ -943,6 +953,7 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 			removedPiece = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
 
 		}
+		//printf("Moved from %d%d to %d%d\n",colSource,rowSource, colDestination,rowDestination);
 		char *ss = (char*)(malloc(sizeof(char)*2));
 		char *dd = (char*)(malloc(sizeof(char)*2));
 		ss[0] = colSource+'A';
@@ -955,6 +966,7 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 	}
 	else if (isLeg == 0)
 	{
+		//printf("Illegal going from %d%d to %d%d\n",colSource,rowSource,colDestination,rowDestination);
 		return 0;
 	}
 	else

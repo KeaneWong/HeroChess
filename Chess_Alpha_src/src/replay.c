@@ -1,5 +1,5 @@
 #include "replay.h"
-
+/*
 void replay(MLIST *l){
 	char name[100];
 	FILE *fptr;
@@ -21,7 +21,7 @@ void replay(MLIST *l){
 		printReplayBoard(copyBoard);
 		turn++;
 	}
-	printf("\n/////////////////////////////////\n")	
+	printf("\n/////////////////////////////////\n");
 }
 
 void printFormat(FILE *fptr, char *fname){
@@ -51,5 +51,5 @@ void printFormat(FILE *fptr, char *fname){
 
 	fprintf(fptr, "\nPlayer 1");
 	fprintf(fptr, "\nPlayer 2\n");
-}
+}*/
 

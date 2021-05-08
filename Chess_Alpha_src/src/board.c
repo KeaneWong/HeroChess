@@ -44,7 +44,7 @@ PIECE removePiece(PIECE **myBoard, int col, int row){
 PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestination,int rowDestination){
 	PIECE *p = NULL;
 	p = &myBoard[colDestination][rowDestination];
-	printf("%c%c\n", GetColor(&myBoard[colDestination][rowDestination]), GetType(&myBoard[colDestination][rowDestination]));
+	//printf("%c%c\n", GetColor(&myBoard[colDestination][rowDestination]), GetType(&myBoard[colDestination][rowDestination]));
 	PIECE *p1 = getPiece(myBoard, colSource, rowSource); //added
 	myBoard[colDestination][rowDestination] = *p1;
 	//myBoard[colDestination][rowDestination] = myBoard[colSource][rowSource];
