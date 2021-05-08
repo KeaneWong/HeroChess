@@ -37,7 +37,11 @@ char *GetDestination(MOVE *m){
 
 void PrintMove(MOVE *m){
 	assert(m);
+<<<<<<< HEAD
 	printf("%c%c %2s %2s\n", m->piece->type, m->piece->color, m->source, m->destination);
+=======
+	printf("%c%c %2s %2s ", m->piece->color, m->piece->type, m->source, m->destination);
+>>>>>>> 639a599c4dc3c6a3a38fda67fdc50dbbcac42469
 	if(m->removedPiece != NULL){
 		printf("Piece taken: %c%c\n",m->removedPiece->type, m->removedPiece->type);
 	}
