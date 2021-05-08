@@ -29,3 +29,4 @@ char GetType(PIECE *mypiece){
 char GetColor(PIECE *mypiece){
 	return mypiece->color;
 }
+

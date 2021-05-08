@@ -20,4 +20,6 @@ char GetType(PIECE *mypiece);
 
 char GetColor(PIECE *mypiece);
 
+
+
 #endif
