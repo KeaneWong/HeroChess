@@ -24,11 +24,24 @@ MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination
 /* Delete Move */
 void DeleteMove(MOVE *m);
 
+PIECE *GetRemovedPiece(MOVE *m);
 /* return move as char pointer*/
-char *GetMove(MOVE *m);
+char *GetSource(MOVE *m);
+
+char *GetDestination(MOVE *m);
 
 /* return player number */
 PIECE *GetPiece(MOVE *m);
 
 void PrintMove(MOVE *m);
+
+int getColS(MOVE* m);
+
+int getRowS(MOVE* m);
+
+int getColD(MOVE* m);
+
+int getRowD(MOVE* m);
+
+
 #endif

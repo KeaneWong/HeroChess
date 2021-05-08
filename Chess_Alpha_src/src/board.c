@@ -67,6 +67,21 @@ void printBoard(PIECE** myBoard){
 	printf("     a    b    c    d    e    f    g    h\n");
 }
 
+void printReplayBoard(PIECE** myBoard, FILE *fptr){
+	int i = 0, j = 0;
+	fprintf(fptr, "   ----------------------------------------\n");
+	for(i = size-1; i >= 0; i--){
+		fprintf(fptr, "%d", i+1);
+		for(j = 0; j < size; j++){	
+			fprintf(fptr, " | %c%c", GetColor(&myBoard[j][i]), GetType(&myBoard[j][i]));
+		}
+		fprintf(fptr, " |\n");
+		fprintf(fptr, "   ----------------------------------------\n");
+
+	}	
+	fprintf(fptr, "     a    b    c    d    e    f    g    h\n");
+}
+
 void initializeBoard(PIECE** myBoard){
 	int i = 0, j = 0;
 	PIECE *wRl = NewPiece('R', 'w');

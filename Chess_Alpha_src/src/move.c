@@ -17,8 +17,6 @@ MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination
 	strcpy(m->destination, destination);
 	return m;
 } 
-
-
 /* delete move */
 void DeleteMove(MOVE *m){
 	assert(m);	
@@ -29,8 +27,12 @@ PIECE *GetPiece(MOVE *m){
 	return m->piece;
 }
 /* return Move */
-char *GetMove(MOVE *m){
+char *GetSource(MOVE *m){
 	return m->source;
+}
+
+char *GetDestination(MOVE *m){
+	return m->destination;
 }
 
 void PrintMove(MOVE *m){
@@ -45,3 +47,15 @@ void PrintMove(MOVE *m){
 	}
 }
 
+int getColS(MOVE *m){
+	return ((m->source)[0]-'A');
+}
+int getColD(MOVE *m){
+	return ((m->destination)[0]-'A');
+}
+int getRowS(MOVE *m){
+	return ((m->source)[1]-'1');
+}
+int getRowD(MOVE *m){
+	return ((m->destination)[1]-'1');
+}

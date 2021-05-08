@@ -1,8 +1,8 @@
 #include "replay.h"
-/*
+
 void replay(MLIST *l){
 	char name[100];
-	FILE *fptr;
+	FILE *fptr = NULL;;
 	printFormat(fptr, name);
 	
 	PIECE **copyBoard = makeBoard();
@@ -10,7 +10,6 @@ void replay(MLIST *l){
 
 	fprintf(fptr, "\n////////////////////////////////\n");
 	MOVE *m = NULL;
-	int x= 0;
 	while(GetLength(l) > 0){
 		int turn = 0;
 		turn = turn%2;
@@ -18,10 +17,10 @@ void replay(MLIST *l){
 		fprintf(fptr, "Player %d moved from %2s to %2s.\n", turn, GetSource(m), GetDestination(m));
 		removePiece(copyBoard, getColD(m), getRowD(m));
 		movePiece(copyBoard, getColS(m), getRowS(m), getColD(m), getRowD(m));
-		printReplayBoard(copyBoard);
+		printReplayBoard(copyBoard, fptr);
 		turn++;
 	}
-	printf("\n/////////////////////////////////\n");
+	printf("\n/////////////////////////////////\n");	
 }
 
 void printFormat(FILE *fptr, char *fname){
@@ -51,5 +50,4 @@ void printFormat(FILE *fptr, char *fname){
 
 	fprintf(fptr, "\nPlayer 1");
 	fprintf(fptr, "\nPlayer 2\n");
-}*/
-
+}
