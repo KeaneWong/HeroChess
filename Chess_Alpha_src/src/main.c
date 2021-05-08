@@ -9,6 +9,7 @@
 #include "movelist.h"
 #include "settings.h"
 #include "replay.h"
+#include "ai.h"
 #define INPUT_BUFFER 20
 // print menu function declaration
 int mainmenu(void);
@@ -93,6 +94,8 @@ int main(void){
 						}
 					}
 				}
+				printf("Replay: \n");
+				PrintMoveList(myList);
 				replay(myList);
 				break;
 			}
