@@ -5,6 +5,7 @@
 #include "board.h"
 #include "move.h"
 
+// returns value based on type of inputted piece; positive values for friendly pieces and negative values for enemy pieces
 int GetValue(PIECE *myPiece, char curTurnColor)
 {
 	char type = GetType(myPiece);
@@ -69,7 +70,7 @@ return 0;
 
 }
 
-
+// determines worth of a board by adding all the pieces values; analyzes risk and benefits
 int SumBoard(PIECE **myBoard, char curTurnColor)
 {
 	int sumValue = 0;
@@ -85,8 +86,8 @@ int SumBoard(PIECE **myBoard, char curTurnColor)
 
 }
 
-
-MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of this code taken from isCheckMate, evaluates board and determines what move would leave it in the best position
+// evaluates board and determines what move would leave it in the best position 
+MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	PIECE **tempBoard = copyBoard(myBoard);
 	int bestMoveValue = -1000000;//some arbitrary impossibly low number to represent negative infinity
@@ -547,7 +548,7 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of th
 
 }
 
-
+// gets every single possible move on the board and stores them as children to root, all connected to one another by pointer links
 void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENODE *root)
 {
 	PIECE **tempBoard = copyBoard(myBoard);
@@ -894,12 +895,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 
 }
 
-
-
-
-
-
-
+// make a move without appending it to myList, instead adds it to an empty node
 int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList, TREENODE *blankNode)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);
@@ -979,8 +975,7 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 	//return 0;
 }
 
-
-
+// makes the first ai move using a small library of known chess moves 
 int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(SicilianDefense(myBoard,curTurnColor,myList))
@@ -1017,6 +1012,7 @@ int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList)
 
 }
 
+// sicilian defense opening move
 int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'w')
@@ -1035,6 +1031,7 @@ int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+// queen's gambit opening move
 int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'w')
@@ -1053,6 +1050,7 @@ int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+// english opening, opening move
 int EnglishOpening(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'w')
@@ -1066,6 +1064,7 @@ int EnglishOpening(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+// dutch defense opening move
 int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'b' && GetType(getPiece(myBoard,3,3)) == 'P')
@@ -1079,22 +1078,4 @@ int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// EOF //
