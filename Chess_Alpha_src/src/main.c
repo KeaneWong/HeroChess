@@ -174,6 +174,11 @@ int main(void){
 										printf("AI Player is in check.\n");	
 									}
 								}
+								
+								if(won!=2)
+								{
+									curTurnColor = (curTurnColor == 'b') ? 'w' : 'b';//flipping turn color while the game still goes on
+								}
 							}
 						
 						}
