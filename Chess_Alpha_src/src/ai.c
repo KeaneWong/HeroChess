@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "ai.h"
 #include "game.h"
 #include "board.h"
@@ -976,6 +978,110 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 	}
 	//return 0;
 }
+
+
+
+int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList)
+{
+	if(SicilianDefense(myBoard,curTurnColor,myList))
+	{
+		return 1;
+	}
+	if(QueensGambit(myBoard,curTurnColor,myList))
+	{
+		return 1;
+	}
+	if(DutchDefense(myBoard,curTurnColor,myList))
+	{
+		return 1;
+	}
+	if(EnglishOpening(myBoard,curTurnColor,myList))
+	{
+		return 1;
+	}
+	else
+	{
+		if(curTurnColor == 'w')
+		{
+			MakeMove(myBoard, 0, 1, 2, 2, curTurnColor, myList);
+			return 1;
+		}
+		else
+		{
+			MakeMove(myBoard, 6, 7, 5, 5, curTurnColor, myList);
+			return 1;
+		}
+	}
+
+
+
+}
+
+int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
+{
+	if(curTurnColor == 'w')
+	{
+		MakeMove(myBoard, 4, 1, 4, 3, curTurnColor, myList);
+		return 1;
+	}
+	if(curTurnColor == 'b' && GetType(getPiece(myBoard,4,3)) == 'P')
+	{
+		MakeMove(myBoard, 2, 6, 2, 4, curTurnColor, myList);
+		return 1;
+	}
+	else 
+	{
+		return 0;
+	}
+}
+
+int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList)
+{
+	if(curTurnColor == 'w')
+	{
+		MakeMove(myBoard, 3, 1, 3, 3, curTurnColor, myList);
+		return 1;
+	}
+	if(curTurnColor == 'b' && GetType(getPiece(myBoard,2,3)) == 'P')
+	{
+		MakeMove(myBoard, 3, 6, 3, 4, curTurnColor, myList);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+int EnglishOpening(PIECE **myBoard, char curTurnColor, MLIST *myList)
+{
+	if(curTurnColor == 'w')
+	{
+		MakeMove(myBoard,2,1,2,3,curTurnColor,myList);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
+{
+	if(curTurnColor == 'b' && GetType(getPiece(myBoard,3,3)) == 'P')
+	{
+		MakeMove(myBoard,5,6,5,4,curTurnColor,myList);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+
+
 
 
 

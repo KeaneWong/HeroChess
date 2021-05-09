@@ -17,9 +17,24 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList);//this trav
 
 void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENODE *root);//gets every single possible move on the board and stores them as children to root, all connected to one another by pointer links
 
+int MakeRandomOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
+
+
 //private functions
 
 //a function used to do a move just like MakeMoveNoAppend where it doesnt append the done mvoe to myList, but it adds the move to an empty node blankNode instead. Used primarily in AllPossibilities
 int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList, TREENODE *blankNode);
+
+
+
+int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
+
+int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList);
+
+int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList);
+
+int EnglishOpening(PIECE **myBoard, char curTurnColor, MLIST *myList);
+
+int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList);
 
 #endif
