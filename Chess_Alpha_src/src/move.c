@@ -41,16 +41,11 @@ char *GetDestination(MOVE *m){
 
 void PrintMove(MOVE *m){
 	assert(m);
-
-	printf(" %c%c %2s %2s\n", GetColor(&m->piece), GetType(&m->piece), m->source, m->destination);
-	if(m->removedPiece.type != ' '){
-		printf("Piece taken: %c%c\n",GetColor(&m->removedPiece), GetType(&m->removedPiece));
-	}
-	else
-	{
-		printf("\n");
-	}
+	printf(" %c%c %2s %2s\n", GetColor(&m->removedPiece), GetType(&m->removedPiece), m->source, m->destination);
 }
+
+/*create new move struct */
+
 
 int getColS(MOVE *m){
 	return ((m->source)[0]-'A');

@@ -141,3 +141,21 @@ int isEmpty(PIECE **myBoard, int col, int row){
 	return (GetColor(&myBoard[col][row]) == ' ' && GetType(&myBoard[col][row]) == ' ');
 }
 
+void checkForPromotion(PIECE **myBoard){
+	int i;
+	char c;
+	for(i = 0; i < size; i++){
+		if(GetColor(&myBoard[i][7]) == 'w' && GetType(&myBoard[i][7]) == 'P'){
+			printf("Enter the piece type for the pawn two be promoted to: \n");
+			c = getchar();
+			SetType(&myBoard[i][7], c);
+		}
+	}
+	for(i = 0; i < size; i++){
+        if(GetColor(&myBoard[i][0]) == 'b' && GetType(&myBoard[i][0]) == 'P'){
+        printf("Enter the piece type for the pawn two be promoted to: \n");
+	        c = getchar();
+            SetType(&myBoard[i][0], c);
+        }
+    }
+}

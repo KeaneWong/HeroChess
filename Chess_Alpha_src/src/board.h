@@ -30,4 +30,6 @@ void initializeBoard(PIECE** myBoard);
 
 int isEmpty(PIECE **myBoard, int col, int row);
 
+void checkForPromotion(PIECE **myBoard);
+
 #endif

@@ -1,30 +1,13 @@
 #include "replay.h"
 
 void replay(MLIST *l){
-	char name[100];
+	char fname[100];
 	FILE *fptr = NULL;
-	printFormat(fptr, name);
 	
 	PIECE **copyBoard = makeBoard();
 	initializeBoard(copyBoard);
 
-	fprintf(fptr, "\n////////////////////////////////\n");
-	MOVE *m = NULL;
-	while(GetLength(l) > 0){
-		int turn = 0;
-		turn = turn%2;
-		m = RemoveFirstMove(l);
-		fprintf(fptr, "Player %d moved from %2s to %2s.\n", turn, GetSource(m), GetDestination(m));
-		removePiece(copyBoard, getColD(m), getRowD(m));
-		movePiece(copyBoard, getColS(m), getRowS(m), getColD(m), getRowD(m));
-		printReplayBoard(copyBoard, fptr);
-		turn++;
-	}
-	printf("\n/////////////////////////////////\n");	
-}
-
-void printFormat(FILE *fptr, char *fname){
-    int hours, minutes, seconds, day, month, year;
+	int hours, minutes, seconds, day, month, year;
     time_t now;
     time(&now);
  
@@ -50,4 +33,20 @@ void printFormat(FILE *fptr, char *fname){
 
 	fprintf(fptr, "\nPlayer 1");
 	fprintf(fptr, "\nPlayer 2\n");
+
+	fprintf(fptr, "\n////////////////////////////////\n");
+	MOVE *m = NULL;
+    int turn = 0;	
+	while(GetLength(l) > 0){
+		turn = turn%2;
+		m = RemoveFirstMove(l);
+		fprintf(fptr, "Player %d moved from %2s to %2s.\n", turn+1, GetSource(m), GetDestination(m));
+		removePiece(copyBoard, getColD(m), getRowD(m));
+		movePiece(copyBoard, getColS(m), getRowS(m), getColD(m), getRowD(m));
+		printReplayBoard(copyBoard, fptr);
+		turn++;
+	}
+	fprintf(fptr, "\n/////////////////////////////////\n");	
+	fclose(fptr);
 }
+

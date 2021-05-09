@@ -76,6 +76,7 @@ int main(void){
 					}
 					else if (success == 1)
 					{
+						checkForPromotion(board);
 						//printf("Successful move. \n");
 						if(isChecked(board,((curTurnColor == 'w') ? 'b' : 'w')) )//checking if the opponent is in check. 
 						{
@@ -97,7 +98,6 @@ int main(void){
 					}
 				}
 				printf("Replay: \n");
-				PrintMoveList(myList);
 				replay(myList);
 				break;
 			}
@@ -105,7 +105,7 @@ int main(void){
 			{
 				int won = 1;
 				char curTurnColor = 'w';
-
+				int turncount = 0;
 				while(won!=2)
 				{
 					printBoard(board);	
@@ -136,6 +136,7 @@ int main(void){
 					}
 					else if (success == 1)
 					{
+						checkForPromotion(board);
 						if(isChecked(board,'w'))
 						{
 							if(isCheckmate(board, 'w', myList))
@@ -154,8 +155,14 @@ int main(void){
 							int aisuccess;
 							curTurnColor = 'b'; 
 							
-							MOVE *highesteval;
-							aisuccess = MakeOpeningMove(board, curTurnColor, myList);
+							if(turncount == 0){
+								aisuccess = MakeOpeningMove(board, curTurnColor, myList);
+							}
+							else{
+									
+							}
+							
+							
 							if(aisuccess == 0)
 							{
 								printf("Error. Try again\n");
@@ -181,12 +188,11 @@ int main(void){
 									curTurnColor = (curTurnColor == 'b') ? 'w' : 'b';//flipping turn color while the game still goes on
 								}
 							}
-						
 						}
 					}
+					turncount++;
 				}
-				printf("Replay: \n");
-				PrintMoveList(myList);
+				printf("Replay: \n");	
 				replay(myList);
 				break;
 				/* HvH func */
