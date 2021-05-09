@@ -68,7 +68,7 @@ void AppendMove(MLIST *l, PIECE *piece, PIECE *removedPiece, int colS, int rowS,
 	source[0] = (char)('A'+colS);
 	source[1] = (char)('1'+rowS);
 	destination[0] = (char)('A'+colD);
-	destination[1] = (char)('1'+rowD);
+	destination[1] = (char)('1'+rowD);	
 	m = NewMove(piece, removedPiece, source, destination);	
 
 	assert(l); 

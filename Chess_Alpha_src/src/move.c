@@ -9,8 +9,8 @@ MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination
 		perror("Out of memory! Aborting...");
 		exit(10);
 	} /* fi */
-	m->piece = piece;
-	m->removedPiece = removedPiece;
+	m->piece = *piece;	
+	m->removedPiece = *removedPiece;
 	m->source = malloc(sizeof(char)*2);
 	m->destination = malloc(sizeof(char)*2);
 	strcpy(m->source, source);
@@ -23,8 +23,12 @@ void DeleteMove(MOVE *m){
 	free(m);
 }
 /*return player number*/
-PIECE *GetPiece(MOVE *m){
+PIECE GetPiece(MOVE *m){
 	return m->piece;
+}
+
+PIECE GetRemovedPiece(MOVE *m){
+	return m->removedPiece;
 }
 /* return Move */
 char *GetSource(MOVE *m){
@@ -37,9 +41,10 @@ char *GetDestination(MOVE *m){
 
 void PrintMove(MOVE *m){
 	assert(m);
-	printf("%c%c %2s %2s ", m->piece->color, m->piece->type, m->source, m->destination);
-	if(m->removedPiece != NULL){
-		printf("%c%c\n",m->removedPiece->color, m->removedPiece->type);
+
+	printf(" %c%c %2s %2s\n", GetColor(&m->piece), GetType(&m->piece), m->source, m->destination);
+	if(m->removedPiece.type != ' '){
+		printf("Piece taken: %c%c\n",GetColor(&m->removedPiece), GetType(&m->removedPiece));
 	}
 	else
 	{

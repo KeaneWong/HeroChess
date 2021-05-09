@@ -55,6 +55,7 @@ int main(void){
 					int row1;
 					column1 = convertColumn(str[0]);
 					row1 = convertRow(str[1]);
+					
 					if(column1 < 0 || row1 < 0)
 					{
 						continue;
@@ -66,6 +67,7 @@ int main(void){
 					int row2;
 					column2 = convertColumn(str[0]);
 					row2 = convertRow(str[1]);
+					
 					int success = MakeMove(board,column1, row1, column2, row2,curTurnColor,myList);
 					if(success == 0)//signifies error
 					{
@@ -101,8 +103,62 @@ int main(void){
 			}
 			case 2:
 			{
+				int won = 1;
+				char curTurnColor = 'w';
 
-			
+				while(won!=2)
+				{
+					printBoard(board);	
+					printf("Player white pick your piece: \n");
+					fgets(str,INPUT_BUFFER,stdin);
+					int column1;
+					int row1;
+					column1 = convertColumn(str[0]);
+					row1 = convertRow(str[1]);
+					
+					if(column1 < 0 || row1 < 0)
+					{
+						continue;
+					}
+
+					printf("Where would you like to move this piece?\n");
+					fgets(str,INPUT_BUFFER,stdin);
+					int column2;
+					int row2;
+					column2 = convertColumn(str[0]);
+					row2 = convertRow(str[1]);
+					
+					int success = MakeMove(board,column1, row1, column2, row2,curTurnColor,myList);
+					if(success == 0)
+					{
+						printf("Error. Try again\n");
+						
+					}
+					else if (success == 1)
+					{
+						if(isChecked(board,'w'))
+						{
+							if(isCheckmate(board, 'w'), myList))
+							{
+								printf("Checkmate. Winner is Human\n");
+								won = 2;
+							}
+							else
+							{
+								printf("Human Player is in check.\n");	
+							}
+						}
+						if(won!=2)
+						{
+							/*ai turn*/
+													
+						}
+					}
+				}
+				printf("Replay: \n");
+				PrintMoveList(myList);
+				replay(myList);
+				break;
 				/* HvH func */
 				/* print moves log? */
 				break;

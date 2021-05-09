@@ -2,7 +2,7 @@
 
 void replay(MLIST *l){
 	char name[100];
-	FILE *fptr = NULL;;
+	FILE *fptr = NULL;
 	printFormat(fptr, name);
 	
 	PIECE **copyBoard = makeBoard();

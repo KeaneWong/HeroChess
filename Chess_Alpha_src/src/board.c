@@ -27,6 +27,7 @@ PIECE **copyBoard(PIECE **myBoard){
 }
 
 PIECE *getPiece(PIECE **myBoard, int col, int row){
+	
 	PIECE *p = &myBoard[col][row];
 	return p;
 }
