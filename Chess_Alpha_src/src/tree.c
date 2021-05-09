@@ -105,7 +105,7 @@ void DeleteNodeRecursive(TREENODE *nodeTBD)
 
 }
 
-void printAcross(TREENODE *node)
+void PrintAcross(TREENODE *node)
 {
 	TREENODE *curNode = node;
 	while(node!=NULL)
@@ -115,6 +115,22 @@ void printAcross(TREENODE *node)
 	}
 }
 
+void PrintAll(TREENODE *node)
+{
+	//printf("MOVINGc: ");
+	if(node == NULL)
+	{
+		return;
+	}
+	if(GetNodeMove(node) == NULL)
+	{
+		return;
+	}
+	PrintAll(GetNext(node));
+	PrintAll(GetChild(node));
+	
+	PrintMove(GetNodeMove(node));
+}
 
 
 

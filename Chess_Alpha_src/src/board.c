@@ -27,6 +27,7 @@ PIECE **copyBoard(PIECE **myBoard){
 }
 
 PIECE *getPiece(PIECE **myBoard, int col, int row){
+	
 	PIECE *p = &myBoard[col][row];
 	return p;
 }
@@ -44,7 +45,7 @@ PIECE removePiece(PIECE **myBoard, int col, int row){
 PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestination,int rowDestination){
 	PIECE *p = NULL;
 	p = &myBoard[colDestination][rowDestination];
-	printf("%c%c\n", GetColor(&myBoard[colDestination][rowDestination]), GetType(&myBoard[colDestination][rowDestination]));
+	//printf("%c%c\n", GetColor(&myBoard[colDestination][rowDestination]), GetType(&myBoard[colDestination][rowDestination]));
 	PIECE *p1 = getPiece(myBoard, colSource, rowSource); //added
 	myBoard[colDestination][rowDestination] = *p1;
 	//myBoard[colDestination][rowDestination] = myBoard[colSource][rowSource];
@@ -65,6 +66,21 @@ void printBoard(PIECE** myBoard){
 
 	}	
 	printf("     a    b    c    d    e    f    g    h\n");
+}
+
+void printReplayBoard(PIECE** myBoard, FILE *fptr){
+	int i = 0, j = 0;
+	fprintf(fptr, "   ----------------------------------------\n");
+	for(i = size-1; i >= 0; i--){
+		fprintf(fptr, "%d", i+1);
+		for(j = 0; j < size; j++){	
+			fprintf(fptr, " | %c%c", GetColor(&myBoard[j][i]), GetType(&myBoard[j][i]));
+		}
+		fprintf(fptr, " |\n");
+		fprintf(fptr, "   ----------------------------------------\n");
+
+	}	
+	fprintf(fptr, "     a    b    c    d    e    f    g    h\n");
 }
 
 void initializeBoard(PIECE** myBoard){

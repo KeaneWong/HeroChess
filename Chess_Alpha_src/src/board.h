@@ -24,6 +24,8 @@ PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 
 void printBoard(PIECE** myBoard);
 
+void printReplayBoard(PIECE** myBoard, FILE* fptr);
+
 void initializeBoard(PIECE** myBoard);
 
 int isEmpty(PIECE **myBoard, int col, int row);

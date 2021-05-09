@@ -53,11 +53,14 @@ ai.o:	src/tree.h src/movelist.h src/game.h src/settings.h src/piece.h src/ai.h s
 movelist.o: src/piece.h src/move.h src/movelist.h src/movelist.c
 	$(CC) $(CFLAGS) src/movelist.c -o src/movelist.o
 
+#target to generate replay.o
+replay.o: src/board.h src/piece.h src/move.h src/game.h src/board.h src/movelist.h
+	$(CC) $(CFLAGS) src/replay.c -o src/replay.o
+
 #target to generate main.o
-main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h
+main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.c
 	$(CC) $(CFLAGS) src/main.c -o src/main.o
-
-
+	
 ########### generate library files ###########
 
 
@@ -65,8 +68,8 @@ main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h 
 ########### generate executables ###########
 
 # target to generate HeroChess
-HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o
-	$(CC) $(LFLAGS) src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o -o bin/HeroChess -lm
+HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
+	$(CC) $(LFLAGS) src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/HeroChess -lm
 
 # delete all executables currently in the source and binary directories
 clean:

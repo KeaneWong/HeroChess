@@ -38,8 +38,9 @@ void DeleteNode(TREENODE *nodeTBD);		//deletes node and only that node
 
 void DeleteNodeRecursive(TREENODE *nodeTBD);		//recursively deletes node and all siblings and children
 
-void printAcross(TREENODE *node);
+void PrintAcross(TREENODE *node);
 
+void PrintAll(TREENODE *node);
 
 
 

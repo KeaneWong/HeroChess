@@ -2,23 +2,25 @@
 
 void replay(MLIST *l){
 	char name[100];
-	FILE *fptr;
+	FILE *fptr = NULL;
 	printFormat(fptr, name);
 	
 	PIECE **copyBoard = makeBoard();
 	initializeBoard(copyBoard);
 
-	printf("\n////////////////////////////////\n");
+	fprintf(fptr, "\n////////////////////////////////\n");
 	MOVE *m = NULL;
-	int x= 0;
 	while(GetLength(l) > 0){
+		int turn = 0;
+		turn = turn%2;
 		m = RemoveFirstMove(l);
-		printf("%2s %2s", GetSource(m), GetDestination(m));
+		fprintf(fptr, "Player %d moved from %2s to %2s.\n", turn, GetSource(m), GetDestination(m));
 		removePiece(copyBoard, getColD(m), getRowD(m));
 		movePiece(copyBoard, getColS(m), getRowS(m), getColD(m), getRowD(m));
-		printBoard(copyBoard);
-		printf("%2s %2s", GetSource(m), GetDestination(m));
-	}	
+		printReplayBoard(copyBoard, fptr);
+		turn++;
+	}
+	printf("\n/////////////////////////////////\n");	
 }
 
 void printFormat(FILE *fptr, char *fname){
@@ -41,7 +43,7 @@ void printFormat(FILE *fptr, char *fname){
 
 	fptr = fopen(fname, "w");
 
-	fprintf(fptr, "#TicTacToeWowWeeWow\n");
+	fprintf(fptr, "#HeroChess\n");
 	fprintf(fptr, "Version: v1.0\n");
 	fprintf(fptr, "Filename: %s\n", fname);
 	fprintf(fptr, "Date: %d/%d/%d %d:%d:%d\n", year, month, day, hours, minutes, seconds);
@@ -49,4 +51,3 @@ void printFormat(FILE *fptr, char *fname){
 	fprintf(fptr, "\nPlayer 1");
 	fprintf(fptr, "\nPlayer 2\n");
 }
-
