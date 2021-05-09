@@ -138,7 +138,7 @@ int main(void){
 					{
 						if(isChecked(board,'w'))
 						{
-							if(isCheckmate(board, 'w'), myList))
+							if(isCheckmate(board, 'w', myList))
 							{
 								printf("Checkmate. Winner is Human\n");
 								won = 2;
