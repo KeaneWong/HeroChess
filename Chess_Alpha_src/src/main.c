@@ -151,7 +151,31 @@ int main(void){
 						if(won!=2)
 						{
 							/*ai turn*/
-													
+							int aisuccess;
+							char curTurnColor = 'b'; 
+							
+							aisuccess = MakeOpeningMove(board, 'b', myList);
+							if(aisuccess == 0)
+							{
+								printf("Error. Try again\n");
+
+							}
+							else if (aisuccess == 1)
+							{
+								if(isChecked(board,'b'))
+								{
+									if(isCheckmate(board, 'b', myList))
+									{
+										printf("Checkmate. Winner is AI\n");
+										won = 2;
+									}
+									else
+									{
+										printf("AI Player is in check.\n");	
+									}
+								}
+							}
+						
 						}
 					}
 				}
