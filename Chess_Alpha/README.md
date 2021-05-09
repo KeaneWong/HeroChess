@@ -2,9 +2,11 @@
 A chess software program. 
 
 **Update History:**
+
 **MM/DD/YYYY - Description**
 
 05/09/2021 - Final Release Version
+
 04/25/2021 - Initial Version
 
 **Authors:**
