@@ -30,6 +30,6 @@ char GetColor(PIECE *mypiece){
 	return mypiece->color;
 }
 
-void promote(PIECE *mypiece, char c){
+void SetType(PIECE *mypiece, char c){
 	mypiece->type = c;
 }
