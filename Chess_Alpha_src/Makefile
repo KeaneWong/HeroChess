@@ -1,9 +1,6 @@
 # Makefile: Makefile for HeroChess -  EECS22L Spring 2021
 #########################################################
 
-# design names
-DESIGN = bin/HeroChess
-
 #libs
 
 # gcc and tags
@@ -13,7 +10,8 @@ CFLAGS = -ansi -std=c99 -Wall -c
 LFLAGS = -ansi -std=c99 -Wall
 
 # executables and replay files
-TXT	= bin/movelog.txt
+DESIGN = bin/HeroChess
+TXT	= bin/*.txt
 SRC	= src/*.o
 
 all: HeroChess
@@ -80,4 +78,4 @@ test:
 
 # tar the source code package
 tar:
-	tar zcvf Chess_Beta_src.tar.gz Chess_Beta_src   
+	tar zcvf Chess_V1.0_src.tar.gz Chess_V1.0_src   
