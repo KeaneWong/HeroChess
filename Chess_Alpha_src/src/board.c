@@ -1,5 +1,6 @@
 #include "board.h"
 
+// initializes the game board in the form of a 2d array
 PIECE **makeBoard(){
 	int i = 0;
 	PIECE **board;
@@ -10,11 +11,13 @@ PIECE **makeBoard(){
 	return board;
 }
 
+// deletes the board, freeing the memory and deallocating the array
 void deleteBoard(PIECE **myBoard){
 	assert(myBoard);		
 	free(myBoard);
 }
 
+//  
 PIECE **copyBoard(PIECE **myBoard){
 	int i = 0, j = 0;
 	PIECE **newBoard = makeBoard();
@@ -26,22 +29,26 @@ PIECE **copyBoard(PIECE **myBoard){
 	return newBoard;
 }
 
+// returns piece at position colrow 
 PIECE *getPiece(PIECE **myBoard, int col, int row){
 	
 	PIECE *p = &myBoard[col][row];
 	return p;
 }
 
+// places the piece specified at colrow, returning 0 if successful and 1 if not successful
 void placePiece(PIECE **myBoard, PIECE *p, int col, int row){
 	myBoard[col][row] = *p;	
 }
 
+// removes and returns piece from specified colrow and fills the spot with null; returns null if empty
 PIECE removePiece(PIECE **myBoard, int col, int row){
 	PIECE p = myBoard[col][row];	
 	myBoard[col][row] = makeBlank();
 	return p;
 }
 
+// returns colrow destination from piece being moved and makes initaial destination blank
 PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestination,int rowDestination){
 	PIECE *p = NULL;
 	p = &myBoard[colDestination][rowDestination];
@@ -53,6 +60,7 @@ PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 	return p;
 }
 
+// prints board to terminal
 void printBoard(PIECE** myBoard){
 	int i = 0, j = 0;
 	printf("   ----------------------------------------\n");
@@ -68,6 +76,7 @@ void printBoard(PIECE** myBoard){
 	printf("     a    b    c    d    e    f    g    h\n");
 }
 
+// prints board to replay text file 
 void printReplayBoard(PIECE** myBoard, FILE *fptr){
 	int i = 0, j = 0;
 	fprintf(fptr, "   ----------------------------------------\n");
@@ -83,6 +92,7 @@ void printReplayBoard(PIECE** myBoard, FILE *fptr){
 	fprintf(fptr, "     a    b    c    d    e    f    g    h\n");
 }
 
+// places black and whites pieces to initailized board 
 void initializeBoard(PIECE** myBoard){
 	int i = 0, j = 0;
 	PIECE *wRl = NewPiece('R', 'w');
@@ -137,10 +147,12 @@ void initializeBoard(PIECE** myBoard){
 	}
 }
 
+// returns 1 if selected source is empty and 0 if it is not empty
 int isEmpty(PIECE **myBoard, int col, int row){
 	return (GetColor(&myBoard[col][row]) == ' ' && GetType(&myBoard[col][row]) == ' ');
 }
 
+// checks if pawn reached the opposite end of the board and asks user type of piece they want to promote to 
 void checkForPromotion(PIECE **myBoard){
 	int i;
 	char c;
@@ -159,3 +171,5 @@ void checkForPromotion(PIECE **myBoard){
         }
     }
 }
+
+// EOF //
