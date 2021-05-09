@@ -154,6 +154,7 @@ int main(void){
 							int aisuccess;
 							curTurnColor = 'b'; 
 							
+							MOVE *highesteval;
 							aisuccess = MakeOpeningMove(board, curTurnColor, myList);
 							if(aisuccess == 0)
 							{
