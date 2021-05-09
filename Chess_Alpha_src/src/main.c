@@ -55,6 +55,7 @@ int main(void){
 					int row1;
 					column1 = convertColumn(str[0]);
 					row1 = convertRow(str[1]);
+					
 					if(column1 < 0 || row1 < 0)
 					{
 						continue;
@@ -66,6 +67,7 @@ int main(void){
 					int row2;
 					column2 = convertColumn(str[0]);
 					row2 = convertRow(str[1]);
+					
 					int success = MakeMove(board,column1, row1, column2, row2,curTurnColor,myList);
 					if(success == 0)//signifies error
 					{
