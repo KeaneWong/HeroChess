@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 		SDL_BlitSurface(image, &src, screen, &pawn);
 	
 		//Update the window at the modified region
-		SDL_UpdateRect(screen, pawn.x, pawn.y, pawn.w, paw .h);
+		SDL_UpdateRect(screen, pawn.x, pawn.y, pawn.w, pawn.h);
 	}
 	
 	rook.x = 80;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 	knight.h = image->h;
 	
 	SDL_BlitSurface(image, &src, screen, &knight);
-	SDL_Updaterect(screen, knight.x, knight.y, knight.w, knight.h);
+	SDL_UpdateRect(screen, knight.x, knight.y, knight.w, knight.h);
 	
 	bishop.x = 240;
 	bishop.y = 0;
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 	bishop.h = image->h;
 	
 	SDL_BlitSurface(image, &src, screen, &bishop);
-	SDL_UpdateRect(screen, bishop.x, bishop.y, bishop.w, bishop.h)
+	SDL_UpdateRect(screen, bishop.x, bishop.y, bishop.w, bishop.h);
 		
 	queen.x = 320;
 	queen.y = 0;
