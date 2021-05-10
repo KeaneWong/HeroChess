@@ -1,3 +1,14 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* game.c: contains functions for game algorithms and win conditions	*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "game.h"

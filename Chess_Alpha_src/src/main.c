@@ -1,4 +1,13 @@
-/* main.c: file containing main function and print menu function */ 
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* main.c: contains main game function and print menu function		*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
 
 #include <stdlib.h>
 #include <stdio.h>

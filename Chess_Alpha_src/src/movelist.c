@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* movelist.c: contains defintions of functions related to the list of	*/
+/*				moves					*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/23		Keane Wong		Initial Version		*/
+/************************************************************************/
+
 #include "movelist.h"
 #include <stdlib.h> 
 #include <stdio.h> 

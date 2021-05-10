@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* replay.c: contains defintions of functions related to printing the	*/
+/*			game replay text file				*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/05/02		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #include "replay.h"
 
 void replay(MLIST *l){

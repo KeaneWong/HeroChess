@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* ai.h: contains declarations of functions in ai.c for the automated	*/
+/*			player gameplay					*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/23		Keane Wong		Initial Version		*/
+/************************************************************************/
+
 #ifndef AI_H
 #define AI_H
 #include "piece.h"

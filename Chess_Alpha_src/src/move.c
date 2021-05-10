@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* move.c: contains definitions of structs and functions relating to 	*/
+/*				moves					*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/23		Keane Wong		Initial Version		*/
+/************************************************************************/
+
 #include "move.h"
 
 /*create new move struct */
