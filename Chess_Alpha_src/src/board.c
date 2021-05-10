@@ -1,6 +1,6 @@
 #include "board.h"
 
-// initializes the game board in the form of a 2d array
+// initializes the game board
 PIECE **makeBoard(){
 	int i = 0;
 	PIECE **board;
@@ -48,7 +48,7 @@ PIECE removePiece(PIECE **myBoard, int col, int row){
 	return p;
 }
 
-// returns colrow destination from piece being moved and makes initaial destination blank
+// returns colrow destination from piece being moved and makes source blank
 PIECE *movePiece(PIECE** myBoard, int colSource, int rowSource, int colDestination,int rowDestination){
 	PIECE *p = NULL;
 	p = &myBoard[colDestination][rowDestination];

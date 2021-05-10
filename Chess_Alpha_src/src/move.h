@@ -24,24 +24,33 @@ MOVE *NewMove(PIECE *piece, PIECE *removedPiece, char *source, char *destination
 /* Delete Move */
 void DeleteMove(MOVE *m);
 
+/* returns removed piece */
 PIECE GetRemovedPiece(MOVE *m);
+
 /* return move as char pointer*/
 char *GetSource(MOVE *m);
 
+/* returns destination */
 char *GetDestination(MOVE *m);
 
 /* return player number */
 PIECE GetPiece(MOVE *m);
 
+/* prints move */
 void PrintMove(MOVE *m);
 
+/* returns column source */
 int getColS(MOVE* m);
 
+/* returns row source */
 int getRowS(MOVE* m);
 
+/* returns column destination */
 int getColD(MOVE* m);
 
+/* returns row destination */
 int getRowD(MOVE* m);
 
-
 #endif
+
+// EOF //
