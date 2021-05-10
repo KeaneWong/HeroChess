@@ -1,3 +1,14 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* board.h: contains declarations of structs and functions in board.c	*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #ifndef BOARD_H
 #define BOARD_H
 #define size 8

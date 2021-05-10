@@ -16,7 +16,6 @@ A chess software program.
 * Paul Lee
 * Rachel Villamor
 
-This is the 1.0 version of the chess software, to install, please type "make" on the command line.
-For more detailed instructions, please refer to the user manual.
+This is the 1.0 version of the chess software, to install, please refer to the INSTALL.md document.
 
 Enjoy!

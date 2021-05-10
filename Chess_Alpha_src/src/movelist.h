@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* movelist.h: contains declarations of structs and functions in  	*/
+/*				movelist.c				*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/23		Keane Wong		Initial Version		*/
+/************************************************************************/
+
 #ifndef MOVELIST_H
 #define MOVELIST_H
 #include "move.h"

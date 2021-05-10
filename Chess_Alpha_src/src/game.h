@@ -1,3 +1,14 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* game.h: contains declarations of functions within game.c		*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #ifndef GAME_H
 #define GAME_H
 #include <stdlib.h> 

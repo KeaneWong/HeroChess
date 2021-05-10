@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* replay.h: contains declarations of functions in replay.c for printing*/
+/*				the game replay				*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/05/02		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #ifndef REPLAY_H
 #define REPLAY_H
 

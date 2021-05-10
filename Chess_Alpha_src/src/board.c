@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* board.c: contains definitions of structs and functions pertaining to	*/
+/*				the board				*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #include "board.h"
 
 // initializes the game board

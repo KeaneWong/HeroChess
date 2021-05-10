@@ -1,4 +1,14 @@
-  
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* piece.h: contains declarations of structs and functions in piece.c	*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
+ 
 #ifndef PIECE_H
 #define PIECE_H
 #include <stdlib.h> 
