@@ -24,7 +24,7 @@ TEST	= bin/TestHeroChess
 TXT	= bin/*.txt
 SRC	= src/*.o
 
-all: HeroChess
+all: HeroChess TestHeroChess
 
 
 ########### generate object files ###########
@@ -71,7 +71,7 @@ main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h 
 
 #target to generate testmain.o (main.o with debug on)
 testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.c
-	$(CC) $(CFLAGS) -DDEBUG src/main.c -o src/testmain.o 
+	$(CC) $(CFLAGS) src/main.c -o src/testmain.o -DDEBUG  
 
 ########### generate executables ###########
 
@@ -81,7 +81,7 @@ HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.
 
 # target to generate HeroChess with test mode on
 TestHeroChess: src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
-	$(CC) $(LFLAGS) src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/TestHeroChess
+	$(CC) $(LFLAGS) src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/HeroChess -lm
 
 # delete all executables currently in the source and binary directories
 clean:
@@ -89,8 +89,8 @@ clean:
 
 # test game
 test: 
-	./TestHeroChess	
+	./bin/TestHeroChess
 
 # tar the source code package
 tar:
-	tar zcvf Chess_V1.0_src.tar.gz Chess_V1.0_src   
+	tar zcvf Chess_V1.0_src.tar.gz Chess_V1.0_src
