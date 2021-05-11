@@ -11,13 +11,12 @@
 #include "replay.h"
 #include "ai.h"
 #define INPUT_BUFFER 20
-
 // print menu function declaration
 int mainmenu(void);
 int convertColumn(char a);
 int convertRow(char b);
 void undo(PIECE **board, MLIST *myList);
-
+void gameTest();
 // main function
 int main(void){
 	PIECE **board = makeBoard();
@@ -282,8 +281,7 @@ int main(void){
 
 
 	#ifdef DEBUG
-	printf("Hello World\n");
-
+	gameTest();
 	#endif
 
 	/* free memory of structs? */
@@ -303,7 +301,6 @@ int mainmenu()
 	return select;
 }
 
-// quit at anytime; error handling; converts column
 int convertColumn(char a)
 {
 	int column1;
@@ -323,14 +320,11 @@ int convertColumn(char a)
 	}
 	return column1;
 }
-
-// converts row 
 int convertRow(char b)
 {
 	return b-'1';
 }
 
-// undo player move
 void undo(PIECE **board, MLIST *l){
 	int i = 0;
 	int cs, rs, cd ,rd;
@@ -349,4 +343,31 @@ void undo(PIECE **board, MLIST *l){
 	}	
 }
 
-// EOF //
+void gameTest(){
+	PIECE **testBoard = makeBoard();
+	initializeBoard(testBoard);
+	MLIST *testList = NewMoveList();
+	MakeMove(testBoard, 4, 1, 4, 3,'w',testList);
+	printBoard(testBoard);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 4, 6, 4, 4,'b',testList);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 5, 0, 2, 3,'w',testList);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 1, 7, 2, 5,'b',testList);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 3, 0, 7, 4,'w',testList);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 3, 6, 3, 5,'b',testList);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 7, 4, 5, 5,'w',testList);
+	printf("-----------------------------------\n");
+	MakeMove(testBoard, 4, 1, 4, 3,'b',testList);
+	printf("-----------------------------------\n");
+
+	if(isCheckmate(testBoard, 'b', testList)){
+		printf("Checkmate. Winner is player white!");
+	}
+	replay(testList);
+}
+
