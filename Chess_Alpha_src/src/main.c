@@ -15,6 +15,7 @@
 int mainmenu(void);
 int convertColumn(char a);
 int convertRow(char b);
+void undo(PIECE **board, MLIST *myList);
 // main function
 int main(void){
 	PIECE **board = makeBoard();
@@ -96,9 +97,13 @@ int main(void){
 						}
 					}
 				}
-				printf("Replay: \n");
-				PrintMoveList(myList);
-				replay(myList);
+				char o;
+				printf("Do you want to save the replay of the game? (Y/N):");
+				o = getchar();
+				if(o == 'Y' || o == 'y'){
+					replay(myList);
+				}
+				break;
 				break;
 			}
 			case 2:
@@ -106,11 +111,13 @@ int main(void){
 				int won = 1;
 				char curTurnColor = 'w';
 				int firstTurn = 1;
+				char u;
 				while(won!=2)
 				{
 					printBoard(board);	
 					printf("Player white pick your piece: \n");
-					fgets(str,INPUT_BUFFER,stdin);
+					scanf("%[^\n]%*c", str);
+					//fgets(str,INPUT_BUFFER,stdin);
 					int column1;
 					int row1;
 					column1 = convertColumn(str[0]);
@@ -196,13 +203,21 @@ int main(void){
 						
 						}
 					}
+					if(GetLength(myList)>2){
+  						printBoard(board);
+  						printf("Do you want to undo the last move? (Y/N)");
+  						scanf("%[^\n]%*c", &u);
+  						if(u == 'y' || u == 'Y'){
+  							undo(board, myList);	
+  						}
+  					}
 				}
-				printf("Replay: \n");
-				PrintMoveList(myList);
-				replay(myList);
-				break;
-				/* HvH func */
-				/* print moves log? */
+				char o;
+				printf("Do you want to save the replay of the game? (Y/N):");
+				o = getchar();
+				if(o == 'Y' || o == 'y'){
+					replay(myList);
+				}
 				break;
 			}
 			case 3:
@@ -303,7 +318,23 @@ int convertRow(char b)
 	return b-'1';
 }
 
-
+void undo(PIECE **board, MLIST *l){
+	int i = 0;
+	int cs, rs, cd ,rd;
+	MOVE *m = NULL;
+	PIECE p;
+	for(i = 0; i < 2; i++){
+		m = RemoveLastMove(l);
+	    cs = getColS(m);
+	    rs = getRowS(m);
+	    cd = getColD(m);
+	    rd = getRowD(m);
+		p = GetRemovedPiece(m);
+	    placePiece(board, &p, cs, rs);
+		p = GetPiece(m);
+	    placePiece(board, &p, cd, rd);
+	}	
+}
 
 
 

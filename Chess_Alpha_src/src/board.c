@@ -48,6 +48,11 @@ PIECE *getPiece(PIECE **myBoard, int col, int row){
 	return p;
 }
 
+PIECE getCopy(PIECE **myBoard, int col, int row){
+	PIECE p = myBoard[col][row];
+	return p;
+}
+
 // places the piece specified at colrow, returning 0 if successful and 1 if not successful
 void placePiece(PIECE **myBoard, PIECE *p, int col, int row){
 	myBoard[col][row] = *p;	

@@ -55,6 +55,8 @@ int isEmpty(PIECE **myBoard, int col, int row);
 // checks if pawn reached the opposite end of the board and asks user type of piece they want to promote to
 void checkForPromotion(PIECE **myBoard);
 
+PIECE getCopy(PIECE **myBoard, int col, int row);
+
 #endif
 
 // EOF //

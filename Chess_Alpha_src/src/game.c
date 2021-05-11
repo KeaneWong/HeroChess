@@ -492,8 +492,10 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);	
 	if(isLeg == 1)
 	{
-		PIECE *removedPiece;//tracking removed piece
-		PIECE *movedPiece = getPiece(myBoard,colSource,rowSource);	
+		PIECE *removedPiece;	
+		PIECE tempMoved = getCopy(myBoard, colDestination, rowDestination);
+		PIECE *movedPiece = &tempMoved;
+
 		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
 		{
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
