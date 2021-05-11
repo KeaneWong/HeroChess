@@ -19,11 +19,14 @@ void undo(PIECE **board, MLIST *myList);
 void gameTest();
 // main function
 int main(void){
+	#ifdef DEBUG
+    gameTest();
+	#else
 	PIECE **board = makeBoard();
 	initializeBoard(board);
 	MLIST *myList = NewMoveList();
 
-	#ifndef DEBUG				///MAIN PROGRAM: NON-DEBUG MODE
+				///MAIN PROGRAM: NON-DEBUG MODE
 	char str[INPUT_BUFFER];//input buffer
 
 	// welcome message prints once at the start of the first game
@@ -277,11 +280,6 @@ int main(void){
 		}
 		
 	}
-	#endif	
-
-
-	#ifdef DEBUG
-	gameTest();
 	#endif
 
 	/* free memory of structs? */
@@ -351,21 +349,26 @@ void gameTest(){
 	printBoard(testBoard);
 	printf("-----------------------------------\n");
 	MakeMove(testBoard, 4, 6, 4, 4,'b',testList);
+	printBoard(testBoard);
 	printf("-----------------------------------\n");
 	MakeMove(testBoard, 5, 0, 2, 3,'w',testList);
+	printBoard(testBoard);
 	printf("-----------------------------------\n");
 	MakeMove(testBoard, 1, 7, 2, 5,'b',testList);
+	printBoard(testBoard);
 	printf("-----------------------------------\n");
 	MakeMove(testBoard, 3, 0, 7, 4,'w',testList);
 	printf("-----------------------------------\n");
+	printBoard(testBoard);
 	MakeMove(testBoard, 3, 6, 3, 5,'b',testList);
 	printf("-----------------------------------\n");
-	MakeMove(testBoard, 7, 4, 5, 5,'w',testList);
+	printBoard(testBoard);
+	MakeMove(testBoard, 2, 3, 5, 5,'w',testList);
 	printf("-----------------------------------\n");
-	MakeMove(testBoard, 4, 1, 4, 3,'b',testList);
-	printf("-----------------------------------\n");
-
-	if(isCheckmate(testBoard, 'b', testList)){
+	printBoard(testBoard);
+	
+	
+	if(isChecked(testBoard, 'b') && isCheckmate(testBoard, 'b', testList)){
 		printf("Checkmate. Winner is player white!");
 	}
 	replay(testList);
