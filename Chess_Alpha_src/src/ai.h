@@ -5,7 +5,8 @@
 #include "tree.h"
 
 
-int GetTurn(PIECE **myBoard, char computerColor, MLIST *myList);
+//A function to makemove on the AI's behalf based on what its turn is. Recursively searches to a depth of moves equal to Depth. 
+int GetAITurn(PIECE **myBoard, char computerColor, MLIST *myList, int Depth);
 
 //private functions
 int GetValue(PIECE *myPiece, char curTurnColor);//returns a value based on what type the inputted piece is. Also outputs a positive number for friendly and negative number for enemy pieces
@@ -17,7 +18,7 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList);//this trav
 
 void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENODE *root);//gets every single possible move on the board and stores them as children to root, all connected to one another by pointer links
 
-int MakeRandomOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
+int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);//makes a random hardcoded opening move from a small library
 
 
 //private functions
@@ -25,10 +26,10 @@ int MakeRandomOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
 //a function used to do a move just like MakeMoveNoAppend where it doesnt append the done mvoe to myList, but it adds the move to an empty node blankNode instead. Used primarily in AllPossibilities
 int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList, TREENODE *blankNode);
 
+int SearchMovesRecursive(PIECE **myBoard, char computerColor, MLIST *myList,TREENODE *myNode, MOVE *bestMove, int Depth, int originalDepth);//a helper function to recursively look through the various levels of moves
 
 
-int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
-
+//A set of opening moves
 int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList);
 
 int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList);

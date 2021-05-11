@@ -31,6 +31,9 @@ TREENODE *EmptyNode()//same as newnode but is empty, no move. Used as a placehol
 }
 
 
+
+
+
 MOVE *GetNodeMove(TREENODE *node){
 	return node->potMove;
 }
@@ -44,8 +47,25 @@ void SetMove(TREENODE *node, MOVE *newMove)
 	node->potMove = newMove;
 }
 
+/*
+int GetMod(TREENODE *node)
+{
+	return node->Modifier;
+}
+
+void SetMod(TREENODE *node, int newmod)
+{
+	node->Modifier = newmod;
+}
+*/
+
+
 int isEmptyNode(TREENODE *node)
 {
+	if(node == NULL)
+	{
+		return 1;
+	}
 	if(GetNodeMove(node) == NULL)
 	{
 		return 1;
@@ -87,6 +107,7 @@ TREENODE *GetNext(TREENODE *node)
 
 void DeleteNode(TREENODE *nodeTBD)
 {
+	DeleteMove(GetNodeMove(nodeTBD));
 	free(nodeTBD);
 }
 
@@ -94,7 +115,8 @@ void DeleteNode(TREENODE *nodeTBD)
 
 void DeleteNodeRecursive(TREENODE *nodeTBD)
 {
-	if(nodeTBD == NULL)
+	//printf("one\n");
+	if(isEmptyNode(nodeTBD))
 	{
 		return;
 	}
@@ -122,15 +144,33 @@ void PrintAll(TREENODE *node)
 	{
 		return;
 	}
-	if(GetNodeMove(node) == NULL)
-	{
-		return;
-	}
 	PrintAll(GetNext(node));
 	PrintAll(GetChild(node));
 	
-	PrintMove(GetNodeMove(node));
+	if(GetNodeMove(node) !=NULL)
+	{
+		PrintMove(GetNodeMove(node));
+	}
+	else
+	{
+		printf("Empty Node\n");
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

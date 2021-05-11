@@ -499,7 +499,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
 			removedPiece = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook. The removedPiece should be a blank square
 			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
-			AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colSource+directionToGo*2, rowDestination);
+			AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colDestination, rowDestination);
 			return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
@@ -555,6 +555,8 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 	//return 0;
 }
 
+
+//used to makemove on the board but without appending to myList;
 int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);
@@ -569,7 +571,7 @@ int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDesti
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
 			removedPiece = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook. The removedPiece should be a blank square
 			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
-			AppendMove(myList, movedPiece, removedPiece, colSource, rowSource, colSource+directionToGo*2, rowDestination);
+			
 			return 1;
 		}
 		else if(GetType(getPiece(myBoard,colSource,rowSource)) == 'P')
@@ -610,7 +612,7 @@ int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDesti
 			removedPiece = movePiece(myBoard,colSource,rowSource,colDestination,rowDestination);
 
 		}
-		//AppendMove(myList,movedPiece,removedPiece, colSource, rowSource, colDestination, rowDestination);
+		
 		return 1;
 	}
 	else if (isLeg == 0)

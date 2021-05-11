@@ -105,7 +105,7 @@ int main(void){
 			{
 				int won = 1;
 				char curTurnColor = 'w';
-
+				int firstTurn = 1;
 				while(won!=2)
 				{
 					printBoard(board);	
@@ -115,7 +115,7 @@ int main(void){
 					int row1;
 					column1 = convertColumn(str[0]);
 					row1 = convertRow(str[1]);
-					
+
 					if(column1 < 0 || row1 < 0)
 					{
 						continue;
@@ -136,9 +136,9 @@ int main(void){
 					}
 					else if (success == 1)
 					{
-						if(isChecked(board,'w'))
+						if(isChecked(board,'b'))
 						{
-							if(isCheckmate(board, 'w', myList))
+							if(isCheckmate(board, 'b', myList))
 							{
 								printf("Checkmate. Winner is Human\n");
 								won = 2;
@@ -148,14 +148,25 @@ int main(void){
 								printf("Human Player is in check.\n");	
 							}
 						}
+						printBoard(board);
 						if(won!=2)
 						{
 							/*ai turn*/
 							int aisuccess;
-							curTurnColor = 'b'; 
+							curTurnColor = (curTurnColor == 'w' ? 'b' : 'w') ; 
 							
-							MOVE *highesteval;
-							aisuccess = MakeOpeningMove(board, curTurnColor, myList);
+							//MOVE *highesteval;
+							if(firstTurn)
+							{
+								printf("Opening move\n");
+								aisuccess = MakeOpeningMove(board, curTurnColor, myList);
+								firstTurn = 0;
+							}
+							else
+							{
+								printf("Doing AI move\n");
+								aisuccess = GetAITurn(board,curTurnColor,myList, 4);
+							}
 							if(aisuccess == 0)
 							{
 								printf("Error. Try again\n");
@@ -163,9 +174,9 @@ int main(void){
 							}
 							else if (aisuccess == 1)
 							{
-								if(isChecked(board,'b'))
+								if(isChecked(board,curTurnColor == 'w' ? 'b' : 'w'))
 								{
-									if(isCheckmate(board, curTurnColor, myList))
+									if(isCheckmate(board, curTurnColor == 'w' ? 'b' : 'w', myList))
 									{
 										printf("Checkmate. Winner is AI\n");
 										won = 2;

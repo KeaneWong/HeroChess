@@ -10,7 +10,7 @@ struct TreeNode{
 	MOVE *potMove;//stands for potential move
 	TREENODE *child;
 	TREENODE *nextSibling;
-
+	//int Modifier;	//each move represents a change in the state of the baord's value. This stores that change. CURRENTLY UNUSED: IGNORE
 	
 };
 
@@ -33,6 +33,10 @@ TREENODE *GetNext(TREENODE *node);		//gets next sibling
 MOVE *GetNodeMove(TREENODE *node);
 
 void SetMove(TREENODE *node, MOVE *newMove);
+
+//int GetMod(TREENODE *node);
+
+//void SetMod(TREENODE *node, int newmod);
 
 void DeleteNode(TREENODE *nodeTBD);		//deletes node and only that node
 

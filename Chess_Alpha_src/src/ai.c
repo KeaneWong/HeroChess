@@ -56,16 +56,102 @@ int GetValue(PIECE *myPiece, char curTurnColor)
 	}
 }
 
-int GetTurn(PIECE **myBoard, char computerColor, MLIST *myList)
+int GetAITurn(PIECE **myBoard, char computerColor, MLIST *myList, int Depth)
 {
 
+	TREENODE *myNode;
+	myNode = EmptyNode();
+	char *t1 = (char*)(malloc(sizeof(char)*2));
+	char *t2 = (char*)(malloc(sizeof(char)*2));
+	PIECE *one = NewPiece(' ', ' ');
+	PIECE *two = NewPiece(' ', ' ');
+	MOVE *bestMove = NewMove(one,two,t1,t2);
+	//printf("Checkpoint 1\n");
+	SearchMovesRecursive(myBoard,computerColor, myList, myNode, bestMove, Depth, Depth);
+	//printf("Checkpoint 2\n");
+	char *ss = GetSource(bestMove);
+	char *dd = GetDestination(bestMove);
+	//printf("Checkpoint 3\n");
+	int colS = ss[0]-'A';
+	int rowS = ss[1]-'1';
+	int colD = dd[0]-'A';
+	int rowD = dd[1]-'1';
+	//printf("Checkpoint 4\n");
+	DeleteNodeRecursive(myNode);
+	//printf("Checkpoint 5\n");
+	//printf("%d %d %d %d\n", colS, rowS, colD, rowD);
+	if(MakeMove(myBoard, colS, rowS, colD, rowD, computerColor, myList))
+	{
+		//printf("CheckPoint 6a\n");
+		return 1;
+	}
+	else
+	{
+		//printf("CheckPoint 6b\n");
+		return 0;
+	}
 
 
 
 
+	return 1;
+
+}
 
 
-return 0;
+int SearchMovesRecursive(PIECE **myBoard, char computerColor, MLIST *myList,TREENODE *myNode, MOVE *bestMove, int Depth, int originalDepth)
+{
+	if(Depth <= 0 )
+	{
+		//printf("Made it to sumBoard: %d\n", SumBoard(myBoard,computerColor));
+		return SumBoard(myBoard, computerColor);
+	}
+	if(isCheckmate(myBoard,computerColor,myList))
+	{
+		return -1000000000;//a value to represent negative infinity. 
+	}
+	AllPossibilities(myBoard,computerColor,myList,myNode);
+	//printf("Made it past AllPossibilities\n");
+	TREENODE *sNode = GetChild(myNode);
+	int BestEvaluation = -1000000000;//value to represent negative infinity
+	while(!isEmptyNode(sNode))
+	{
+		//printf("Evaluating children of AllPossibilities\n");
+		MOVE *myMove = GetNodeMove(sNode);
+		char *ss = GetSource(myMove);
+		char *dd = GetDestination(myMove);
+		int colS = ss[0] - 'A';
+		int rowS = ss[1] - '1';
+		int colD = dd[0] - 'A';
+		int rowD = dd[1] - '1';
+		//printf("Made it past the move check\n");
+		PIECE **tempBoard = copyBoard(myBoard);
+		MakeMoveNoAppend(tempBoard, colS, rowS, colD, rowD, computerColor,  myList);
+		char enemyColor = (computerColor == 'w' ? 'b' : 'w');
+		//printf("Recursive Search one level down\n");
+		int Evaluation = 0 - SearchMovesRecursive(tempBoard, enemyColor, myList, sNode, bestMove, Depth-1, Depth);//flip color and analyze board from opponents perspective
+		if(Evaluation > BestEvaluation)
+		{
+			//printf("Rewriting Evaluation to %d\n", Evaluation);
+			BestEvaluation = Evaluation;
+			if(originalDepth==Depth)
+			{
+				bestMove->source[0] = colS+'A';
+				bestMove->source[1] = rowS+'1';
+				bestMove->destination[0] = colD+'A';
+				bestMove->destination[1] = rowD+'1';
+			}
+		}
+		//bestMove = newBestMove;
+
+		deleteBoard(tempBoard);
+		sNode = GetNext(sNode);
+	}
+	//printf("Returning BEstEvaluation %d, ", BestEvaluation);
+	//printf(" moving %s to %s\n", GetSource(bestMove), GetDestination(bestMove));
+
+	return BestEvaluation;
+
 
 }
 
@@ -86,7 +172,9 @@ int SumBoard(PIECE **myBoard, char curTurnColor)
 }
 
 
-MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)//most of this code taken from isCheckMate, evaluates board and determines what move would leave it in the best position
+
+//most of this code taken from isCheckMate, evaluates board and determines what move would leave it in the best position
+MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	PIECE **tempBoard = copyBoard(myBoard);
 	int bestMoveValue = -1000000;//some arbitrary impossibly low number to represent negative infinity
