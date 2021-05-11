@@ -2,7 +2,7 @@
 /* 		HeroChess V1.0 by The Avengineers			*/
 /* 		EECS 22L - University of California, Irvine		*/
 /*									*/
-/* tree.c: contains definitions of structs and functions pertainging to	*/
+/* tree.c: contains definitions of structs and functions pertaining to	*/
 /*			the tree implementation				*/
 /*									*/
 /* Modifications:							*/
