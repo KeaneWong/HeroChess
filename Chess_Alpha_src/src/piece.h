@@ -15,6 +15,7 @@
 #include <stdio.h> 
 #include <string.h> 
 
+/* struct for pieces */
 struct Piece{
 	char type;
 	char color;
@@ -26,6 +27,7 @@ PIECE *NewPiece(char type, char color);
 
 PIECE makeBlank();
 
+/* return player number */
 char GetType(PIECE *mypiece);
 
 char GetColor(PIECE *mypiece);

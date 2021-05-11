@@ -12,6 +12,7 @@
 
 #include "piece.h"
 
+/* structs for pieces */
 PIECE *NewPiece(char type, char color){
 	PIECE *p;
 	p = (PIECE*)malloc(sizeof(PIECE));
@@ -33,7 +34,7 @@ PIECE makeBlank(){
 	return p;
 }
 
-/*return player number*/
+/* return player number */
 char GetType(PIECE *mypiece){
 	return mypiece->type;
 }
