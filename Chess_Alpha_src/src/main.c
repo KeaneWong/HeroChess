@@ -165,7 +165,7 @@ int main(void){
 							else
 							{
 								printf("Doing AI move\n");
-								aisuccess = GetAITurn(board,curTurnColor,myList, 4);
+								aisuccess = GetAITurn(board,curTurnColor,myList, 2);
 							}
 							if(aisuccess == 0)
 							{
@@ -178,6 +178,7 @@ int main(void){
 								{
 									if(isCheckmate(board, curTurnColor == 'w' ? 'b' : 'w', myList))
 									{
+										printBoard(board);
 										printf("Checkmate. Winner is AI\n");
 										won = 2;
 									}

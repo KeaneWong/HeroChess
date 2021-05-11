@@ -564,7 +564,7 @@ int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDesti
 	if(isLeg == 1)
 	{
 		PIECE *removedPiece;//tracking removed piece
-		PIECE *movedPiece = getPiece(myBoard,colSource,rowSource);
+		//PIECE *movedPiece = getPiece(myBoard,colSource,rowSource);
 
 		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
 		{
@@ -988,7 +988,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1001,7 +1001,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1009,7 +1009,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							tempBoard = copyBoard(myBoard);
 						}
 					}
-					for(int p = -1; p <=1; p++)//checking if we can move to any of the adjacent squares as the king and if we can, if we're still in check after moving. If we are then continue, but if we're out of check then return 1
+					for(int p = -1; p <=1; p++)//checking if we can move to any of the adjacent squares as the king and if we can, if we're still in check after moving. If we are then continue, but if we're out of check then return 0
 					{
 						for(int o = -1; o <=1; o++)
 						{
@@ -1020,7 +1020,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 									if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1044,7 +1044,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 									if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1060,7 +1060,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 								if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1081,7 +1081,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1094,7 +1094,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1107,7 +1107,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1120,7 +1120,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1144,7 +1144,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							if(!isChecked(tempBoard,curTurnColor))
 							{
 								deleteBoard(tempBoard);
-								return 1;
+								return 0;
 							}
 							else
 							{
@@ -1162,7 +1162,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1180,7 +1180,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							if(!isChecked(tempBoard,curTurnColor))
 							{
 								deleteBoard(tempBoard);
-								return 1;
+								return 0;
 							}
 							else
 							{
@@ -1199,7 +1199,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1212,7 +1212,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1225,7 +1225,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1238,7 +1238,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1251,7 +1251,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1264,7 +1264,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1277,7 +1277,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1290,7 +1290,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 						if(!isChecked(tempBoard,curTurnColor))
 						{
 							deleteBoard(tempBoard);
-							return 1;
+							return 0;
 						}
 						else
 						{
@@ -1313,7 +1313,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1331,7 +1331,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1349,7 +1349,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 							if(!isChecked(tempBoard,curTurnColor))
 							{
 								deleteBoard(tempBoard);
-								return 1;
+								return 0;
 							}
 							else
 							{
@@ -1369,7 +1369,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 									if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1385,7 +1385,7 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 								if(!isChecked(tempBoard,curTurnColor))
 									{
 										deleteBoard(tempBoard);
-										return 1;
+										return 0;
 									}
 									else
 									{
@@ -1402,8 +1402,10 @@ int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates 
 	}
 
 
-	return 2;
+	return 1;
 }
+
+
 
 
 

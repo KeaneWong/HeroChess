@@ -25,7 +25,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 
 int isChecked(PIECE **myBoard, char turnColor);
 
-int isCheckmate(PIECE **myBoard, char turnColor, MLIST *myList);
+int isCheckmate(PIECE **myBoard, char turnColor, MLIST *myList);//RETURNS A 2 is ISCHECKMATE
 
 
 //private functions
