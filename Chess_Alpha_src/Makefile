@@ -20,11 +20,11 @@ LFLAGS = -ansi -std=c99 -Wall
 
 # executables and replay files
 DESIGN	= bin/HeroChess
-#TEST	= bin/TestHeroChess
+TEST	= bin/TestHeroChess
 TXT	= bin/*.txt
 SRC	= src/*.o
 
-all: HeroChess 
+all: HeroChess TestHeroChess
 
 
 ########### generate object files ###########
@@ -66,31 +66,34 @@ replay.o: src/board.h src/piece.h src/move.h src/game.h src/board.h src/movelist
 	$(CC) $(CFLAGS) src/replay.c -o src/replay.o
 
 #target to generate main.o
-main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.c
-	$(CC) $(CFLAGS) src/main.c -o src/main.o -DDEBUG
+main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
+	$(CC) $(CFLAGS) src/main.c -o src/main.o
 
-#target to generate testmain.o (main.o with debug on)
-#testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.c
-#	$(CC) $(CFLAGS) src/main.c -o src/testmain.o -DDEBUG  
+#target to generate testmain.o
+#testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
+#	$(CC) $(CFLAGS) $(DEBUG) -c src/main.c -o src/testmain.o
 
-########### generate executables ###########
 
+############# generate executables #############
 # target to generate HeroChess
 HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
 	$(CC) $(LFLAGS) src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/HeroChess -lm
 
+src/testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
+	gcc -c -DDEBUG -Wall -std=c99 src/main.c -o src/testmain.o
+
 # target to generate HeroChess with test mode on
-#TestHeroChess: src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
-#	$(CC) $(LFLAGS) src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/HeroChess -lm
+TestHeroChess: src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
+	$(CC) $(LFLAGS) src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/TestHeroChess -lm
 
 # delete all executables currently in the source and binary directories
 clean:
 	rm -f $(DESIGN) $(TEST) $(TXT) $(SRC)
 
 # test game
-#test: 
-#	./bin/TestHeroChess
+test: 
+	./TestHeroChess	
 
 # tar the source code package
 tar:
-	tar zcvf Chess_V1.0_src.tar.gz Chess_V1.0_src
+	tar zcvf Chess_V1.0_src.tar.gz Chess_V1.0_src   
