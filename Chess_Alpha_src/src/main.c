@@ -11,11 +11,13 @@
 #include "replay.h"
 #include "ai.h"
 #define INPUT_BUFFER 20
+
 // print menu function declaration
 int mainmenu(void);
 int convertColumn(char a);
 int convertRow(char b);
 void undo(PIECE **board, MLIST *myList);
+
 // main function
 int main(void){
 	PIECE **board = makeBoard();
@@ -301,6 +303,7 @@ int mainmenu()
 	return select;
 }
 
+// quit at anytime; error handling; converts column
 int convertColumn(char a)
 {
 	int column1;
@@ -320,11 +323,14 @@ int convertColumn(char a)
 	}
 	return column1;
 }
+
+// converts row 
 int convertRow(char b)
 {
 	return b-'1';
 }
 
+// undo player move
 void undo(PIECE **board, MLIST *l){
 	int i = 0;
 	int cs, rs, cd ,rd;
@@ -343,5 +349,4 @@ void undo(PIECE **board, MLIST *l){
 	}	
 }
 
-
-
+// EOF //

@@ -48,7 +48,8 @@ void PrintMoveList(MLIST *l);
 /* append a move at end of list */
 void AppendMove(MLIST *l, PIECE *piece, PIECE *removedpiece, int colS, int rowS, int colD, int rowD);
 
-void PrependStudent(MLIST *l, MOVE *m);
+/* prepend a move to the beginning of list */
+// void PrependStudent(MLIST *l, MOVE *m);
 
 /* remove the last move from the list */
 MOVE *RemoveLastMove(MLIST *l);
@@ -58,5 +59,7 @@ MOVE *RemoveFirstMove(MLIST *l);
 
 /* length of the move list*/
 int GetLength(MLIST *l);
+
 #endif
 
+// EOF //

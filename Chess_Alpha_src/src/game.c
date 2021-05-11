@@ -5,6 +5,7 @@
 #include "board.h"
 #include "movelist.h"
 
+// wrapper function that calls other isLegal functions on a case by case basis
 int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 	if( colDestination < 0 || colDestination > 7 || rowDestination < 0 || rowDestination > 7 )
@@ -248,6 +249,7 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 
 }
 
+// checks that pawn's destination is at most 2 spaces ahead for the first turn then 1 space ahead; supports en passant
 int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 
@@ -301,6 +303,7 @@ int isLegalPawn(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	return 0;//if it didnt get caught by any of the above then its invalid
 }
 
+// checks that knight's destination is 2 spaces vertically and 1 space horizontally; checks if destination is empty or has enemy piece
 int isLegalKnight(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 	if( (abs(rowSource - rowDestination) == 1 && abs(colSource-colDestination) == 2) || (abs(rowSource - rowDestination) == 2 && abs(colSource-colDestination) == 1) )//we only need to check if the knight's new position is an l shape and thats it
@@ -313,6 +316,7 @@ int isLegalKnight(PIECE** myBoard, int colSource, int rowSource, int colDestinat
 	}
 }
 
+// checks that rook's destination is any space vertical or horizontal to it; checks for enemy piece at destination; supports castling
 int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 	int directionToGo;
@@ -352,6 +356,7 @@ int isLegalRook(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	}
 }
 
+// checks that bishop's destination is any space diagonal to it; checks for enemy pieces at its destination
 int isLegalBishop(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 	int directionToGoX;
@@ -378,6 +383,7 @@ int isLegalBishop(PIECE** myBoard, int colSource, int rowSource, int colDestinat
 	}
 }
 
+// checks that queen's destination is any space in any direction; checks for enemy pieces at its destination
 int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)//this function is just a combination of rook and bishop
 {
 	int directionToGo; //the straight move direction check
@@ -428,6 +434,7 @@ int isLegalQueen(PIECE** myBoard, int colSource, int rowSource, int colDestinati
 	}
 }
 
+// checks that king's destination is one space in any direction; supports castling
 int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor)
 {
 	if(GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R')//if other piece is a friendly rook
@@ -487,6 +494,7 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 	}
 }
 
+// determines if move is legal and then executes it
 int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);	
@@ -558,7 +566,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 }
 
 
-//used to makemove on the board but without appending to myList;
+// used to makemove on the board but without appending to myList
 int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);
@@ -630,7 +638,7 @@ int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDesti
 }
 
 
-//wrapper function that calls the other ischecked functions much like how the islegal function works. 
+// wrapper function that calls the other ischecked functions much like how the isLegal function works. 
 int isChecked(PIECE **myBoard, char curTurnColor){
 	int found = 0;
 	int colKing;
@@ -680,10 +688,7 @@ int isChecked(PIECE **myBoard, char curTurnColor){
 
 }
 
-
-
-
-
+// checks for rooks or queens horizontal or vertical of the piece at colKing and rowKing
 int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//checks if the king at colKing is checked by a rook or queen
 {
 
@@ -758,6 +763,7 @@ int isCheckedByRQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//c
 
 }
 
+// checks for bishops or queens diagonal in all directions of the piece at colKing and rowKing
 int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 {
 	int i;
@@ -825,6 +831,7 @@ int isCheckedByBQ(PIECE **myBoard, char enemyColor, int colKing, int rowKing)
 	return 0;//if we found nothing then we return 0
 }
 
+// checks for knights that can check piece at colKing and rowKing
 int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//checks for nights
 {
 	if(colKing+2<8 && rowKing+1<8)
@@ -887,6 +894,7 @@ int isCheckedByN(PIECE **myBoard, char enemyColor, int colKing, int rowKing)//ch
 	return 0;
 }
 
+// checks for pawns that can check piece at colKing and rowKing
 int isCheckedByP(PIECE **myBoard,char enemyColor, int colKing, int rowKing)
 {
 	int forward = (enemyColor == 'w' ? 1 : -1);//determines the forward direction for the enemy piece
@@ -904,6 +912,7 @@ int isCheckedByP(PIECE **myBoard,char enemyColor, int colKing, int rowKing)
 	return 0;
 }
 
+// checks for kings that can check piece at colKing and rowKing
 int isCheckedByK(PIECE **myBoard,char enemyColor, int colKing, int rowKing)//checking all legal spaces around king to see if its another king
 {
 	if(colKing-1 >= 0 && rowKing-1 >= 0)
@@ -965,6 +974,7 @@ int isCheckedByK(PIECE **myBoard,char enemyColor, int colKing, int rowKing)//che
 	return 0;
 }
 
+// returns 1 if isCheckmate
 int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates no checks, 1 indicates a check, 2 indicates a checkmate
 {
 	//char enemyColor = (curTurnColor== 'w' ? 'b' : 'w');
@@ -1450,32 +1460,4 @@ int isCheckedPiece(PIECE **myBoard, char curTurnColor, int colPiece, int rowPiec
 
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// EOF //

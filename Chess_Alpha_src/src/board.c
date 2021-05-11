@@ -29,7 +29,7 @@ void deleteBoard(PIECE **myBoard){
 	free(myBoard);
 }
 
-//  
+// returns copy of board 
 PIECE **copyBoard(PIECE **myBoard){
 	int i = 0, j = 0;
 	PIECE **newBoard = makeBoard();
@@ -48,6 +48,7 @@ PIECE *getPiece(PIECE **myBoard, int col, int row){
 	return p;
 }
 
+// returns copy of piece
 PIECE getCopy(PIECE **myBoard, int col, int row){
 	PIECE p = myBoard[col][row];
 	return p;

@@ -5,6 +5,7 @@
 #include "board.h"
 #include "move.h"
 
+// returns value based on type of inputted piece; positive values for friendly pieces and negative values for enemy pieces
 int GetValue(PIECE *myPiece, char curTurnColor)
 {
 	char type = GetType(myPiece);
@@ -56,6 +57,7 @@ int GetValue(PIECE *myPiece, char curTurnColor)
 	}
 }
 
+// A function to makemove on the AI's behalf based on what its turn is; recursively searches to a depth of moves equal to Depth
 int GetAITurn(PIECE **myBoard, char computerColor, MLIST *myList, int Depth)
 {
 
@@ -98,7 +100,7 @@ int GetAITurn(PIECE **myBoard, char computerColor, MLIST *myList, int Depth)
 
 }
 
-
+// a helper function to recursively look through the various levels of moves
 int SearchMovesRecursive(PIECE **myBoard, char computerColor, MLIST *myList,TREENODE *myNode, MOVE *bestMove, int Depth, int originalDepth)
 {
 	if(Depth <= 0 )
@@ -155,7 +157,7 @@ int SearchMovesRecursive(PIECE **myBoard, char computerColor, MLIST *myList,TREE
 
 }
 
-
+// determines worth of board by adding all pieces' values; analyzes risks and benefits
 int SumBoard(PIECE **myBoard, char curTurnColor)
 {
 	int sumValue = 0;
@@ -172,8 +174,7 @@ int SumBoard(PIECE **myBoard, char curTurnColor)
 }
 
 
-
-//most of this code taken from isCheckMate, evaluates board and determines what move would leave it in the best position
+// most of this code taken from isCheckMate; evaluates board and determines what move would leave it in the best position
 MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	PIECE **tempBoard = copyBoard(myBoard);
@@ -635,7 +636,7 @@ MOVE *HighestEval(PIECE **myBoard, char curTurnColor, MLIST *myList)
 
 }
 
-
+// gets every single possible move on the board and stores them as children to root, all connected to one another by pointer links
 void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENODE *root)
 {
 	PIECE **tempBoard = copyBoard(myBoard);
@@ -982,12 +983,7 @@ void AllPossibilities(PIECE **myBoard, char curTurnColor, MLIST *myList, TREENOD
 
 }
 
-
-
-
-
-
-
+// make a move without appending it to myList, instead adds move to an empty node or blanknode; similar to MakeMoveNoAppend
 int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList, TREENODE *blankNode)
 {
 	int isLeg = isLegal(myBoard,colSource,rowSource,colDestination,rowDestination,curTurnColor, myList);
@@ -1067,8 +1063,7 @@ int MakeMoveAppendNode(PIECE** myBoard, int colSource, int rowSource, int colDes
 	//return 0;
 }
 
-
-
+// makes a random hardcoded opening move from a small library
 int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(SicilianDefense(myBoard,curTurnColor,myList))
@@ -1105,6 +1100,7 @@ int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList)
 
 }
 
+// sicilian defense opening move
 int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'w')
@@ -1123,6 +1119,7 @@ int SicilianDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+// queen's gambit opening move
 int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'w')
@@ -1141,6 +1138,7 @@ int QueensGambit(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+// english opening, opening move
 int EnglishOpening(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'w')
@@ -1154,6 +1152,7 @@ int EnglishOpening(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+// dutch defense opening move
 int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 {
 	if(curTurnColor == 'b' && GetType(getPiece(myBoard,3,3)) == 'P')
@@ -1167,23 +1166,4 @@ int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// EOF //

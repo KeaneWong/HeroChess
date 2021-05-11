@@ -44,8 +44,8 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 // wrapper function that calls the other isChecked functions much like how the isLegal function works
 int isChecked(PIECE **myBoard, char turnColor);
 
-int isCheckmate(PIECE **myBoard, char turnColor, MLIST *myList);//RETURNS A 1 if ISCHECKMATE
-
+// returns 1 if isCheckmate
+int isCheckmate(PIECE **myBoard, char turnColor, MLIST *myList);
 
 
 // private functions
@@ -65,7 +65,7 @@ int isCheckedByP(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
 int isCheckedByK(PIECE **myBoard, char enemyColor, int colKing, int rowKing);
 
 
-//makeMove but doesnt modify myList
+// makeMove but doesnt modify myList
 int MakeMoveNoAppend(PIECE** myBoard, int colSource, int rowSource, int colDestination, int rowDestination, char curTurnColor, MLIST *myList);
 
 

@@ -31,9 +31,7 @@ static MENTRY *NewMoveEntry(MOVE *m){
 	e->prev = NULL; 
 	e->move = m; 
 	return e; 
-}
- 
-/* end of NewMoveEntry */
+} /* end of NewMoveEntry */
 
 /* deletes a move entry */
 static MOVE *DeleteMoveEntry(MENTRY *e){
@@ -155,7 +153,7 @@ void PrintMoveList(MLIST *l){
 		PrintMove(e->move);
 		e = e->next;
 	}
-} /* end of PrintStudentList */
+} /* end of PrintMoveList */
 
 /* length of the move list */
 int GetLength(MLIST *l){

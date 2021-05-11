@@ -25,7 +25,7 @@ PIECE **makeBoard();
 // deletes the board, freeing the memory and deallocating the array
 void deleteBoard(PIECE **myBoard);
 
-//
+// returns copy of board
 PIECE **copyBoard(PIECE **myBoard);
 
 // returns piece at position colrow
@@ -55,6 +55,7 @@ int isEmpty(PIECE **myBoard, int col, int row);
 // checks if pawn reached the opposite end of the board and asks user type of piece they want to promote to
 void checkForPromotion(PIECE **myBoard);
 
+// returns copy of piece
 PIECE getCopy(PIECE **myBoard, int col, int row);
 
 #endif
