@@ -1,8 +1,12 @@
 /************************************************************************/
-/* settings.c: player and game settings menu and handling for HeroChess */
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* settings.c: contains definitions of functions related to player and	*/
+/*				and game handling			*/
 /* 									*/
 /* Modifications:							*/
-/* Date			Author			Description		*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
 /* 2021/05/02		Irania Mazariegos	Added timer functions	*/
 /* 2021/05/01		Rachel Villamor		Initial Version		*/
 /************************************************************************/

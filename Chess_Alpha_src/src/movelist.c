@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* movelist.c: contains defintions of functions related to the list of	*/
+/*				moves					*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/23		Keane Wong		Initial Version		*/
+/************************************************************************/
+
 #include "movelist.h"
 #include <stdlib.h> 
 #include <stdio.h> 
@@ -19,9 +31,11 @@ static MENTRY *NewMoveEntry(MOVE *m){
 	e->prev = NULL; 
 	e->move = m; 
 	return e; 
-} 
+}
+ 
 /* end of NewMoveEntry */
 
+/* deletes a move entry */
 static MOVE *DeleteMoveEntry(MENTRY *e){
   MOVE *m; 
 	assert(e); 
@@ -60,6 +74,7 @@ void DeleteMoveList(MLIST *l){
 	free(l);
 }
 
+/* append a move at end of list */
 void AppendMove(MLIST *l, PIECE *piece, PIECE *removedPiece, int colS, int rowS, int colD, int rowD){
 	MENTRY *e = NULL; 
 	MOVE *m = NULL;
@@ -92,6 +107,7 @@ void AppendMove(MLIST *l, PIECE *piece, PIECE *removedPiece, int colS, int rowS,
 	
 }
 
+/* remove the last move form the list */
 MOVE *RemoveLastMove(MLIST *l){
 	MENTRY *e = NULL; 
 	assert(l); 
@@ -113,6 +129,7 @@ MOVE *RemoveLastMove(MLIST *l){
 	} 
 }
 
+/* remove the first element from the list */
 MOVE *RemoveFirstMove(MLIST *l) {
 	MENTRY *e = NULL; 
 	assert(l); 
@@ -129,7 +146,7 @@ MOVE *RemoveFirstMove(MLIST *l) {
 	{ return(NULL); } 
 }
 
-/* print a student list */
+/* print a move list */
 void PrintMoveList(MLIST *l){
 	MENTRY *e;
 	assert(l);
@@ -140,7 +157,9 @@ void PrintMoveList(MLIST *l){
 	}
 } /* end of PrintStudentList */
 
+/* length of the move list */
 int GetLength(MLIST *l){
 	return l->length;
 }
 
+// EOF //

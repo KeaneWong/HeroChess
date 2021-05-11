@@ -1476,3 +1476,4 @@ int isCheckedPiece(PIECE **myBoard, char curTurnColor, int colPiece, int rowPiec
 
 
 
+

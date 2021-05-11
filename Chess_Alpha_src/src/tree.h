@@ -1,3 +1,14 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* tree.h: contains declarations of struct and functions in tree.c	*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/05/06		Keane Wong		Initial Version		*/
+/************************************************************************/
+
 #ifndef TREE_H
 #define TREE_H
 #include <stdio.h>

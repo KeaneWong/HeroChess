@@ -1,3 +1,15 @@
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* piece.c: contains defintions of structs and functions related to the	*/
+/*				chess pieces				*/
+/*									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/04/17		Paul Lee		Initial Version		*/
+/************************************************************************/
+
 #include "piece.h"
 
 PIECE *NewPiece(char type, char color){
@@ -30,6 +42,6 @@ char GetColor(PIECE *mypiece){
 	return mypiece->color;
 }
 
-void promote(PIECE *mypiece, char c){
+void SetType(PIECE *mypiece, char c){
 	mypiece->type = c;
 }

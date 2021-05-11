@@ -1,11 +1,14 @@
-/**************************************************************************/
-/*  settings.h: declarations of functions in settings.c                   */
-/*                                                                        */
-/* Modifications:                                                         */
-/* Date         Author                        Description                 */
-/* 2021/05/02   Irania Mazariegos             Added timer functions       */
-/* 2021/05/01   Rachel Villamor               Initial Version             */
-/**************************************************************************/
+/************************************************************************/
+/* 		HeroChess V1.0 by The Avengineers			*/
+/* 		EECS 22L - University of California, Irvine		*/
+/*									*/
+/* settings.h: contains declarations of functions in settings.c		*/
+/* 									*/
+/* Modifications:							*/
+/* Date (YYYY/MM/DD)	Author			Description		*/
+/* 2021/05/02		Irania Mazariegos	Added timer functions	*/
+/* 2021/05/01		Rachel Villamor		Initial Version		*/
+/************************************************************************/
 
 #ifndef SETTINGS_H
 #define SETTINGS_H
