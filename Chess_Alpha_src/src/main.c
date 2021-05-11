@@ -49,7 +49,8 @@ int main(void){
 
 				while(won!=2)
 				{
-					printBoard(board);	
+					printBoard(board);
+					printf("To quit the game at any point, enter Q or q.\n");	
 					printf("Player %d pick your piece: \n", curTurnColor=='w' ? wp:bp);
 					fgets(str,INPUT_BUFFER,stdin);
 					int column1;
@@ -114,7 +115,8 @@ int main(void){
 				char u;
 				while(won!=2)
 				{
-					printBoard(board);	
+					printBoard(board);
+					printf("To quit the game at any point, enter Q or q.\n");	
 					printf("Player white pick your piece: \n");
 					scanf("%[^\n]%*c", str);
 					//fgets(str,INPUT_BUFFER,stdin);
@@ -302,7 +304,12 @@ int mainmenu()
 int convertColumn(char a)
 {
 	int column1;
-	if((a>'H' && a < 'a') || a  <'A' || a > 'h')
+	if( a == 'Q' || a == 'q' )
+	{
+		printf("Quitting game... Thanks for playing!\n");
+		exit(0);	
+	}
+	else if((a>'H' && a < 'a') || a  <'A' || a > 'h')
 	{
 		printf("Error: Out of bounds column option\n");
 		column1 = -1;
