@@ -23,6 +23,7 @@
 #include "board.h"
 
 
+/* function to generate game replay file */
 void replay(MLIST *l);
 
 void printFormat(FILE *fptr, char *fname);
