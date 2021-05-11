@@ -23,7 +23,7 @@ int main(void){
 	initializeBoard(board);
 	MLIST *myList = NewMoveList();
 
-	#ifndef DEBUG				///MAIN PROGRAM: NON-DEBUG MODE
+					///MAIN PROGRAM: NON-DEBUG MODE
 	char str[INPUT_BUFFER];//input buffer
 
 	// welcome message prints once at the start of the first game
@@ -277,7 +277,7 @@ int main(void){
 		}
 		
 	}
-	#endif
+	
 
 
 	#ifdef DEBUG
