@@ -418,8 +418,8 @@ void unitTest(){
 void gameTest(){
 	printf("System Test...\n");
 	PIECE **testBoard = makeBoard();
-	printBoard(testBoard);
 	initializeBoard(testBoard);
+	printBoard(testBoard);
 	MLIST *testList = NewMoveList();
 	MakeMove(testBoard, 4, 1, 4, 3,'w',testList);
 	printBoard(testBoard);
