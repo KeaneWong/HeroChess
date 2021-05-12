@@ -37,7 +37,7 @@ void replay(MLIST *l){
 	year = local->tm_year + 1900;   
 	hours = ((hours < 12) ? hours : hours-12);
 	
-	sprintf(fname, "replay %d-%d-%d %d:%d:%d.txt", year, month, day, hours, minutes, seconds);	
+	sprintf(fname, "bin/replay %d-%d-%d %d:%d:%d.txt", year, month, day, hours, minutes, seconds);	
 
 	fptr = fopen(fname, "w");
 
