@@ -88,7 +88,7 @@ clean:
 
 # test game
 test: 
-	./TestHeroChess	
+	./bin/TestHeroChess	
 
 # tar the source code package
 tar:
