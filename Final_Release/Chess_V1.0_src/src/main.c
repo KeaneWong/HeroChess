@@ -16,11 +16,13 @@ int mainmenu(void);
 int convertColumn(char a);
 int convertRow(char b);
 void undo(PIECE **board, MLIST *myList);
+void unitTest();
 void gameTest();
 // main function
 int main(void){
 	#ifdef DEBUG
-    gameTest();
+	unitTest(); 
+   	gameTest();
 	#else
 	PIECE **board = makeBoard();
 	initializeBoard(board);
@@ -341,8 +343,82 @@ void undo(PIECE **board, MLIST *l){
 	}	
 }
 
+void unitTest(){
+	printf("Testing piece.c...\n\n");
+	
+	printf("Creating a White Pawn\n");
+	PIECE *p = NewPiece('P', 'w');
+	printf("Color: %c Type: %c\n\n", GetColor(p), GetType(p));
+	
+	printf("Creating a black Queen\n");
+	PIECE *q = NewPiece('Q', 'b');
+	printf("Color: %c Type: %c\n\n", GetColor(q), GetType(q));
+	
+	printf("Creating a blank space\n");
+	PIECE b = makeBlank();
+	printf("Color: %c Type: %c\n\n", GetColor(&b), GetType(&b));
+	
+	printf("Setting the White Pawn to White Bishop\n");
+	SetType(p, 'B');
+	printf("Color: %c Type: %c\n\n", GetColor(p), GetType(p));
+
+	printf("----------------------------------------------------\n");
+
+	printf("testing board.c...\n");
+    PIECE **testBoard = makeBoard();
+    printf("Creating a new board...\n");
+    int i = 0, j = 0;
+	for(i = 0; i < 8; i++){
+		for(j = 0; j < 8; j++){
+			PIECE e = makeBlank();
+			placePiece(testBoard, &e, i, j);
+		}
+	}
+	printBoard(testBoard);
+	printf("Placing Pieces\n");
+	placePiece(testBoard, p, 3, 3);
+	placePiece(testBoard, p, 1, 6);
+	placePiece(testBoard, q, 7, 2);	
+	printBoard(testBoard);	
+	
+	printf("\nChecking for empty squares...\n");
+	printf("Square H3 is %s\n", isEmpty(testBoard, 7, 2) ? "Empty" : "Not empty" );	
+	printf("Square A1 is %s\n", isEmpty(testBoard, 1, 1) ? "Empty" : "Not empty" );
+	
+	printf("\nMoving pieces...\n");
+	printf("Moving White Bishop in D4 to E5\n");
+	movePiece(testBoard, 3, 3, 4, 4);
+	printBoard(testBoard);
+	
+	printf("\nRemoving a piece from board\n");
+	removePiece(testBoard, 4, 4);
+	printBoard(testBoard);
+
+	printf("---------------------------------------------------\n");
+	printf("\n\nTesting move and movelist...\n\n");
+	printf("Generating new moves and a movelist\n");
+	MLIST *l = NewMoveList();
+	AppendMove(l, p, q, 1, 1, 1, 2);
+	AppendMove(l, &b, p, 5, 3, 2, 1);
+	AppendMove(l, q, p, 7, 6, 3, 4);
+	printf("Move list\n");
+	PrintMoveList(l);
+
+	printf("\nRemoving the last move\n");
+	RemoveLastMove(l);
+	PrintMoveList(l);
+
+	printf("\nEvaluating moves...\n");
+	printf("Piece moved / source / destination\n");
+	MOVE *t = RemoveFirstMove(l);
+	PrintMove(t);
+
+}
+
 void gameTest(){
+	printf("System Test...\n");
 	PIECE **testBoard = makeBoard();
+	printBoard(testBoard);
 	initializeBoard(testBoard);
 	MLIST *testList = NewMoveList();
 	MakeMove(testBoard, 4, 1, 4, 3,'w',testList);
