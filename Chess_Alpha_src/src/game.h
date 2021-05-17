@@ -44,7 +44,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 // wrapper function that calls the other isChecked functions much like how the isLegal function works
 int isChecked(PIECE **myBoard, char turnColor);
 
-// returns 1 if isCheckmate
+// returns 1 if isCheckmate, does NOT check if the king is currently in check. For a true checkmate, use in conjunction with isChecked
 int isCheckmate(PIECE **myBoard, char turnColor, MLIST *myList);
 
 
