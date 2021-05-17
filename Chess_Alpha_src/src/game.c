@@ -979,10 +979,10 @@ int isCheckedByK(PIECE **myBoard,char enemyColor, int colKing, int rowKing)//che
 int isCheckmate(PIECE **myBoard, char curTurnColor, MLIST *myList)//0 indicates no checks, 1 indicates a check, 2 indicates a checkmate
 {
 	//char enemyColor = (curTurnColor== 'w' ? 'b' : 'w');
-	if(!isChecked(myBoard,curTurnColor))//if theres no check at all then it cant be a checkmate and it returns a 1
+	/*if(!isChecked(myBoard,curTurnColor))//if theres no check at all then it cant be a checkmate and it returns a 1
 	{
 		return 0;	//indicates no check
-	}
+	}*/
 	PIECE **tempBoard = copyBoard(myBoard);
 	for(int i = 0 ; i < 8; i++)//nested loop that goes through entire board, looking for friendly pieces that could potentially end check
 	{

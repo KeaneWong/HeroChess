@@ -108,7 +108,7 @@ int SearchMovesRecursive(PIECE **myBoard, char computerColor, MLIST *myList,TREE
 		//printf("Made it to sumBoard: %d\n", SumBoard(myBoard,computerColor));
 		return SumBoard(myBoard, computerColor);
 	}
-	if(isCheckmate(myBoard,computerColor,myList))
+	if(isChecked(myBoard,computerColor) && isCheckmate(myBoard,computerColor,myList))
 	{
 		return -1000000000;//a value to represent negative infinity. 
 	}

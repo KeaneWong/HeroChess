@@ -19,12 +19,15 @@ void undo(PIECE **board, MLIST *myList);
 void gameTest();
 // main function
 int main(void){
+
+
 	#ifdef DEBUG
     gameTest();
 	#else
 	PIECE **board = makeBoard();
 	initializeBoard(board);
 	MLIST *myList = NewMoveList();
+
 
 				///MAIN PROGRAM: NON-DEBUG MODE
 	char str[INPUT_BUFFER];//input buffer
@@ -95,6 +98,11 @@ int main(void){
 								printf("%c Player is in check.\n",((curTurnColor == 'w') ? 'b' : 'w'));	//
 							}
 						}
+						else if (isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w'), myList))//if the user is in checkmate but not checked it is stalemate
+						{
+							printf("Stalemate reached\n");
+							won = 2;
+						}
 						if(won!=2)
 						{
 							//printf("Flipping color\n");
@@ -114,6 +122,7 @@ int main(void){
 			case 2:
 			{
 				int won = 1;
+
 				char curTurnColor = 'w';
 				int firstTurn = 1;
 				char u;
@@ -161,6 +170,11 @@ int main(void){
 								printf("Human Player is in check.\n");	
 							}
 						}
+						else if (isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w'), myList))//if the user is in checkmate but not checked it is stalemate
+						{
+							printf("Stalemate reached\n");
+							won = 2;
+						}
 						printBoard(board);
 						if(won!=2)
 						{
@@ -200,7 +214,11 @@ int main(void){
 										printf("AI Player is in check.\n");	
 									}
 								}
-								
+								else if (isCheckmate(board, ((curTurnColor == 'w') ? 'b' : 'w'), myList))//if the user is in checkmate but not checked it is stalemate
+								{
+									printf("Stalemate reached\n");
+									won = 2;
+								}
 								if(won!=2)
 								{
 									curTurnColor = (curTurnColor == 'b') ? 'w' : 'b';//flipping turn color while the game still goes on
@@ -348,7 +366,7 @@ void gameTest(){
 	MakeMove(testBoard, 4, 1, 4, 3,'w',testList);
 	printBoard(testBoard);
 	printf("-----------------------------------\n");
-	MakeMove(testBoard, 4, 6, 4, 4,'b',testList);
+	MakeMove(testBoard, 0, 6, 0, 4,'b',testList);
 	printBoard(testBoard);
 	printf("-----------------------------------\n");
 	MakeMove(testBoard, 5, 0, 2, 3,'w',testList);
@@ -360,16 +378,18 @@ void gameTest(){
 	MakeMove(testBoard, 3, 0, 7, 4,'w',testList);
 	printf("-----------------------------------\n");
 	printBoard(testBoard);
-	MakeMove(testBoard, 3, 6, 3, 5,'b',testList);
+	MakeMove(testBoard, 2, 6, 2, 5,'b',testList);
 	printf("-----------------------------------\n");
 	printBoard(testBoard);
-	MakeMove(testBoard, 2, 3, 5, 5,'w',testList);
+	MakeMove(testBoard, 2, 3, 5, 6,'w',testList);
 	printf("-----------------------------------\n");
+
 	printBoard(testBoard);
 	
 	
-	if(isChecked(testBoard, 'b') && isCheckmate(testBoard, 'b', testList)){
-		printf("Checkmate. Winner is player white!");
+	if(isChecked(testBoard, 'b') && isCheckmate(testBoard, 'b', testList))
+	{
+		printf("Checkmate. Winner is player white!\n");
 	}
 	replay(testList);
 }
