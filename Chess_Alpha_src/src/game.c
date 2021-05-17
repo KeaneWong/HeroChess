@@ -180,12 +180,12 @@ int isLegal(PIECE** myBoard, int colSource, int rowSource, int colDestination, i
 					if(distance<0)
 					{
 						movePiece(tempBoard, colSource, rowSource, colSource-2, rowSource);
-						movePiece(tempBoard, colDestination, rowDestination, colDestination + (distance-1),rowDestination);
+						movePiece(tempBoard, colDestination, rowDestination, colSource-1,rowDestination);
 					}
 					else
 					{
 						movePiece(tempBoard, colSource, rowSource, colSource+2, rowSource);
-						movePiece(tempBoard, colDestination, rowDestination, colDestination - (distance-1),rowDestination);
+						movePiece(tempBoard, colDestination, rowDestination, colSource+1,rowDestination);
 					}
 				}
 				else//if we arent castling
@@ -460,7 +460,7 @@ int isLegalKing(PIECE** myBoard, int colSource, int rowSource, int colDestinatio
 		}
 		else if(curTurnColor == 'b')
 		{
-			if(colSource == 3 && rowSource == 7 && rowDestination == 7 && (colDestination == 0 || colDestination == 7))
+			if(colSource == 4 && rowSource == 7 && rowDestination == 7 && (colDestination == 0 || colDestination == 7))
 			{
 				int forward = (colDestination-colSource) > 0 ? 1 : -1;
 				for(int i = colSource + forward; i != colDestination; i+=forward)
@@ -506,6 +506,7 @@ int MakeMove(PIECE** myBoard, int colSource, int rowSource, int colDestination, 
 
 		if(GetType(getPiece(myBoard,colSource,rowSource)) == 'K' && GetType(getPiece(myBoard,colDestination,rowDestination)) == 'R' && GetColor(getPiece(myBoard,colDestination,rowDestination)) == curTurnColor)//checking for castling
 		{
+			//printf("Made it here\n");
 			int directionToGo = (colDestination-colSource) > 0 ? 1 : -1;
 			removedPiece = movePiece(myBoard,colSource, rowSource, colSource + directionToGo*2, rowDestination);//moving king 2 spaces towards rook. The removedPiece should be a blank square
 			movePiece(myBoard,colDestination,rowDestination,colSource+directionToGo,rowDestination);//moving rook to space right next to the kin
