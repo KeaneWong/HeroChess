@@ -124,7 +124,6 @@ int main(int argc, char *argv[])
 	    	if (n < 0)
 	    	{   FatalError("writing to socket failed");
 	    	}
-
 	    }
 	    else if (strcmp("WIN_ACHIEVED W",RecvBuf) == 0)
 	    {
