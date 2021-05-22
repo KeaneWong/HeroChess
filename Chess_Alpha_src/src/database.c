@@ -1,4 +1,5 @@
 /* database program */
+// currently buggy; won't let password be inputted
 
 #include <stdio.h>
 #include <string.h>
@@ -11,12 +12,12 @@ typedef struct data
 
 int main(void)
 {
-	int i, choice;
-	FILE *fp1, *fp2;
+	//int i, choice;
+	FILE *fp1;
 	char oname[100];
 	record det;
-	int recsize;
-	char c;
+	//int recsize;
+	//char c;
 
 	fp1 = fopen("record.txt", "r+");
 	if(fp1 == NULL)
