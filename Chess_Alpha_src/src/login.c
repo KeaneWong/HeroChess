@@ -32,7 +32,7 @@ int main()
 		while (flag == 1) {
 		printf("Enter a unique username(6-8 characters): ");
 		scanf("%s", user);	
-
+		length = strlen(user);
 			if (length > 8)
 			{
 				printf("Username too long! Must be 6-8 characters\n");		
