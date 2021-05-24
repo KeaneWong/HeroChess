@@ -48,6 +48,9 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
     printf("%s: Starting...\n", argv[0]);
 #endif
+    
+    //Code used to verify proper host and port number, as well as initialize socketaddress 
+
     if (argc < 3)
     {   fprintf(stderr, "Usage: %s hostname port\n", Program);
 	exit(10);
@@ -66,6 +69,10 @@ int main(int argc, char *argv[])
     ServerAddress.sin_family = AF_INET;
     ServerAddress.sin_port = htons(PortNo);
     ServerAddress.sin_addr = *(struct in_addr*)Server->h_addr_list[0];
+	
+    //
+
+
     do
     {	
 	if (1)
@@ -112,52 +119,117 @@ int main(int argc, char *argv[])
 	    else if(strcmp("NEW_USERNAME", RecvBuf) == 0)
 	    {
 	    	printf("Welcome, nice to meet you! \n");
-	    	printf("Enter a new username for HeroChess (6-8 characters, no spaces):\n")
-	    	printf("(Suggestions: BlckWdw, FE_Man, THOR)\n")
+	    	printf("Enter a new username for HeroChess (6-8 characters, no spaces):\n");
+	    	printf("(Suggestions: BlckWdw, FE_Man, THOR)\n");
 	    	fgets(SendBuf, sizeof(SendBuf), stdin);
 			l = strlen(SendBuf);
 			if (SendBuf[l-1] == '\n')
 			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
 			}
-			printf("%s: Sending message '%s'...\n", Program, SendBuf);
+			printf("%s: Sending password '%s'...\n", Program, SendBuf);
 	    	n = write(SocketFD, SendBuf, l);
 	    	if (n < 0)
 	    	{   FatalError("writing to socket failed");
 	    	}
 	    }
-	    else if (strcmp("WIN_ACHIEVED W",RecvBuf) == 0)
+	   	else if(strcmp("NEW_PASSWORD", RecvBuf) == 0)
 	    {
-	    	printf("Checkmate; Player White Wins!\n");
-
+	    	printf("Enter a password(8 characters, must contain one number and special character , 4, @, !, *):\n");
+	    	fgets(SendBuf, sizeof(SendBuf), stdin);
+			l = strlen(SendBuf);
+			if (SendBuf[l-1] == '\n')
+			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
+			}
+			printf("%s: Sending password '%s'...\n", Program, SendBuf);
+	    	n = write(SocketFD, SendBuf, l);
+	    	if (n < 0)
+	    	{   FatalError("writing to socket failed");
+	    	}
 	    }
-	   	else if (strcmp("WIN_ACHIEVED B",RecvBuf) == 0)
+	    else if (strcmp("REQUESTING_USERNAME",RecvBuf) == 0)
 	    {
-	    	printf("Checkmate; Player Black Wins!\n");
+			printf("Welcome, back! \n");
+	    	printf("Enter your username:\n");
+	    	fgets(SendBuf, sizeof(SendBuf), stdin);
+			l = strlen(SendBuf);
+			if (SendBuf[l-1] == '\n')
+			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
+			}
+			printf("%s: Sending username '%s'...\n", Program, SendBuf);
+	    	n = write(SocketFD, SendBuf, l);
+	    	if (n < 0)
+	    	{   FatalError("writing to socket failed");
+	    	}
+	    }
+	    else if(strcmp("REQUESTING_PASSWORD", RecvBuf) == 0)
+	    {
+	    	printf("Enter your password:\n");
+	  
+	    	fgets(SendBuf, sizeof(SendBuf), stdin);
+			l = strlen(SendBuf);
+			if (SendBuf[l-1] == '\n')
+			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
+			}
+			printf("%s: Sending password '%s'...\n", Program, SendBuf);
+	    	n = write(SocketFD, SendBuf, l);
+	    	if (n < 0)
+	    	{   FatalError("writing to socket failed");
+	    	}
+	    }
+	    else if(strcmp("INVALID_USERNAME", RecvBuf) == 0)
+	    {
+	    	printf("Error: Invalid username. Please try again\n");
 	    	
+	    }
+	    else if(strcmp("INVALID_PASSWORD", RecvBuf) == 0)
+	    {
+	    	printf("Error: Invalid password. Please try again\n");
+	    	
+	    }
+	    else if (strcmp("REQUESTING_MOVE"),RecvBuf) == 0)
+	    {
+	    	printf("Your move:\n");
+	    	fgets(SendBuf, sizeof(SendBuf), stdin);
+			l = strlen(SendBuf);
+			if (SendBuf[l-1] == '\n')
+			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
+			}
+			printf("%s: Sending move '%s'...\n", Program, SendBuf);
+	    	n = write(SocketFD, SendBuf, l);
+	    	if (n < 0)
+	    	{   FatalError("writing to socket failed");
+	    	}
 	    }
 	    else if (strcmp("INVALID_MOVE",RecvBuf) == 0)
 	    {
 	    	printf("Invalid move: Please enter a new move\n");
 	    }
-	    else if (strcmp("WIN_ACHIEVED",RecvBuf) == 0)
+	    else if (strcmp("WIN_ACHIEVED B",RecvBuf) == 0)
 	    {
+	    	printf("Checkmate; Player Black Wins!\n");
 	    	
 	    }
-	    else if (strcmp("WIN_ACHIEVED",RecvBuf) == 0)
+	    else if (strcmp("WIN_ACHIEVED W",RecvBuf) == 0)
 	    {
-	    	
+	    	printf("Checkmate; Player White Wins!\n");
 	    }
-	    else if (strcmp("WIN_ACHIEVED",RecvBuf) == 0)
+	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
-	    	
+	    	PIECE **myBoard;
+	    	//code to read in board data into myBoard
+	    	n = read(SocketFD, myBoard, sizeof(PIECE*) * 64);
 	    }
-	    else if (strcmp("WIN_ACHIEVED",RecvBuf) == 0)
+	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_W",RecvBuf) == 0)
 	    {
-	    	
+	    	printf("White player is in check\n");
+	    }
+	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_B",RecvBuf) == 0)
+	    {
+	    	printf("Black player is in check\n");
 	    }
 	    else
 	    {
-
+	    	printf("Unknown error code\n");
 	    }
 
 
