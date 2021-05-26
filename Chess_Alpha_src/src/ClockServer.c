@@ -12,7 +12,49 @@
 #include <sys/select.h>
 #include <arpa/inet.h>
 #include <assert.h>
+#include "piece.h"
+#include "board.h"
+#include "game.h"
+#include "movelist.h"
+#include "settings.h"
+#include "replay.h"
+#include "ai.h"
 
+
+//this is a struct that describes a game, 
+//including its associated movelist, board, and whose turn it is
+struct FullGame
+{
+    PIECE **myBoard;
+    MLIST *myList;
+    char curTurnColor;
+    int player_fd_1;
+    int player_fd_2;
+    int isAI;//a datamember that determines if this particular game is being done with an AI, instead of a human
+};
+typedef struct FullGame FullGame;
+
+void InitializeGame(FullGame *myGame)
+{
+    myGame->myBoard = makeBoard();
+    initializeBoard(board);
+    myGame->myList = NewMoveList();
+    myGame->curTurnColor = 'w';
+    player_fd_1 = -1;//signals an empty player fd socket
+    player_fd_2 = -1;
+}
+
+FullGame *NewGame()
+{
+    FullGame *myGame;
+    myGame = (FullGame*)malloc(sizeof(FullGame));
+    if(!myGame)
+    {
+        perror("Out of memory! Aborting...");
+        exit(10);
+    }
+    return myGame;
+}
 /* #define DEBUG */	/* be verbose */
 
 /*** type definitions ****************************************************/
@@ -102,8 +144,8 @@ void PrintCurrentTime(void)	/*  print/update the current real time */
     fflush(stdout);
 } /* end of PrintCurrentTime */
 
-void ProcessRequest(		/* process a time request by a client */
-	int DataSocketFD)
+void ProcessRequest(		/* process a game request by a client */
+	int DataSocketFD, FullGame *myGame)
 {
 	int l, n;
     char RecvBuf[256];	/* message buffer for receiving a message */
@@ -117,12 +159,60 @@ void ProcessRequest(		/* process a time request by a client */
 #ifdef DEBUG
     printf("%s: Received message: %s\n", Program, RecvBuf);
 #endif
+
+
     if (RecvBuf[0] == '+')
     {	
-		RemoveChar(RecvBuf, RecvBuf[0]);
-		strncpy(SendBuf, "MOVE FUNCTION EXECUTED", sizeof(SendBuf)-1);
+        //this just checks if the request is occuring during another player's turn
+        if((curTurnColor == 'w' && DataSocketFD != myGame->player_fd_1 )
+            || (curTurnColor == 'b' && DataSocketFD !=myGame->player_fd_2))
+        {
+            strncpy(SendBuf,"Not currently your turn!",sizeof(SendBuf)-1);
+
+        }
+        else//if it isnt, we continue on
+        {
+        RemoveChar(RecvBuf, RecvBuf[0]);//removing protocol character
+        char curTurnColor = myGame->curTurnColor;//setting turn color to the one stored in myGame
+        char enemyTurnColor = (curTurnColor=='w' ? 'b' : 'w');//enemy's color
+        int colS = RecvBuf[0]-'A';
+        int rowS = RecvBuf[1]-'1';
+        int colD = RecvBuf[2]-'A';
+        int rowD = RecvBuf[3]-'1';
+        PIECE **board = myGame->myBoard;
+        MLIST *myList = myGame->myList;
+        if(!MakeMove(board,colS,rowS,colD,rowD,curTurnColor))
+        {
+            strncpy(SendBuf,"INVALID_MOVE",sizeof(SendBuf)-1);
+        }
+        else
+        {
+            if(isChecked(board,enemyTurnColor))
+            {
+                if(isCheckMate(board,enemyTurnColor,myList) )
+                {
+
+                    strncpy(SendBuf,"WIN_ACHIEVED ",sizeof(SendBuf)-1);
+                    char winningChar = curTurnColor - 32;//this just ascii shifts the char to uppercase
+                    SendBuf[13] = winningChar;
+
+                }
+                else
+                {
+                    strncpy(SendBuf,"SUCCESSFUL_MOVE_CHECK_",sizeof(SendBuf)-1);
+                    char checkedChar = enemyTurnColor-32;
+                    SendBuf[22] = checkedChar;
+                }
+            }
+            myGame->curTurnColor = enemyTurnColor;//flipping turn color
+
+        
+		  strncpy(SendBuf, "MOVE FUNCTION EXECUTED", sizeof(SendBuf)-1);
+        }
+        }
 		SendBuf[sizeof(SendBuf)-1] = 0;
 		strncat(SendBuf, ClockBuffer, sizeof(SendBuf)-1-strlen(SendBuf));
+        
     }
 
     else if (RecvBuf[0] == '/')
@@ -136,6 +226,7 @@ void ProcessRequest(		/* process a time request by a client */
 	/* Modification for chess*/   
 		
 
+
 	l = strlen(SendBuf);
 #ifdef DEBUG
     printf("%s: Sending response: %s.\n", Program, SendBuf);
@@ -144,6 +235,7 @@ void ProcessRequest(		/* process a time request by a client */
     if (n < 0)
     {   FatalError("writing to data socket failed");
     }
+    
 
 
 } /* end of ProcessRequest */
@@ -165,11 +257,44 @@ void ServerMainLoop(		/* simple server main loop */
 
     FD_ZERO(&ActiveFDs);		/* set of active sockets */
     FD_SET(ServSocketFD, &ActiveFDs);	/* server socket is active */
+    //INITIALIZING GAME BOARD: CURRENTLY ONLY ACCEPTING 2 USERS
+    FullGame *myGame = NULL;
+    myGame = NewGame();
+    InitializeGame(myGame);
+    //END OF GAME BOARD INITAILIZATION SEQUENCE
+
     while(!Shutdown)
     {   ReadFDs = ActiveFDs;
 	TimeVal.tv_sec  = Timeout / 1000000;	/* seconds */
 	TimeVal.tv_usec = Timeout % 1000000;	/* microseconds */
-	/* block until input arrives on active sockets or until timeout */
+	
+
+    //CODE TO HANDLE THE GAME
+    if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
+    {
+        int curTurnFD;
+        if(myGame->curTurnColor == 'w')
+        {
+            curTurnFD = myGame->player_fd_1;
+        }
+        else
+        {
+            curTurnFD = myGame->player_fd_2;
+        }
+
+        int n = write(curTurnFD,"PRINT_BOARD",11);
+        if(n<0)
+        {FatalError("Writing to data socket failed");
+        }
+        int n = write(curTurnFD,"REQUESTING_MOVE",15);
+        if(n<0)
+        {FatalError("writing to data socket failed");
+        }
+
+    }
+
+    //ALL CODE AFTER THIS IS HANDLING THE CLIENT'S RESPONSE
+    /* block until input arrives on active sockets or until timeout */
 	res = select(FD_SETSIZE, &ReadFDs, NULL, NULL, &TimeVal);
 	if (res < 0)
 	{   FatalError("wait for input or timeout (select) failed");
@@ -202,13 +327,26 @@ void ServerMainLoop(		/* simple server main loop */
 				ntohs(ClientAddress.sin_port));
 #endif
 			FD_SET(DataSocketFD, &ActiveFDs);
+
+                //CODE TO ADD NEW USER TO AVAILABLE GAME BOARD
+                //This code adds the new client to the first available file descriptor
+                if(myGame->player_fd_1 == -1)
+                {
+                    player_fd_1 = DataSocketFd;
+                }
+                else if (myGame->player_fd_2 == -1)
+                {
+                    player_fd_2 = DataSocketFd;
+                }
+                //END OF CODE TO ADD NEW USER TO AVAILABLE GAME BOARD FD's
+
 		    }
 		    else
 		    {   /* active communication with a client */
 #ifdef DEBUG
 			printf("%s: Dealing with client %d...\n", Program, i);
 #endif
-			HandleClient(i);
+			HandleClient(i, myGame);
 #ifdef DEBUG
 			printf("%s: Closing client %d connection.\n", Program, i);
 #endif
@@ -216,6 +354,7 @@ void ServerMainLoop(		/* simple server main loop */
 			FD_CLR(i, &ActiveFDs);
 		    }
 		}
+
 	    }
 	}
     }
@@ -253,5 +392,40 @@ int main(int argc, char *argv[])
     close(ServSocketFD);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* EOF ClockServer.c */

@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
 	    }
 	    else
 	    {
-	    	printf("Unknown error code\n");
+	    	printf("Message from Server: %s\n", RecvBuf);//else, print the displayed message
 	    }
 
 
