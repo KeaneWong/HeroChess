@@ -126,8 +126,31 @@ int main(void){
 				char curTurnColor = 'w';
 				int firstTurn = 1;
 				char u;
+				printf("Would you like to be player 1 or 2?");
+				int pp;
+				scanf("%d",&pp);
+				while ((getchar()) != '\n');
+				if(pp == 2)
+				{
+					int aisucc = MakeOpeningMove(board,curTurnColor,myList);
+
+					if(aisucc)
+					{
+					curTurnColor = (curTurnColor=='w' ? 'b' : 'w');
+					firstTurn = 0;
+					}
+					else
+					{
+						printf("Unknown error opening move\n");
+						exit = 1;
+						return 1;
+					}
+
+
+				}
 				while(won!=2)
 				{
+					char enemyColor = (curTurnColor=='w' ? 'b' : 'w');
 					printBoard(board);
 					printf("To quit the game at any point, enter Q or q.\n");	
 					printf("Player white pick your piece: \n");
@@ -158,9 +181,9 @@ int main(void){
 					}
 					else if (success == 1)
 					{
-						if(isChecked(board,'b'))
+						if(isChecked(board,enemyColor))
 						{
-							if(isCheckmate(board, 'b', myList))
+							if(isCheckmate(board, enemyColor, myList))
 							{
 								printf("Checkmate. Winner is Human\n");
 								won = 2;
@@ -183,7 +206,7 @@ int main(void){
 							curTurnColor = (curTurnColor == 'w' ? 'b' : 'w') ; 
 							
 							//MOVE *highesteval;
-							if(firstTurn)
+							if(firstTurn == 1)
 							{
 								printf("Opening move\n");
 								aisuccess = MakeOpeningMove(board, curTurnColor, myList);
@@ -192,7 +215,7 @@ int main(void){
 							else
 							{
 								printf("Doing AI move\n");
-								aisuccess = GetAITurn(board,curTurnColor,myList, 2);
+								aisuccess = GetAITurn(board,curTurnColor,myList, 4);
 							}
 							if(aisuccess == 0)
 							{
