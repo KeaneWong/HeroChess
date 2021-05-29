@@ -181,7 +181,7 @@ void ProcessRequest(        /* process a game request by a client */
         int rowD = RecvBuf[3]-'1';
         PIECE **board = myGame->myBoard;
         MLIST *myList = myGame->myList;
-        if(!MakeMove(board,colS,rowS,colD,rowD,curTurnColor))
+        if(!MakeMove(board,colS,rowS,colD,rowD,curTurnColor,myList))
         {
             strncpy(SendBuf,"INVALID_MOVE",sizeof(SendBuf)-1);
         }

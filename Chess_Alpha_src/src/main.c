@@ -122,13 +122,12 @@ int main(void){
 			case 2:
 			{
 				int won = 1;
-
 				char curTurnColor = 'w';
 				int firstTurn = 1;
 				char u;
 				printf("Would you like to be player 1 or 2?");
 				int pp;
-				scanf("%d",&pp);
+				scanf("%d\n",&pp);
 				while ((getchar()) != '\n');
 				if(pp == 2)
 				{
@@ -148,8 +147,13 @@ int main(void){
 
 
 				}
+				int numRounds = 0;
 				while(won!=2)
 				{
+
+					numRounds++;
+
+					printf("Rounds have Elapsed: %d\n",numRounds);
 					char enemyColor = (curTurnColor=='w' ? 'b' : 'w');
 					printBoard(board);
 					printf("To quit the game at any point, enter Q or q.\n");	
@@ -215,7 +219,7 @@ int main(void){
 							else
 							{
 								printf("Doing AI move\n");
-								aisuccess = GetAITurn(board,curTurnColor,myList, 3);
+								aisuccess = GetAITurn(board,curTurnColor,myList, 4);
 							}
 							if(aisuccess == 0)
 							{
