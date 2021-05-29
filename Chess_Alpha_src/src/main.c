@@ -215,7 +215,7 @@ int main(void){
 							else
 							{
 								printf("Doing AI move\n");
-								aisuccess = GetAITurn(board,curTurnColor,myList, 4);
+								aisuccess = GetAITurn(board,curTurnColor,myList, 3);
 							}
 							if(aisuccess == 0)
 							{
@@ -224,6 +224,7 @@ int main(void){
 							}
 							else if (aisuccess == 1)
 							{
+								AIPromote(board);
 								if(isChecked(board,curTurnColor == 'w' ? 'b' : 'w'))
 								{
 									if(isCheckmate(board, curTurnColor == 'w' ? 'b' : 'w', myList))

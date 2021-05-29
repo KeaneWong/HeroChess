@@ -24,7 +24,7 @@ TEST	= bin/TestHeroChess
 TXT	= bin/*.txt
 SRC	= src/*.o
 
-all: HeroChess TestHeroChess
+all: HeroChess TestHeroChess Server
 
 
 ########### generate object files ###########
@@ -69,9 +69,13 @@ replay.o: src/board.h src/piece.h src/move.h src/game.h src/board.h src/movelist
 main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
 	$(CC) $(CFLAGS) src/main.c -o src/main.o
 
+server.o: src/server.c src/piece.h src/game.h src/board.h src/movelist.h src/settings.h src/replay.h src/ai.h
+	$(CC) $(CFLAGS) src/server.c -o src/server.o -lm
+
 #target to generate testmain.o
 src/testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
 	gcc -c -DDEBUG -Wall -std=c99 src/main.c -o src/testmain.o
+
 
 ############# generate executables #############
 # target to generate HeroChess
@@ -81,6 +85,9 @@ HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.
 # target to generate HeroChess with test mode on
 TestHeroChess: src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
 	$(CC) $(LFLAGS) src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/TestHeroChess -lm
+
+Server: src/server.o src/settings.o src/game.o src/board.o src/piece.o src/movelist.o src/replay.o src/ai.o 
+	$(CC) $(LFLAGS) src/server.o src/settings.o src/game.o src/board.o src/piece.o src/movelist.o src/replay.o src/ai.o -o bin/Server -lm
 
 # delete all executables currently in the source and binary directories
 clean:

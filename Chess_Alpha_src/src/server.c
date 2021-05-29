@@ -37,11 +37,11 @@ typedef struct FullGame FullGame;
 void InitializeGame(FullGame *myGame)
 {
     myGame->myBoard = makeBoard();
-    initializeBoard(board);
+    initializeBoard(myGame->myBoard);
     myGame->myList = NewMoveList();
     myGame->curTurnColor = 'w';
-    player_fd_1 = -1;//signals an empty player fd socket
-    player_fd_2 = -1;
+    myGame->player_fd_1 = -1;//signals an empty player fd socket
+    myGame->player_fd_2 = -1;
 }
 
 FullGame *NewGame()
@@ -55,21 +55,21 @@ FullGame *NewGame()
     }
     return myGame;
 }
-/* #define DEBUG */	/* be verbose */
+/* #define DEBUG */ /* be verbose */
 
 /*** type definitions ****************************************************/
 
-typedef void (*ClientHandler)(int DataSocketFD);
+typedef void (*ClientHandler)(int DataSocketFD, FullGame *myGame);
 typedef void (*TimeoutHandler)(void);
 
 /*** global variables ****************************************************/
 
-const char *Program	/* program name for descriptive diagnostics */
-	= NULL;
-int Shutdown		/* keep running until Shutdown == 1 */
-	= 0;
-char ClockBuffer[26]	/* current time in printable format */
-	= "";
+const char *Program /* program name for descriptive diagnostics */
+    = NULL;
+int Shutdown        /* keep running until Shutdown == 1 */
+    = 0;
+char ClockBuffer[26]    /* current time in printable format */
+    = "";
 
 /*** global functions ****************************************************/
 
@@ -88,8 +88,8 @@ void RemoveChar( char str[], char t )
 }
 
 
-void FatalError(		/* print error diagnostics and abort */
-	const char *ErrorMsg)
+void FatalError(        /* print error diagnostics and abort */
+    const char *ErrorMsg)
 {
     fputs(Program, stderr);
     fputs(": ", stderr);
@@ -99,8 +99,8 @@ void FatalError(		/* print error diagnostics and abort */
     exit(20);
 } /* end of FatalError */
 
-int MakeServerSocket(		/* create a socket on this server */
-	uint16_t PortNo)
+int MakeServerSocket(       /* create a socket on this server */
+    uint16_t PortNo)
 {
     int ServSocketFD;
     struct sockaddr_in ServSocketName;
@@ -115,41 +115,41 @@ int MakeServerSocket(		/* create a socket on this server */
     ServSocketName.sin_port = htons(PortNo);
     ServSocketName.sin_addr.s_addr = htonl(INADDR_ANY);
     if (bind(ServSocketFD, (struct sockaddr*)&ServSocketName,
-		sizeof(ServSocketName)) < 0)
+        sizeof(ServSocketName)) < 0)
     {   FatalError("binding the server to a socket failed");
     }
     /* start listening to this socket */
-    if (listen(ServSocketFD, 5) < 0)	/* max 5 clients in backlog */
+    if (listen(ServSocketFD, 5) < 0)    /* max 5 clients in backlog */
     {   FatalError("listening on socket failed");
     }
     return ServSocketFD;
 } /* end of MakeServerSocket */
 
-void PrintCurrentTime(void)	/*  print/update the current real time */
+void PrintCurrentTime(void) /*  print/update the current real time */
 {
     time_t CurrentTime; /* seconds since 1970 (see 'man 2 time') */
-    char   *TimeString;	/* printable time string (see 'man ctime') */
+    char   *TimeString; /* printable time string (see 'man ctime') */
     char   Wheel,
-	   *WheelChars = "|/-\\";
+       *WheelChars = "|/-\\";
     static int WheelIndex = 0;
 
-    CurrentTime = time(NULL);	/* get current real time (in seconds) */
-    TimeString = ctime(&CurrentTime);	/* convert to printable format */
+    CurrentTime = time(NULL);   /* get current real time (in seconds) */
+    TimeString = ctime(&CurrentTime);   /* convert to printable format */
     strncpy(ClockBuffer, TimeString, 25);
-    ClockBuffer[24] = 0;	/* remove unwanted '/n' at the end */
+    ClockBuffer[24] = 0;    /* remove unwanted '/n' at the end */
     WheelIndex = (WheelIndex+1) % 4;
     Wheel = WheelChars[WheelIndex];
-    printf("\rClock: %s %c",	/* print from beginning of current line */
-	ClockBuffer, Wheel);	/* print time plus a rotating wheel */
+    printf("\rClock: %s %c",    /* print from beginning of current line */
+    ClockBuffer, Wheel);    /* print time plus a rotating wheel */
     fflush(stdout);
 } /* end of PrintCurrentTime */
 
-void ProcessRequest(		/* process a game request by a client */
-	int DataSocketFD, FullGame *myGame)
+void ProcessRequest(        /* process a game request by a client */
+    int DataSocketFD, FullGame *myGame)
 {
-	int l, n;
-    char RecvBuf[256];	/* message buffer for receiving a message */
-    char SendBuf[256];	/* message buffer for sending a response */
+    int l, n;
+    char RecvBuf[256];  /* message buffer for receiving a message */
+    char SendBuf[256];  /* message buffer for sending a response */
 
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     if (n < 0) 
@@ -162,10 +162,10 @@ void ProcessRequest(		/* process a game request by a client */
 
 
     if (RecvBuf[0] == '+')
-    {	
+    {   
         //this just checks if the request is occuring during another player's turn
-        if((curTurnColor == 'w' && DataSocketFD != myGame->player_fd_1 )
-            || (curTurnColor == 'b' && DataSocketFD !=myGame->player_fd_2))
+        if((myGame->curTurnColor == 'w' && DataSocketFD != myGame->player_fd_1 )
+            || (myGame->curTurnColor == 'b' && DataSocketFD !=myGame->player_fd_2))
         {
             strncpy(SendBuf,"Not currently your turn!",sizeof(SendBuf)-1);
 
@@ -189,7 +189,7 @@ void ProcessRequest(		/* process a game request by a client */
         {
             if(isChecked(board,enemyTurnColor))
             {
-                if(isCheckMate(board,enemyTurnColor,myList) )
+                if(isCheckmate(board,enemyTurnColor,myList))
                 {
 
                     strncpy(SendBuf,"WIN_ACHIEVED ",sizeof(SendBuf)-1);
@@ -207,27 +207,27 @@ void ProcessRequest(		/* process a game request by a client */
             myGame->curTurnColor = enemyTurnColor;//flipping turn color
 
         
-		  strncpy(SendBuf, "MOVE FUNCTION EXECUTED", sizeof(SendBuf)-1);
+          strncpy(SendBuf, "MOVE FUNCTION EXECUTED", sizeof(SendBuf)-1);
         }
         }
-		SendBuf[sizeof(SendBuf)-1] = 0;
-		strncat(SendBuf, ClockBuffer, sizeof(SendBuf)-1-strlen(SendBuf));
+        SendBuf[sizeof(SendBuf)-1] = 0;
+        strncat(SendBuf, ClockBuffer, sizeof(SendBuf)-1-strlen(SendBuf));
         
     }
 
     else if (RecvBuf[0] == '/')
     {
-		RemoveChar(RecvBuf, RecvBuf[0]);
-		strncpy(SendBuf, "FIRST LOGIN FUNCTION EXECUTED", sizeof(SendBuf)-1);
-		SendBuf[sizeof(SendBuf)-1] = 0;
-		strncat(SendBuf, ClockBuffer, sizeof(SendBuf)-1-strlen(SendBuf));
+        RemoveChar(RecvBuf, RecvBuf[0]);
+        strncpy(SendBuf, "FIRST LOGIN FUNCTION EXECUTED", sizeof(SendBuf)-1);
+        SendBuf[sizeof(SendBuf)-1] = 0;
+        strncat(SendBuf, ClockBuffer, sizeof(SendBuf)-1-strlen(SendBuf));
     }
 
-	/* Modification for chess*/   
-		
+    /* Modification for chess*/   
+        
 
 
-	l = strlen(SendBuf);
+    l = strlen(SendBuf);
 #ifdef DEBUG
     printf("%s: Sending response: %s.\n", Program, SendBuf);
 #endif
@@ -240,23 +240,23 @@ void ProcessRequest(		/* process a game request by a client */
 
 } /* end of ProcessRequest */
 
-void ServerMainLoop(		/* simple server main loop */
-	int ServSocketFD,		/* server socket to wait on */
-	ClientHandler HandleClient,	/* client handler to call */
-	TimeoutHandler HandleTimeout,	/* timeout handler to call */
-	int Timeout)			/* timeout in micro seconds */
+void ServerMainLoop(        /* simple server main loop */
+    int ServSocketFD,       /* server socket to wait on */
+    ClientHandler HandleClient, /* client handler to call */
+    TimeoutHandler HandleTimeout,   /* timeout handler to call */
+    int Timeout)            /* timeout in micro seconds */
 {
-    int DataSocketFD;	/* socket for a new client */
+    int DataSocketFD;   /* socket for a new client */
     socklen_t ClientLen;
     struct sockaddr_in
-	ClientAddress;	/* client address we connect with */
-    fd_set ActiveFDs;	/* socket file descriptors to select from */
-    fd_set ReadFDs;	/* socket file descriptors ready to read from */
+    ClientAddress;  /* client address we connect with */
+    fd_set ActiveFDs;   /* socket file descriptors to select from */
+    fd_set ReadFDs; /* socket file descriptors ready to read from */
     struct timeval TimeVal;
     int res, i;
 
-    FD_ZERO(&ActiveFDs);		/* set of active sockets */
-    FD_SET(ServSocketFD, &ActiveFDs);	/* server socket is active */
+    FD_ZERO(&ActiveFDs);        /* set of active sockets */
+    FD_SET(ServSocketFD, &ActiveFDs);   /* server socket is active */
     //INITIALIZING GAME BOARD: CURRENTLY ONLY ACCEPTING 2 USERS
     FullGame *myGame = NULL;
     myGame = NewGame();
@@ -265,9 +265,9 @@ void ServerMainLoop(		/* simple server main loop */
 
     while(!Shutdown)
     {   ReadFDs = ActiveFDs;
-	TimeVal.tv_sec  = Timeout / 1000000;	/* seconds */
-	TimeVal.tv_usec = Timeout % 1000000;	/* microseconds */
-	
+    TimeVal.tv_sec  = Timeout / 1000000;    /* seconds */
+    TimeVal.tv_usec = Timeout % 1000000;    /* microseconds */
+    
 
     //CODE TO HANDLE THE GAME
     if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
@@ -286,7 +286,7 @@ void ServerMainLoop(		/* simple server main loop */
         if(n<0)
         {FatalError("Writing to data socket failed");
         }
-        int n = write(curTurnFD,"REQUESTING_MOVE",15);
+         n = write(curTurnFD,"REQUESTING_MOVE",15);
         if(n<0)
         {FatalError("writing to data socket failed");
         }
@@ -295,68 +295,68 @@ void ServerMainLoop(		/* simple server main loop */
 
     //ALL CODE AFTER THIS IS HANDLING THE CLIENT'S RESPONSE
     /* block until input arrives on active sockets or until timeout */
-	res = select(FD_SETSIZE, &ReadFDs, NULL, NULL, &TimeVal);
-	if (res < 0)
-	{   FatalError("wait for input or timeout (select) failed");
-	}
-	if (res == 0)	/* timeout occurred */
-	{
+    res = select(FD_SETSIZE, &ReadFDs, NULL, NULL, &TimeVal);
+    if (res < 0)
+    {   FatalError("wait for input or timeout (select) failed");
+    }
+    if (res == 0)   /* timeout occurred */
+    {
 #ifdef DEBUG
-	    printf("%s: Handling timeout...\n", Program);
+        printf("%s: Handling timeout...\n", Program);
 #endif
-	    HandleTimeout();
-	}
-	else		/* some FDs have data ready to read */
-	{   for(i=0; i<FD_SETSIZE; i++)
-	    {   if (FD_ISSET(i, &ReadFDs))
-		{   if (i == ServSocketFD)
-		    {	/* connection request on server socket */
+        HandleTimeout();
+    }
+    else        /* some FDs have data ready to read */
+    {   for(i=0; i<FD_SETSIZE; i++)
+        {   if (FD_ISSET(i, &ReadFDs))
+        {   if (i == ServSocketFD)
+            {   /* connection request on server socket */
 #ifdef DEBUG
-			printf("%s: Accepting new client %d...\n", Program, i);
+            printf("%s: Accepting new client %d...\n", Program, i);
 #endif
-			ClientLen = sizeof(ClientAddress);
-			DataSocketFD = accept(ServSocketFD,
-				(struct sockaddr*)&ClientAddress, &ClientLen);
-			if (DataSocketFD < 0)
-			{   FatalError("data socket creation (accept) failed");
-			}
+            ClientLen = sizeof(ClientAddress);
+            DataSocketFD = accept(ServSocketFD,
+                (struct sockaddr*)&ClientAddress, &ClientLen);
+            if (DataSocketFD < 0)
+            {   FatalError("data socket creation (accept) failed");
+            }
 #ifdef DEBUG
-			printf("%s: Client %d connected from %s:%hu.\n",
-				Program, i,
-				inet_ntoa(ClientAddress.sin_addr),
-				ntohs(ClientAddress.sin_port));
+            printf("%s: Client %d connected from %s:%hu.\n",
+                Program, i,
+                inet_ntoa(ClientAddress.sin_addr),
+                ntohs(ClientAddress.sin_port));
 #endif
-			FD_SET(DataSocketFD, &ActiveFDs);
+            FD_SET(DataSocketFD, &ActiveFDs);
 
                 //CODE TO ADD NEW USER TO AVAILABLE GAME BOARD
                 //This code adds the new client to the first available file descriptor
                 if(myGame->player_fd_1 == -1)
                 {
-                    player_fd_1 = DataSocketFd;
+                    myGame->player_fd_1 = DataSocketFD;
                 }
                 else if (myGame->player_fd_2 == -1)
                 {
-                    player_fd_2 = DataSocketFd;
+                    myGame->player_fd_2 = DataSocketFD;
                 }
                 //END OF CODE TO ADD NEW USER TO AVAILABLE GAME BOARD FD's
 
-		    }
-		    else
-		    {   /* active communication with a client */
+            }
+            else
+            {   /* active communication with a client */
 #ifdef DEBUG
-			printf("%s: Dealing with client %d...\n", Program, i);
+            printf("%s: Dealing with client %d...\n", Program, i);
 #endif
-			HandleClient(i, myGame);
+            HandleClient(i, myGame);
 #ifdef DEBUG
-			printf("%s: Closing client %d connection.\n", Program, i);
+            printf("%s: Closing client %d connection.\n", Program, i);
 #endif
-			close(i);
-			FD_CLR(i, &ActiveFDs);
-		    }
-		}
+            close(i);
+            FD_CLR(i, &ActiveFDs);
+            }
+        }
 
-	    }
-	}
+        }
+    }
     }
 } /* end of ServerMainLoop */
 
@@ -364,21 +364,21 @@ void ServerMainLoop(		/* simple server main loop */
 
 int main(int argc, char *argv[])
 {
-    int ServSocketFD;	/* socket file descriptor for service */
-    int PortNo;		/* port number */
+    int ServSocketFD;   /* socket file descriptor for service */
+    int PortNo;     /* port number */
 
-    Program = argv[0];	/* publish program name (for diagnostics) */
+    Program = argv[0];  /* publish program name (for diagnostics) */
 #ifdef DEBUG
     printf("%s: Starting...\n", Program);
 #endif
     if (argc < 2)
     {   fprintf(stderr, "Usage: %s port\n", Program);
-	exit(10);
+    exit(10);
     }
-    PortNo = atoi(argv[1]);	/* get the port number */
+    PortNo = atoi(argv[1]); /* get the port number */
     if (PortNo <= 2000)
     {   fprintf(stderr, "%s: invalid port number %d, should be >2000\n",
-		Program, PortNo);
+        Program, PortNo);
         exit(10);
     }
 #ifdef DEBUG
@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
     ServSocketFD = MakeServerSocket(PortNo);
     printf("%s: Providing current time at port %d...\n", Program, PortNo);
     ServerMainLoop(ServSocketFD, ProcessRequest,
-			PrintCurrentTime, 250000);
+            PrintCurrentTime, 250000);
     printf("\n%s: Shutting down.\n", Program);
     close(ServSocketFD);
     return 0;

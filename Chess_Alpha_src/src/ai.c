@@ -1166,4 +1166,19 @@ int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	}
 }
 
+void AIPromote(PIECE **myBoard){
+	int i;
+	//char c;
+	for(i = 0; i < size; i++){
+		if(GetColor(&myBoard[i][7]) == 'w' && GetType(&myBoard[i][7]) == 'P'){
+			SetType(&myBoard[i][7], 'Q');
+		}
+	}
+	for(i = 0; i < size; i++){
+        if(GetColor(&myBoard[i][0]) == 'b' && GetType(&myBoard[i][0]) == 'P'){
+            SetType(&myBoard[i][0], 'Q');
+        }
+    }
+}
+
 // EOF //

@@ -37,7 +37,7 @@ int MakeOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
 
 
 int MakeRandomOpeningMove(PIECE **myBoard, char curTurnColor, MLIST *myList);
-
+void AIPromote(PIECE **myBoard);
 
 // private functions
 // make a move without appending it to myList, instead adds the move to an empty node or blankNode; similar to MakeMoveNoAppend
