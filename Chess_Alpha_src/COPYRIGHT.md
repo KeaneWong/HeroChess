@@ -1,7 +1,7 @@
 # Copyright
 
 <p align="center">
-  <b>HeroChess Version 1.0, April 2021</b>
+  <b>HeroChess Version 2.0, May 2021</b>
 </p>
 
 Copyright (C) 2021, Avengineers. All rights reserved.
@@ -10,7 +10,6 @@ distribution of the project without written permission of the sponsor is prohibi
 
 **Authors:**
 * Irania Mazariegos
-* Keane Wong
-* Mario Tafoya 
+* Keane Wong 
 * Paul Lee
 * Rachel Villamor
