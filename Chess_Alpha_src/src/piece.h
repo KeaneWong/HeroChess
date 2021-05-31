@@ -34,4 +34,6 @@ char GetColor(PIECE *mypiece);
 
 void SetType(PIECE *mypiece, char c);
 
+void SetColor(PIECE *mypiece, char c);
+
 #endif
