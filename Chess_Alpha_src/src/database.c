@@ -33,10 +33,11 @@ int appendUser(char username[100], char password[100])
 	return 0;
 }
 
-int checkUser(char user[100], char pass[100])
+int checkUser(char user[100])
 {
 	char line[301];
-	int found = 0;
+	char c;
+	int count = 0;
 
 	FILE *fp1 = fopen("record.txt", "r");
 	if (fp1 == NULL)
@@ -47,31 +48,59 @@ int checkUser(char user[100], char pass[100])
 
         while(!feof(fp1))
         {
-                fgets(line, 300, fp1);
+		fgets(line, 300, fp1);
 		
-		if(strncmp(user, line, strlen(user)) == 0)
+		for (c = fgetc(fp1); c != EOF; c = fgetc(fp1))
 		{
-			if (strncmp(pass, line, strlen(pass)) == 0)
+			if(c == '\n')
 			{
-				printf("User exists");
-				found = 1;
-			}
-		
-			else 
-			{
-				printf("Password is incorrect");
+				if (strncmp(user, line, strlen(user)) == 0)
+				{
+					count += 1;
+					printf("User exists");
+					return count;;
+				}
 			}
 		}
 	}
 	
 	printf("User does not exist");
-	return found;
+	return 0;
 	
 	fclose(fp1);
 }
 
+int checkPass(char user[100], char pass[100])
+{
+	int found;
+	int line;
+	
+	found = checkUser(user);
+
+	if (found == 1)
+	{
+		FILE *fp1 = fopen("record.txt", "r");	
+		if (fp1 == NULL)
+		{
+			printf("Error! File missing\n");
+			exit(10);
+		}
+		
+		while(!feof(fp1))
+		{
+			
+		}
+	}
+	
+	else
+		printf("User does not exist");
+
+	return 0;
+}
+
 /* int changePass(char username[100], char newPass[100])
 {
+	char line[301];
 	char oldPass[100];
 	int found;
 	
@@ -88,7 +117,7 @@ int checkUser(char user[100], char pass[100])
 		
 		if(strncmp(user, line, strlen(user)) == 0)
 		{
-			
+					
 		}
 		
 	} 
