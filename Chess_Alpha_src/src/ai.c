@@ -4,7 +4,7 @@
 #include "game.h"
 #include "board.h"
 #include "move.h"
-
+#include "tree.h"
 // returns value based on type of inputted piece; positive values for friendly pieces and negative values for enemy pieces
 int GetValue(PIECE *myPiece, char curTurnColor)
 {
@@ -1164,6 +1164,21 @@ int DutchDefense(PIECE **myBoard, char curTurnColor, MLIST *myList)
 	{
 		return 0;
 	}
+}
+
+void AIPromote(PIECE **myBoard){
+	int i;
+	//char c;
+	for(i = 0; i < size; i++){
+		if(GetColor(&myBoard[i][7]) == 'w' && GetType(&myBoard[i][7]) == 'P'){
+			SetType(&myBoard[i][7], 'Q');
+		}
+	}
+	for(i = 0; i < size; i++){
+        if(GetColor(&myBoard[i][0]) == 'b' && GetType(&myBoard[i][0]) == 'P'){
+            SetType(&myBoard[i][0], 'Q');
+        }
+    }
 }
 
 // EOF //

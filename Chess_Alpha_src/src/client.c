@@ -11,7 +11,7 @@
 
 #include "game.h"
 #include "board.h"
-
+#include "piece.h"
 /* #define DEBUG */	/* be verbose */
 
 /*** global variables ****************************************************/
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 	    	printf("Error: Invalid password. Please try again\n");
 	    	
 	    }
-	    else if (strcmp("REQUESTING_MOVE"),RecvBuf) == 0)
+	    else if (strcmp("REQUESTING_MOVE",RecvBuf) == 0)
 	    {
 	    	printf("Your move:\n");
 	    	fgets(SendBuf, sizeof(SendBuf), stdin);
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
-	    	PIECE **myBoard;
+	    	PIECE **myBoard = NULL;
 	    	//code to read in board data into myBoard
 	    	n = read(SocketFD, myBoard, sizeof(PIECE*) * 64);
 	    }

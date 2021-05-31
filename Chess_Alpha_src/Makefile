@@ -24,7 +24,7 @@ TEST	= bin/TestHeroChess
 TXT	= bin/*.txt
 SRC	= src/*.o
 
-all: HeroChess TestHeroChess
+all: HeroChess TestHeroChess Server Client
 
 
 ########### generate object files ###########
@@ -46,7 +46,7 @@ move.o: src/move.h src/move.c
 	$(CC) $(CFLAGS) src/move.c -o src/move.o 
 
 #target to generate game.o
-game.o: src/settings.h src/piece.h src/movelist.h src/game.h src/game.c  
+game.o: src/settings.h src/piece.h src/movelist.h src/game.h src/game.c s
 	$(CC) $(CFLAGS) src/game.c -o src/game.o
 
 #target to generate board.o
@@ -55,23 +55,32 @@ board.o: src/settings.h src/piece.h src/board.h src/board.c
 
 #target to generate ai.o
 ai.o:	src/tree.h src/movelist.h src/game.h src/settings.h src/piece.h src/ai.h src/ai.c
-	$(CC) $(CFLAGS) src/tree.c src/ai.c -o src/ai.o
+	$(CC) $(CFLAGS) src/ai.c -o src/ai.o
 
 #target to generate movelist.o
 movelist.o: src/piece.h src/move.h src/movelist.h src/movelist.c
 	$(CC) $(CFLAGS) src/movelist.c -o src/movelist.o
 
 #target to generate replay.o
-replay.o: src/board.h src/piece.h src/move.h src/game.h src/board.h src/movelist.h
+replay.o: src/board.h src/piece.h src/move.h src/game.h src/board.h src/movelist.h 
 	$(CC) $(CFLAGS) src/replay.c -o src/replay.o
 
 #target to generate main.o
 main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
 	$(CC) $(CFLAGS) src/main.c -o src/main.o
 
+#target to generate server.o
+server.o: src/server.c src/piece.h src/game.h src/board.h src/movelist.h src/settings.h src/replay.h src/ai.h src/move.h src/tree.h
+	$(CC) $(CFLAGS) src/server.c -o src/server.o
+
+#target to generate client.o
+client.o: src/client.c src/game.h src/board.h src/piece.h src/movelist.h src.move.h
+	$(CC) $(CFLAGS) src/client.c -o src/client.o
+
 #target to generate testmain.o
 src/testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
 	gcc -c -DDEBUG -Wall -std=c99 src/main.c -o src/testmain.o
+
 
 ############# generate executables #############
 # target to generate HeroChess
@@ -81,6 +90,13 @@ HeroChess: src/main.o src/tree.o src/settings.o src/piece.o src/move.o src/game.
 # target to generate HeroChess with test mode on
 TestHeroChess: src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o
 	$(CC) $(LFLAGS) src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o src/game.o src/board.o src/ai.o src/movelist.o src/replay.o -o bin/TestHeroChess -lm
+
+#target to generate Server
+Server:	src/server.o src/settings.o src/game.o src/board.o src/piece.o src/movelist.o src/replay.o src/ai.o src/move.o src/tree.o
+	$(CC) $(LFLAGS) src/tree.o src/server.o src/piece.o src/game.o src/board.o src/movelist.o src/settings.o src/replay.o src/ai.o src/move.o -o bin/Server -lm
+
+Client: src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o
+	$(CC) $(LFLAGS) src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o -o bin/Client -lm
 
 # delete all executables currently in the source and binary directories
 clean:
