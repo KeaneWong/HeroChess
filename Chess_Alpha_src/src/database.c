@@ -1,12 +1,13 @@
 /* database program */
-// currently buggy; won't let password be inputted
+// currently buggy; doesn't verify user correctly
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 int appendUser(char username[100], char password[100]);
-int checkUser(char user[100], char pass[100]);
+int checkUser(char user[100]);
+int checkPass(int lineNum, char user[100], char pass[100]);
 
 int appendUser(char username[100], char password[100])
 {
@@ -46,58 +47,87 @@ int checkUser(char user[100])
 		exit (10);
 	}
 
-        while(!feof(fp1))
-        {
-		fgets(line, 300, fp1);
-		
-		for (c = fgetc(fp1); c != EOF; c = fgetc(fp1))
+        while(fgets(line, 300, fp1) != NULL)
+        {	
+		for (c = getc(fp1); c != EOF; c = getc(fp1))
 		{
 			if(c == '\n')
 			{
-				if (strncmp(user, line, strlen(user)) == 0)
+				count += 1;
+				
+				if (strcmp(user, line) == 0)
 				{
-					count += 1;
 					printf("User exists");
-					return count;;
+					return count;
+				}
+
+				else
+				{
+					return 0;
 				}
 			}
 		}
 	}
 	
-	printf("User does not exist");
-	return 0;
-	
 	fclose(fp1);
 }
 
-int checkPass(char user[100], char pass[100])
+int checkPass(int lineNum, char user[100], char pass[100])
 {
-	int line;
-	
-	line = checkUser(user);
+	char line[301];
+	int count;
 
-	if (line != 0)
+	lineNum = checkUser(user);
+
+	FILE *fp1 = fopen("record.txt", "r");	
+	if (fp1 == NULL)
 	{
-		FILE *fp1 = fopen("record.txt", "r");	
-		if (fp1 == NULL)
-		{
-			printf("Error! File missing\n");
-			exit(10);
-		}
-		
-		while(!feof(fp1))
-		{
-			// look for password and return 1 if found
-		}
+		printf("Error! File missing\n");
+		exit(10);
 	}
 	
-	else
-		printf("User does not exist");
+	while(fgets(line, 300, fp1) != NULL)
+	{
+		if (count == (lineNum + 1))
+		{
+			if (strcmp(pass, line) == 0)	
+			{
+				printf("Welcome");
+				return 1;
+			}
+
+			else
+			{
+				printf("Password incorrect");
+				return -1;
+			}				
+		}
+		
+		else 
+		{
+			count++;
+		}
+	}
+
+	fclose(fp1);
+}
+
+/* int main()
+{
+	char user[100], pass[100];
+	
+	printf("Username: ");
+	scanf("%s", user);
+	checkUser(user);
+	
+	printf("Password: ");
+	scanf("%s", pass);
+	checkPass(checkUser(user), user, pass);
 
 	return 0;
 }
 
-/* int changePass(char username[100], char newPass[100])
+int changePass(char username[100], char newPass[100])
 {
 	char line[301];
 	char oldPass[100];
