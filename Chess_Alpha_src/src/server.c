@@ -16,9 +16,11 @@
 #include "board.h"
 #include "game.h"
 #include "movelist.h"
+#include "move.h"
 #include "settings.h"
 #include "replay.h"
 #include "ai.h"
+
 
 
 //this is a struct that describes a game, 

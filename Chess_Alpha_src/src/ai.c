@@ -4,7 +4,7 @@
 #include "game.h"
 #include "board.h"
 #include "move.h"
-
+#include "tree.h"
 // returns value based on type of inputted piece; positive values for friendly pieces and negative values for enemy pieces
 int GetValue(PIECE *myPiece, char curTurnColor)
 {

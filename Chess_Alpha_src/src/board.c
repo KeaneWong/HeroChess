@@ -25,14 +25,8 @@ PIECE **makeBoard(){
 
 // deletes the board, freeing the memory and deallocating the array
 void deleteBoard(PIECE **myBoard){
-	assert(myBoard);
-	for(int i = 0; i<size; i++){
-	    for(int j = 0; j < size; j++){
-			free(getPiece(myBoard,i,j));
-        }
-    }	
+	assert(myBoard);		
 	free(myBoard);
-
 }
 
 // returns copy of board 
@@ -41,8 +35,7 @@ PIECE **copyBoard(PIECE **myBoard){
 	PIECE **newBoard = makeBoard();
 	for(i = 0; i<size; i++){
 	    for(j = 0; j < size; j++){
-			getPiece(newBoard,i,j)->type = getPiece(myBoard,i,j)->type;
-			getPiece(newBoard,i,j)->color = getPiece(myBoard,i,j)->color;
+			newBoard[i][j] = myBoard[i][j];
         }
     }
 	return newBoard;
