@@ -72,12 +72,11 @@ int checkUser(char user[100])
 
 int checkPass(char user[100], char pass[100])
 {
-	int found;
 	int line;
 	
-	found = checkUser(user);
+	line = checkUser(user);
 
-	if (found == 1)
+	if (line != 0)
 	{
 		FILE *fp1 = fopen("record.txt", "r");	
 		if (fp1 == NULL)
@@ -88,7 +87,7 @@ int checkPass(char user[100], char pass[100])
 		
 		while(!feof(fp1))
 		{
-			
+			// look for password and return 1 if found
 		}
 	}
 	
