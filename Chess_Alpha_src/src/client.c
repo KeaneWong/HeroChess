@@ -12,7 +12,7 @@
 #include "game.h"
 #include "board.h"
 #include "piece.h"
-/* #define DEBUG */	/* be verbose */
+ #define DEBUG 	/* be verbose */
 
 /*** global variables ****************************************************/
 
@@ -88,12 +88,14 @@ int main(int argc, char *argv[])
 			sizeof(ServerAddress)) < 0)
 	    {   FatalError("connecting to server failed");
 	    }
+
+
 	    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+	    printf("Sending REQUESTING_BOARD request\n");
 	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
 	   	if (n < 0) 
 	    {   FatalError("writing to socket failed\n");
 	    }
-
 #ifdef DEBUG
 	    printf("%s: Waiting for response...\n", Program);
 #endif

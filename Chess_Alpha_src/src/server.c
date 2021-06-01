@@ -153,6 +153,7 @@ void ProcessRequest(        /* process a game request by a client */
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
 
+    printf("Waiting on REQUESTING BOARD request\n");
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
     {
@@ -189,19 +190,21 @@ void ProcessRequest(        /* process a game request by a client */
         //printf("%s",SendBuf);
         n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
         //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
-        /*
+        
         printf("Now requesting move\n");
-        n = write(curTurnFD,"REQUESTING_MOVE",15);
+        strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf)-1);
+        n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
         if(n<0)
         {FatalError("writing to data socket failed");
         }
         printf("Skipped requesting move\n");
-        */
+        
     }
     }
     if (n < 0) 
     {   FatalError("reading from data socket failed");
     }
+    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     RecvBuf[n] = 0;
 #ifdef DEBUG
     printf("%s: Received message: %s\n", Program, RecvBuf);
@@ -269,7 +272,11 @@ void ProcessRequest(        /* process a game request by a client */
         SendBuf[sizeof(SendBuf)-1] = 0;
         strncat(SendBuf, ClockBuffer, sizeof(SendBuf)-1-strlen(SendBuf));
     }
-
+    else
+    {
+        printf("Unknown protocol code\n");
+        FatalError("Unknown code");
+    }
     /* Modification for chess*/   
         
 
@@ -368,7 +375,7 @@ void ServerMainLoop(        /* simple server main loop */
 
 
                  //CODE TO HANDLE THE GAME
-                 
+                 FD_CLR(i,&ActiveFDs);
             }
             else
             {   /* active communication with a client */
@@ -379,6 +386,7 @@ void ServerMainLoop(        /* simple server main loop */
 #ifdef DEBUG
             printf("%s: Closing client %d connection.\n", Program, i);
 #endif
+            //printf("%s: Closing client %d connection.\n", Program, i);
             close(i);
             FD_CLR(i, &ActiveFDs);
             }
