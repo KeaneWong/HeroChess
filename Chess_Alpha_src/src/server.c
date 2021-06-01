@@ -154,6 +154,51 @@ void ProcessRequest(        /* process a game request by a client */
     char SendBuf[256];  /* message buffer for sending a response */
 
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+    if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
+    {
+    if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
+    {
+        printf("Found a player!\n");
+        int curTurnFD = 0;
+        printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
+        if(myGame->curTurnColor == 'w')
+        {
+            curTurnFD = myGame->player_fd_1;
+        }
+        else
+        {
+            curTurnFD = myGame->player_fd_2;
+        }
+        printf("Current fd: %d\n",curTurnFD);
+        printBoard(myGame->myBoard);
+        int n = write(curTurnFD,"PRINT_BOARD",11);
+        if(n<0)
+        {FatalError("Writing to data socket failed");
+        }
+        strncpy(SendBuf,"",sizeof(SendBuf)-1);
+        for(int i = 0; i <128; i+=2)
+         {
+             int realCoord = i/2;
+             int col = realCoord/8;
+             int row = realCoord%8;
+             char chC = GetColor(getPiece(myGame->myBoard,col,row));
+             char chT = GetType(getPiece(myGame->myBoard,col,row));
+             SendBuf[i]  = chC;
+             SendBuf[i+1] = chT;
+         }
+        //printf("%s",SendBuf);
+        n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
+        //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
+        /*
+        printf("Now requesting move\n");
+        n = write(curTurnFD,"REQUESTING_MOVE",15);
+        if(n<0)
+        {FatalError("writing to data socket failed");
+        }
+        printf("Skipped requesting move\n");
+        */
+    }
+    }
     if (n < 0) 
     {   FatalError("reading from data socket failed");
     }
@@ -272,47 +317,7 @@ void ServerMainLoop(        /* simple server main loop */
     TimeVal.tv_usec = Timeout % 1000000;    /* microseconds */
     
 
-    //CODE TO HANDLE THE GAME
-    if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
-    {
-        printf("Found a player!\n");
-        int curTurnFD = 0;
-        printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
-        if(myGame->curTurnColor == 'w')
-        {
-            curTurnFD = myGame->player_fd_1;
-        }
-        else
-        {
-            curTurnFD = myGame->player_fd_2;
-        }
-        printf("Current fd: %d\n",curTurnFD);
-        printBoard(myGame->myBoard);
-        int n = write(curTurnFD,"PRINT_BOARD",11);
-        if(n<0)
-        {FatalError("Writing to data socket failed");
-        }
-        strncpy(SendBuf,"",sizeof(SendBuf)-1);
-        for(int i = 0; i <128; i+=2)
-         {
-             int realCoord = i/2;
-             int col = realCoord/8;
-             int row = realCoord%8;
-             char chC = GetColor(getPiece(myGame->myBoard,col,row));
-             char chT = GetType(getPiece(myGame->myBoard,col,row));
-             SendBuf[i]  = chC;
-             SendBuf[i+1] = chT;
-         }
-        //printf("%s",SendBuf);
-        n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
-        //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
-        printf("Now requesting move\n");
-        n = write(curTurnFD,"REQUESTING_MOVE",15);
-        if(n<0)
-        {FatalError("writing to data socket failed");
-        }
-        printf("Skipped requesting move\n");
-    }
+    
 
     //ALL CODE AFTER THIS IS HANDLING THE CLIENT'S RESPONSE
     /* block until input arrives on active sockets or until timeout */
@@ -351,16 +356,19 @@ void ServerMainLoop(        /* simple server main loop */
 
                 //CODE TO ADD NEW USER TO AVAILABLE GAME BOARD
                 //This code adds the new client to the first available file descriptor
-                if(myGame->player_fd_1 == -1)
+                if(myGame->player_fd_1 == -1 && DataSocketFD != myGame->player_fd_2)
                 {
                     myGame->player_fd_1 = DataSocketFD;
                 }
-                else if (myGame->player_fd_2 == -1)
+                else if (myGame->player_fd_2 == -1 && DataSocketFD != myGame->player_fd_1)
                 {
                     myGame->player_fd_2 = DataSocketFD;
                 }
                 //END OF CODE TO ADD NEW USER TO AVAILABLE GAME BOARD FD's
 
+
+                 //CODE TO HANDLE THE GAME
+                 
             }
             else
             {   /* active communication with a client */

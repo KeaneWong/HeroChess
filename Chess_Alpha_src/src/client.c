@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     
     //Code used to verify proper host and port number, as well as initialize socketaddress 
 
+
     if (argc < 3)
     {   fprintf(stderr, "Usage: %s hostname port\n", Program);
 	exit(10);
@@ -87,7 +88,12 @@ int main(int argc, char *argv[])
 			sizeof(ServerAddress)) < 0)
 	    {   FatalError("connecting to server failed");
 	    }
-	   
+	    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+	   	if (n < 0) 
+	    {   FatalError("writing to socket failed\n");
+	    }
+
 #ifdef DEBUG
 	    printf("%s: Waiting for response...\n", Program);
 #endif
