@@ -12,7 +12,7 @@
 #include "game.h"
 #include "board.h"
 #include "piece.h"
-/* #define DEBUG */	/* be verbose */
+ #define DEBUG 	/* be verbose */
 
 /*** global variables ****************************************************/
 
