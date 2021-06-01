@@ -19,12 +19,12 @@ CFLAGS = -ansi -std=c99 -Wall -c
 LFLAGS = -ansi -std=c99 -Wall
 
 # executables and replay files
-DESIGN	= bin/HeroChess
+DESIGN	= bin/HeroChess, bin/Server, bin/Client, bin/LoginServer, bin/LoginClient 
 TEST	= bin/TestHeroChess
 TXT	= bin/*.txt
 SRC	= src/*.o
 
-all: HeroChess TestHeroChess Server Client
+all: HeroChess TestHeroChess Server Client LoginServer LoginClient
 
 
 ########### generate object files ###########
@@ -73,6 +73,7 @@ main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h 
 server.o: src/server.c src/piece.h src/game.h src/board.h src/movelist.h src/settings.h src/replay.h src/ai.h src/move.h src/tree.h
 	$(CC) $(CFLAGS) -DDEBUG src/server.c -o src/server.o
 
+
 #target to generate client.o
 client.o: src/client.c src/game.h src/board.h src/piece.h src/movelist.h src.move.h
 	$(CC) $(CFLAGS) -DDEBUG src/client.c -o src/client.o
@@ -98,14 +99,30 @@ Server:	src/server.o src/settings.o src/game.o src/board.o src/piece.o src/movel
 Client: src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o
 	$(CC) $(LFLAGS) -DDEBUG src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o -o bin/Client -lm
 
+
+LoginClient: src/client2.c
+	gcc src/client2.c -Wall -ansi -g -o LoginClient
+
+LoginServer: src/server2.c
+	gcc src/server2.c -Wall -ansi -g -o LoginServer
+
 # delete all executables currently in the source and binary directories
 clean:
 	rm -f $(DESIGN) $(TEST) $(TXT) $(SRC)
 
 # test game
 test: 
-	./bin/TestHeroChess	
+	@echo "To run the examples, first start the server in one terminal,"
+	@echo "then start the client in another."
+	@echo
+	@echo "For example:"
+	@echo "crystalcove# server 10000"
+	@echo "crystalcove# client crystalcove 10000"
+	@echo
+	@echo "Different servers may be used as well:"
+	@echo "crystalcove# server2 10000"
+	@echo "zuma# client crystalcove 10000"
 
 # tar the source code package
 tar:
-	tar zcvf Chess_V1.0_src.tar.gz Chess_V1.0_src   
+	tar zcvf Chess_V2.0_src.tar.gz Chess_V2.0_src   

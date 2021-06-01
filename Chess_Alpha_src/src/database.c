@@ -135,6 +135,7 @@ int main()
 
 	return 0;
 } 
+
 /* 
 int changePass(char username[100], char newPass[100])
 {
