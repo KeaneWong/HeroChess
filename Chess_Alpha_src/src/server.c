@@ -1,6 +1,6 @@
 /* ClockServer.c: simple TCP/IP server example with timeout support
  * Author: Rainer Doemer, 2/17/15
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -160,80 +160,165 @@ void ProcessRequest(        /* process a game request by a client */
     printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
     if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
     {
-    if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
-    {
-        printf("Found a player!\n");
-        int curTurnFD = 0;
-        printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
-        if(myGame->curTurnColor == 'w')
+        if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
         {
-            curTurnFD = myGame->player_fd_1;
+            int won=0;
+            while(!won)
+            {
+                char curTurnColor = myGame->curTurnColor;
+                char enemyTurnColor = curTurnColor == 'w' ? 'b' : 'w';
+                printf("Found a player!\n");
+                int curTurnFD = 0;
+                printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
+                if(myGame->curTurnColor == 'w')
+                {
+                    curTurnFD = myGame->player_fd_1;
+                }
+                else
+                {
+                    curTurnFD = myGame->player_fd_2;
+                }
+                printf("Current fd: %d\n",curTurnFD);
+                printBoard(myGame->myBoard);
+
+                strncpy(SendBuf,"PRINT_BOARD",sizeof(SendBuf)-1);
+                printf("Sending string: '%s'\n",SendBuf);
+                int n = write(curTurnFD,SendBuf,11);
+                if(n<0)
+                {FatalError("Writing to data socket failed");
+                }
+                n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                if(n<0)
+                {
+                    FatalError("Somethignn went wrong client side hh\n");
+                }
+                if(strcmp(RecvBuf,"OK")!=0)
+                {
+                    printf("Receieved: %s instead of OK 1",RecvBuf);
+                    FatalError("Somethign went wrong client side\n");
+                }
+                strncpy(SendBuf,"",sizeof(SendBuf)-1);
+                for(int i = 0; i <128; i+=2)
+                 {
+                     int realCoord = i/2;
+                     int col = realCoord/8;
+                     int row = realCoord%8;
+                     char chC = GetColor(getPiece(myGame->myBoard,col,row));
+                     char chT = GetType(getPiece(myGame->myBoard,col,row));
+                     SendBuf[i]  = chC;
+                     SendBuf[i+1] = chT;
+                 }
+                //printf("%s",SendBuf);
+                n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
+                //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
+        
+                n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                if(n<0)
+                {
+                    FatalError("Somethign went wrong client side hh\n");
+                }
+                if(strcmp(RecvBuf,"OK")!=0)
+                {
+                    printf("Receieved: %s instead of OK 2",RecvBuf);
+                    FatalError("Somethign went wrong client side\n");
+                }
+        
+                //MOVE REQUEST
+                printf("Now requesting move\n");
+                strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
+                n = write(curTurnFD,SendBuf,sizeof(SendBuf));
+                if(n<0)
+                {FatalError("writing to data socket failed");
+                }
+                printf("Skipped requesting move\n");
+                
+        
+                //MOVE DATA READ
+                n  = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                if(n<0)
+                {FatalError("writing to data socket failed");
+                }
+                if(RecvBuf[0] != '+')
+                {
+                    printf("Got this: %s instead of the proper '+' protocol code\n", RecvBuf);
+                    FatalError("Dun f'd up");
+                }
+        
+
+                int colS = RecvBuf[0]-'A';
+                int rowS = RecvBuf[1]-'1';
+                int colD = RecvBuf[2]-'A';
+                int rowD = RecvBuf[3]-'1';
+                PIECE **board = myGame->myBoard;
+                MLIST *myList = myGame->myList;
+                if(!MakeMove(board,colS,rowS,colD,rowD,curTurnColor,myList))
+                {
+                //invalid move handling
+                printf("WRONG MOVE DONT DO THAT PLS \n");
+                strncpy(SendBuf,"INVALID_MOVE",sizeof(SendBuf)-1);
+                }
+                else
+                {
+                    if(isChecked(board,enemyTurnColor))
+                    {
+                        if(isCheckmate(board,enemyTurnColor,myList))
+                        {
+    
+                            strncpy(SendBuf,"WIN_ACHIEVED ",sizeof(SendBuf)-1);
+                            char winningChar = curTurnColor - 32;//this just ascii shifts the char to uppercase
+                            SendBuf[13] = winningChar;
+                            won  = 1;
+                        }
+                        else
+                        {
+                            strncpy(SendBuf,"SUCCESSFUL_MOVE_CHECK_",sizeof(SendBuf)-1);
+                            char checkedChar = enemyTurnColor-32;
+                            SendBuf[22] = checkedChar;
+                            myGame->curTurnColor = enemyTurnColor;
+                        }
+                    }
+                    else//if they didnt make a check but successful move
+                    {
+                        myGame->curTurnColor = enemyTurnColor;//flipping turn color
+        
+                    
+                        strncpy(SendBuf, "VALID_MOVE", sizeof(SendBuf)-1);
+                    }
+                }
+                n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                if(n<0)
+                {FatalError("writing to data socket failed");
+                }
+                if(strcmp(RecvBuf,"OK")!=0)
+                {
+                    printf("Receieved: %s instead of OK 3",RecvBuf);
+                    FatalError("Somethign went wrong client side\n");
+                }
+            }
         }
         else
         {
-            curTurnFD = myGame->player_fd_2;
+            printf("Not enough players, reutrning\n");
+            strcpy(SendBuf,"MORE_PLAYERS");
+            write(DataSocketFD,SendBuf,sizeof(SendBuf)-1);
+            if(n<0)
+            {FatalError("writing to data socket failed");
+            }
+            return;
         }
-        printf("Current fd: %d\n",curTurnFD);
-        printBoard(myGame->myBoard);
-        int n = write(curTurnFD,"PRINT_BOARD",11);
-        if(n<0)
-        {FatalError("Writing to data socket failed");
-        }
-        n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
-        if(n<0)
-        {
-            FatalError("Somethign went wrong client side hh\n");
-        }
-        if(strcmp(RecvBuf,"OK")!=0)
-        {
-            printf("Receieved: %s instead of OK",RecvBuf);
-            FatalError("Somethign went wrong client side\n");
-        }
-        strncpy(SendBuf,"",sizeof(SendBuf)-1);
-        for(int i = 0; i <128; i+=2)
-         {
-             int realCoord = i/2;
-             int col = realCoord/8;
-             int row = realCoord%8;
-             char chC = GetColor(getPiece(myGame->myBoard,col,row));
-             char chT = GetType(getPiece(myGame->myBoard,col,row));
-             SendBuf[i]  = chC;
-             SendBuf[i+1] = chT;
-         }
-        //printf("%s",SendBuf);
-        n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
-        //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
-        
-        printf("Now requesting move\n");
-        strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
-        n = write(curTurnFD,SendBuf,sizeof(SendBuf));
-        if(n<0)
-        {FatalError("writing to data socket failed");
-        }
-        printf("Skipped requesting move\n");
-        
     }
-    else
-    {
-        printf("Not enough players, reutrning\n");
-        strcpy(SendBuf,"MORE_PLAYERS");
-        write(DataSocketFD,SendBuf,sizeof(SendBuf)-1);
-        if(n<0)
-        {FatalError("writing to data socket failed");
-        }
-        return;
-    }
-    }
+    
+    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     if (n < 0) 
     {   FatalError("reading from data socket failed");
     }
-    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     RecvBuf[n] = 0;
 #ifdef DEBUG
     printf("%s: Received message: %s\n", Program, RecvBuf);
 #endif
+}
 
-
+/*
     if (RecvBuf[0] == '+')
     {   
         //this just checks if the request is occuring during another player's turn
@@ -300,22 +385,22 @@ void ProcessRequest(        /* process a game request by a client */
         printf("Unknown protocol code\n");
         FatalError("Unknown code");
     }
-    /* Modification for chess*/   
+*/   
         
 
 
-    l = strlen(SendBuf);
+    //l = strlen(SendBuf);
 #ifdef DEBUG
-    printf("%s: Sending response: %s.\n", Program, SendBuf);
+    //printf("%s: Sending response: %s.\n", Program, SendBuf);
 #endif
-    n = write(DataSocketFD, SendBuf, l);
-    if (n < 0)
+    //n = write(DataSocketFD, SendBuf, l);
+    /*if (n < 0)
     {   FatalError("writing to data socket failed");
-    }
+    }*/
     
 
 
-} /* end of ProcessRequest */
+/* end of ProcessRequest */
 
 void ServerMainLoop(        /* simple server main loop */
     int ServSocketFD,       /* server socket to wait on */
@@ -341,6 +426,7 @@ void ServerMainLoop(        /* simple server main loop */
     InitializeGame(myGame);
     //END OF GAME BOARD INITAILIZATION SEQUENCE
 
+    //int clientOneIsHandled = 0;
     while(!Shutdown)
     {   ReadFDs = ActiveFDs;
     TimeVal.tv_sec  = Timeout / 1000000;    /* seconds */
@@ -406,12 +492,22 @@ void ServerMainLoop(        /* simple server main loop */
 #ifdef DEBUG
             printf("%s: Dealing with client %d...\n", Program, i);
 #endif
+            //if the first flag is unchecked AND one of the players is unregistered, or if both are registered
+           /* if( !clientOneIsHandled || !(myGame->player_fd_1 ==-1 || myGame->player_fd_2 ==-1) )
+            {
+
+                
+                clientOneIsHandled=1;
+                printf("Client one handled\n");
+            }
+           */
             HandleClient(i, myGame);
+
 #ifdef DEBUG
             printf("%s: Closing client %d connection.\n", Program, i);
 #endif
             //printf("%s: Closing client %d connection.\n", Program, i);
-            //close(i);
+            close(i);
             FD_CLR(i, &ActiveFDs);
             }
         }
@@ -490,3 +586,5 @@ int main(int argc, char *argv[])
 
 
 /* EOF ClockServer.c */
+
+

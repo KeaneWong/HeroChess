@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	PIECE **myBoard = NULL;
 	myBoard = makeBoard();
     //
-
+	int inGame = 0;
 
     do
     {	
@@ -89,41 +89,42 @@ int main(int argc, char *argv[])
 	    {   FatalError("connecting to server failed");
 	    }
 
+	    if(!inGame)
+	    {
+		    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+		    printf("Sending REQUESTING_BOARD request\n");
+		    //printf("%s\n",SendBuf);
+		    //printf("0 if true: %d\n",strcmp(SendBuf,"REQUESTING_BOARD"));
+		   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+		   	if (n < 0) 
+		    {   FatalError("writing to socket failed\n");
+		    }
+		  
+		  }
+		    printf("Now waiting for response:\n");
+		    //printf("Current buffer: %s\n",RecvBuf);
+		    memset(RecvBuf,0,sizeof(RecvBuf));
+		    n = read(SocketFD,RecvBuf,sizeof(RecvBuf)-1);
+		    if(n<0)
+		    {
+		    	FatalError("Error reading from socket");
+		    }
+		    printf("Ready to play: %s\n",RecvBuf);
+		    if(strcmp("MORE_PLAYERS",RecvBuf) != 0)
+		    {
+		    	printf("We are now in game!\n");
+		    	inGame=1;
+		    }
 
-	    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
-	    printf("Sending REQUESTING_BOARD request\n");
-	    //printf("%s\n",SendBuf);
-	    //printf("0 if true: %d\n",strcmp(SendBuf,"REQUESTING_BOARD"));
-	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
-	   	if (n < 0) 
-	    {   FatalError("writing to socket failed\n");
-	    }
-	    
-	    printf("Now waiting for response:\n");
-	    n = read(SocketFD,RecvBuf,sizeof(SendBuf));
-	    printf("Ready to play: %s\n",RecvBuf);
-	    //sending it a second time to try and get the write to go through
-	   /* strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
-	    printf("Sending REQUESTING_BOARD request\n");
-	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
-	   	if (n < 0) 
-	    {   FatalError("writing to socket failed\n");
-	    }
-	    */
-	    printf("Sending OK\n");
-	    strcpy(SendBuf,"OK");
-	   	n = write(SocketFD, SendBuf,sizeof(SendBuf));
-	    
-#ifdef DEBUG
-	    printf("%s: Waiting for response...\n", Program);
-#endif
-
-	    n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
-	    if (n < 0) 
-	    {   FatalError("reading from socket failed\n");
-	    }
-	    RecvBuf[n] = 0;
-	    printf("%s: Received response: %s\n", Program, RecvBuf);
+		    //sending it a second time to try and get the write to go through
+		   /* strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+		    printf("Sending REQUESTING_BOARD request\n");
+		   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+		   	if (n < 0) 
+		    {   FatalError("writing to socket failed\n");
+		    }
+		    */
+		   
 	    //SECTION TO INTERPRET RESPONSE
 	    //-------------------------------------------------------------------
 
@@ -232,6 +233,10 @@ int main(int argc, char *argv[])
 	    {
 	    	printf("Invalid move: Please enter a new move\n");
 	    }
+	    else if (strcmp("VALID_MOVE",RecvBuf) == 0)
+	    {
+	    	printf("Invalid move: Please enter a new move\n");
+	    }
 	    else if (strcmp("WIN_ACHIEVED B",RecvBuf) == 0)
 	    {
 	    	printf("Checkmate; Player Black Wins!\n");
@@ -244,6 +249,10 @@ int main(int argc, char *argv[])
 	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
 	    	n = write(SocketFD,"OK",sizeof(SendBuf));
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing");
+	    	}
 	    	//code to read in board data into myBoard
 	    	printf("Attempting to read in from socket\n");
 	    	n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
@@ -263,6 +272,18 @@ int main(int argc, char *argv[])
 	    		FatalError("Board data not read, Fatal Error. Exiting\n");
 	    	}
 	    	printBoard(myBoard);
+
+	    	memset(SendBuf,0,sizeof(SendBuf));
+	    	strncpy(SendBuf, "OK", sizeof(SendBuf));
+	    	int ll = strlen(SendBuf);
+	    	printf("Sending: %s\n",SendBuf);
+	    	n = write(SocketFD,SendBuf,ll);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing");
+	    	}
+
+
 	    }
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_W",RecvBuf) == 0)
 	    {
@@ -275,6 +296,7 @@ int main(int argc, char *argv[])
 	    else
 	    {
 	    	printf("Message from Server: %s\n", RecvBuf);//else, print the displayed message
+	    	n = write(SocketFD,"OK",sizeof(SendBuf)-1);
 	    }
 
 
