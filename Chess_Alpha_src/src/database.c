@@ -51,17 +51,18 @@ int checkUser(char user[100])
 	
 		if (strstr(line, user) != NULL)
 		{
-			printf("User exists line %d\n", lineNum);
+			//printf("User exists line %d\n", lineNum);
 			return lineNum;
 		}
-
+		
 		lineNum++;
-		if (strstr(line, user) == NULL)
-		{
-			printf("User does not exist\n");
-			return 0;
-		}
 	}
+
+	if (lineNum < 1)
+	{
+		return 0;
+	}
+
 	fclose(fp1);
 }
 
@@ -86,36 +87,55 @@ int checkPass(char user[100], char pass[100])
 	{
 		if ((strstr(line, pass) != NULL) && (passLine == (lineNum + 1)))
 		{
-			printf("Welcome line %d\n", passLine);
-			return passLine;	
+		
+			//printf("Welcome line %d\n", passLine);
+			return passLine;
 		}	
 	
-		passLine++;
-		
-		if ((strstr(line, pass) == NULL) || (passLine != (lineNum + 1)))
-		{
-			printf("wrong\n");
-			return 0;
-		}					
+		passLine++;					
+	}
+
+	if (passLine == 0)
+	{
+		return 0;
 	}
 	fclose(fp1);
 }
 
-/* int main()
+int main()
 {
 	char user[100], pass[100];
+	int name, match;
 	
 	printf("Username: ");
 	scanf("%s", user);
-	checkUser(user);
+	name = checkUser(user);
 	
-	printf("Password: ");
-	scanf("%s", pass);
-	checkPass(user, pass);
+	if (name >= 1)
+	{
+		printf("Password: ");
+		scanf("%s", pass);
+		match = checkPass(user, pass);
+		
+		if (match == name + 1)
+		{
+			printf("Welcome back!\n");
+		}
+
+		else
+		{
+			printf("Wrong password...\n");
+		}
+	}
+	
+	else
+	{
+		printf("User does not exist\n");
+	}
 
 	return 0;
 } 
-
+/* 
 int changePass(char username[100], char newPass[100])
 {
 	char line[301];
