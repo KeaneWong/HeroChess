@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	{   FatalError(argv[0], "connecting to server failed");
 	}
 
-/***************** Main Login/Registration Menu *****************/ 
+	/***************** Main Login/Registration Menu *****************/ 
 	do{ printf("%s: Please select 1 or 2\n"
 		"         1. New User\n"
 		"         2. Returning User\n"
@@ -104,13 +104,13 @@ int main(int argc, char *argv[])
 	}
 	} while( (0 != strcmp("Welcome, nice to meet you!", RecvBuf)) && (0 != strcmp("Welcome!", RecvBuf)) && (0 != strcmp("server shutdown", RecvBuf)) );
 
-	printf("%s\n", RecvBuf);
+	
 
-/***************** New User *****************/
-	if( 0 != strcmp("Welcome, nice to meet you!", RecvBuf) )
+	/***************** New User *****************/
+	if( 0 == strcmp("Welcome, nice to meet you!", RecvBuf) )
 	{
-		char user[50];
-		char pass[50];
+		char user[256];
+		char pass[256];
 		
 		
 		int length = strlen(user);
@@ -137,13 +137,38 @@ int main(int argc, char *argv[])
 			else if ((length >= 6) || (length <= 8))
 			{
 				flag = 0;
-			} 
+				memcpy(SendBuf, user, sizeof(SendBuf));
+			}
+	 
+		}
+		
+		fgets(SendBuf, sizeof(SendBuf), stdin);
+		l = strlen(SendBuf);
+		if (SendBuf[l-1] == '\n')
+		{   SendBuf[--l] = 0;
+		}
+		if (l)
+		{
+			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
+			n = write(SocketFD, SendBuf, l);
+			if (n < 0)
+			{   FatalError(argv[0], "writing to socket failed");
+			}
+			#ifdef DEBUG
+			printf("%s: Waiting for response...\n", argv[0]);
+			#endif
+			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0) 
+			{   FatalError(argv[0], "reading from socket failed");
+			}
+			RecvBuf[n] = 0;
+			printf("%s: Received response: %s\n", argv[0], RecvBuf);
 		}
 	
 	}
 
-/***************** Returning User *****************/
-	else if( 0 != strcmp("Welcome!", RecvBuf) )
+	/***************** Returning User *****************/
+	else if( 0 == strcmp("Welcome!", RecvBuf) )
 	{
 		char user[50];
 		char pass[50];
@@ -162,8 +187,8 @@ int main(int argc, char *argv[])
 		}	
 	}
 
-/***************** Closing the Socket *****************/
-	else if( 0 != strcmp("server shutdown", RecvBuf) )
+	/***************** Closing the Socket *****************/
+	else if( 0 == strcmp("server shutdown", RecvBuf) )
 	{
 		printf("%s: Exiting...\n", argv[0]);
 		close(SocketFD);
@@ -171,6 +196,8 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
+
 
 /* EOF client2.c */
 
