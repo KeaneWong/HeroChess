@@ -154,17 +154,21 @@ void ProcessRequest(        /* process a game request by a client */
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
 
-    printf("Waiting on REQUESTING BOARD request\n");
-    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
-    printf("Requesting board request receieved: %s\n",RecvBuf);
-    printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
-    if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
-    {
+    
         if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
         {
+            printf("Waiting on REQUESTING BOARD request\n");
+            n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+            printf("Requesting board request receieved: %s\n",RecvBuf);
+            printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
+            if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
+            {
+                //do nothing, but do continue;
+            }
             int won=0;
             while(!won)
             {
+
                 char curTurnColor = myGame->curTurnColor;
                 char enemyTurnColor = curTurnColor == 'w' ? 'b' : 'w';
                 printf("Found a player!\n");
@@ -296,7 +300,7 @@ void ProcessRequest(        /* process a game request by a client */
                 }
             }
         }
-        else
+        /*else
         {
             printf("Not enough players, reutrning\n");
             strcpy(SendBuf,"MORE_PLAYERS");
@@ -305,8 +309,8 @@ void ProcessRequest(        /* process a game request by a client */
             {FatalError("writing to data socket failed");
             }
             return;
-        }
-    }
+        }*/
+    
     
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     if (n < 0) 
