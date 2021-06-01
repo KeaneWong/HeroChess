@@ -35,8 +35,8 @@ void FatalError(		/* print error diagnostics and abort */
 int main(int argc, char *argv[])
 {
     int l, n;
-    int SocketFD,	/* socket file descriptor */
-	PortNo;		/* port number */
+    int SocketFD = -1;	/* socket file descriptor */
+	int PortNo;		/* port number */
     struct sockaddr_in
 	ServerAddress;	/* server address we connect with */
     struct hostent
@@ -75,20 +75,28 @@ int main(int argc, char *argv[])
     //
 	int inGame = 0;
 
+
+	//this is a flag to signify we are between the steps where we printed the thing and now want to send a move. This just prevents the client from closing the connection in the mean time
+	int betweenMenuAndMove = 0;
     do
     {	
 	if (1)
-	{   SocketFD = socket(AF_INET, SOCK_STREAM, 0);
-	    if (SocketFD < 0)
-	    {   FatalError("socket creation failed");
-	    }
-	    printf("%s: Connecting to the server at port %d...\n",
-			Program, PortNo);
-	    if (connect(SocketFD, (struct sockaddr*)&ServerAddress,
-			sizeof(ServerAddress)) < 0)
-	    {   FatalError("connecting to server failed");
-	    }
 
+	{   
+		if(!betweenMenuAndMove)
+		{
+			SocketFD = socket(AF_INET, SOCK_STREAM, 0);
+	    	if (SocketFD < 0)
+	    	{   FatalError("socket creation failed");
+	    	}
+	    	printf("%s: Connecting to the server at port %d...\n",
+				Program, PortNo);
+	    	if (connect(SocketFD, (struct sockaddr*)&ServerAddress,
+				sizeof(ServerAddress)) < 0)
+	    	{   FatalError("connecting to server failed");
+	    	}
+	    }
+		
 	    if(!inGame)
 	    {
 		    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
@@ -217,17 +225,30 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("REQUESTING_MOVE",RecvBuf) == 0)
 	    {
+	    	betweenMenuAndMove = 0;
 	    	printf("Your move:\n");
-	    	fgets(SendBuf, sizeof(SendBuf), stdin);
-			l = strlen(SendBuf);
-			if (SendBuf[l-1] == '\n')
-			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
-			}
+	    	printf("Select a piece:\n");
+	    	char colS;
+	    	char rowS;
+	    	char colD;
+	    	char rowD;
+	    	scanf("%c%c", &colS, &rowS);
+	    	printf("Where would you like to move this piece?\n");
+	    	scanf("%c%c", &colD, &rowD);
+	    	printf("OK Moving Piece %c%c to %c%c\n",colS,rowS,colD,rowD);
+			SendBuf[0] = '+';
+			SendBuf[1] = colS;
+			SendBuf[2] = rowS;
+			SendBuf[3] = colD;
+			SendBuf[4] = rowD;
 			printf("%s: Sending move '%s'...\n", Program, SendBuf);
 	    	n = write(SocketFD, SendBuf, l);
 	    	if (n < 0)
 	    	{   FatalError("writing to socket failed");
 	    	}
+
+
+	    	
 	    }
 	    else if (strcmp("INVALID_MOVE",RecvBuf) == 0)
 	    {
@@ -248,7 +269,12 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
-	    	n = write(SocketFD,"OK",sizeof(SendBuf));
+
+	    	memset(SendBuf,0,256);
+	    	strncpy(SendBuf, "OK", sizeof(SendBuf));
+	    	int ll = strlen(SendBuf);
+	    	printf("Sending: %s\n",SendBuf);
+	    	n = write(SocketFD,SendBuf,ll);
 	    	if(n<0)
 	    	{
 	    		FatalError("Error writing");
@@ -273,16 +299,16 @@ int main(int argc, char *argv[])
 	    	}
 	    	printBoard(myBoard);
 
-	    	memset(SendBuf,0,sizeof(SendBuf));
+	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf, "OK", sizeof(SendBuf));
-	    	int ll = strlen(SendBuf);
+	    	ll = strlen(SendBuf);
 	    	printf("Sending: %s\n",SendBuf);
 	    	n = write(SocketFD,SendBuf,ll);
 	    	if(n<0)
 	    	{
 	    		FatalError("Error writing");
 	    	}
-
+			betweenMenuAndMove = 1;
 
 	    }
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_W",RecvBuf) == 0)
@@ -305,11 +331,25 @@ int main(int argc, char *argv[])
 	    //END OF SECTION TO INTERPRET RESPONSE
 
 #ifdef DEBUG
-	    printf("%s: Closing the connection...\n", Program);
+	    //printf("%s: Closing the connection...\n", Program);
 #endif
+	    /*shutdown(SocketFD, SHUT_WR);
+	    int res;
+	    for(;;) 
+	    {
+        	res=read(SocketFD, SendBuf, 256);
+        	if(res < 0) {
+        	    perror("reading");
+        	    exit(1);
+        	}
+        	if(!res)
+        	    break;
+    	}	*/
 
-
-	    close(SocketFD);
+	    if(!betweenMenuAndMove)
+	    {
+	    	close(SocketFD);
+		}
 	}
     } while(0 != strcmp("SHUTDOWN", SendBuf));
     printf("%s: Exiting...\n", Program);

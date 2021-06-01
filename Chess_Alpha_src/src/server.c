@@ -158,6 +158,7 @@ void ProcessRequest(        /* process a game request by a client */
         if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
         {
             printf("Waiting on REQUESTING BOARD request\n");
+            memset(RecvBuf,0,256);
             n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
             printf("Requesting board request receieved: %s\n",RecvBuf);
             printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
@@ -191,6 +192,7 @@ void ProcessRequest(        /* process a game request by a client */
                 if(n<0)
                 {FatalError("Writing to data socket failed");
                 }
+                memset(RecvBuf,0,256);
                 n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
                 if(n<0)
                 {
@@ -201,6 +203,8 @@ void ProcessRequest(        /* process a game request by a client */
                     printf("Receieved: %s instead of OK 1",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
                 }
+                printf("First ok reached\n");
+
                 strncpy(SendBuf,"",sizeof(SendBuf)-1);
                 for(int i = 0; i <128; i+=2)
                  {
@@ -213,23 +217,38 @@ void ProcessRequest(        /* process a game request by a client */
                      SendBuf[i+1] = chT;
                  }
                 //printf("%s",SendBuf);
+                 printf("Now sending Board data: %s\n",SendBuf);
                 n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
                 //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
         
+                printf("Waiting for ok 2...\n");
+                memset(RecvBuf,0,256);
                 n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
                 if(n<0)
                 {
-                    FatalError("Somethign went wrong client side hh\n");
+
+
+                    FatalError("Somethignn went wrong client side hh\n");
                 }
                 if(strcmp(RecvBuf,"OK")!=0)
                 {
                     printf("Receieved: %s instead of OK 2",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
+                    memset(RecvBuf,0,256);
+                    /*
+                    n = read(curTurnFD,RecvBuf,(sizeof(RecvBuf)-1));
+                    printf("Readiing in again. Got this: %s\n",RecvBuf);
+                    memset(RecvBuf,0,256);
+                    n = read(curTurnFD,RecvBuf,(sizeof(RecvBuf)-1));
+                    printf("Readiing in again. Got this: %s\n",RecvBuf);
+                    */
                 }
+
         
                 //MOVE REQUEST
                 printf("Now requesting move\n");
                 strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
+                printf("Message: %s\n",SendBuf);
                 n = write(curTurnFD,SendBuf,sizeof(SendBuf));
                 if(n<0)
                 {FatalError("writing to data socket failed");
@@ -238,6 +257,7 @@ void ProcessRequest(        /* process a game request by a client */
                 
         
                 //MOVE DATA READ
+                memset(RecvBuf,0,256);
                 n  = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
                 if(n<0)
                 {FatalError("writing to data socket failed");
@@ -289,6 +309,7 @@ void ProcessRequest(        /* process a game request by a client */
                         strncpy(SendBuf, "VALID_MOVE", sizeof(SendBuf)-1);
                     }
                 }
+                memset(RecvBuf,0,256);
                 n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
                 if(n<0)
                 {FatalError("writing to data socket failed");
@@ -311,7 +332,7 @@ void ProcessRequest(        /* process a game request by a client */
             return;
         }*/
     
-    
+    memset(RecvBuf,0,256);
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     if (n < 0) 
     {   FatalError("reading from data socket failed");
@@ -320,6 +341,7 @@ void ProcessRequest(        /* process a game request by a client */
 #ifdef DEBUG
     printf("%s: Received message: %s\n", Program, RecvBuf);
 #endif
+    
 }
 
 /*
