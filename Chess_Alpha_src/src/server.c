@@ -149,12 +149,15 @@ void PrintCurrentTime(void) /*  print/update the current real time */
 void ProcessRequest(        /* process a game request by a client */
     int DataSocketFD, FullGame *myGame)
 {
+    //printf("Something something something power rangers\n");
     int l, n;
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
 
     printf("Waiting on REQUESTING BOARD request\n");
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+    printf("Requesting board request receieved: %s\n",RecvBuf);
+    printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
     if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
     {
     if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
@@ -176,6 +179,16 @@ void ProcessRequest(        /* process a game request by a client */
         if(n<0)
         {FatalError("Writing to data socket failed");
         }
+        n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+        if(n<0)
+        {
+            FatalError("Somethign went wrong client side hh\n");
+        }
+        if(strcmp(RecvBuf,"OK")!=0)
+        {
+            printf("Receieved: %s instead of OK",RecvBuf);
+            FatalError("Somethign went wrong client side\n");
+        }
         strncpy(SendBuf,"",sizeof(SendBuf)-1);
         for(int i = 0; i <128; i+=2)
          {
@@ -192,13 +205,23 @@ void ProcessRequest(        /* process a game request by a client */
         //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
         
         printf("Now requesting move\n");
-        strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf)-1);
-        n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
+        strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
+        n = write(curTurnFD,SendBuf,sizeof(SendBuf));
         if(n<0)
         {FatalError("writing to data socket failed");
         }
         printf("Skipped requesting move\n");
         
+    }
+    else
+    {
+        printf("Not enough players, reutrning\n");
+        strcpy(SendBuf,"MORE_PLAYERS");
+        write(DataSocketFD,SendBuf,sizeof(SendBuf)-1);
+        if(n<0)
+        {FatalError("writing to data socket failed");
+        }
+        return;
     }
     }
     if (n < 0) 
@@ -359,8 +382,8 @@ void ServerMainLoop(        /* simple server main loop */
                 inet_ntoa(ClientAddress.sin_addr),
                 ntohs(ClientAddress.sin_port));
 #endif
-            FD_SET(DataSocketFD, &ActiveFDs);
-
+            
+            printf("Data socket is %d\n",DataSocketFD);
                 //CODE TO ADD NEW USER TO AVAILABLE GAME BOARD
                 //This code adds the new client to the first available file descriptor
                 if(myGame->player_fd_1 == -1 && DataSocketFD != myGame->player_fd_2)
@@ -375,7 +398,8 @@ void ServerMainLoop(        /* simple server main loop */
 
 
                  //CODE TO HANDLE THE GAME
-                 FD_CLR(i,&ActiveFDs);
+                 //FD_CLR(i,&ActiveFDs);
+                FD_SET(DataSocketFD, &ActiveFDs);
             }
             else
             {   /* active communication with a client */
@@ -387,7 +411,7 @@ void ServerMainLoop(        /* simple server main loop */
             printf("%s: Closing client %d connection.\n", Program, i);
 #endif
             //printf("%s: Closing client %d connection.\n", Program, i);
-            close(i);
+            //close(i);
             FD_CLR(i, &ActiveFDs);
             }
         }

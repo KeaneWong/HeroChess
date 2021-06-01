@@ -92,13 +92,32 @@ int main(int argc, char *argv[])
 
 	    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
 	    printf("Sending REQUESTING_BOARD request\n");
+	    //printf("%s\n",SendBuf);
+	    //printf("0 if true: %d\n",strcmp(SendBuf,"REQUESTING_BOARD"));
 	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
 	   	if (n < 0) 
 	    {   FatalError("writing to socket failed\n");
 	    }
+	    
+	    printf("Now waiting for response:\n");
+	    n = read(SocketFD,RecvBuf,sizeof(SendBuf));
+	    printf("Ready to play: %s\n",RecvBuf);
+	    //sending it a second time to try and get the write to go through
+	   /* strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+	    printf("Sending REQUESTING_BOARD request\n");
+	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+	   	if (n < 0) 
+	    {   FatalError("writing to socket failed\n");
+	    }
+	    */
+	    printf("Sending OK\n");
+	    strcpy(SendBuf,"OK");
+	   	n = write(SocketFD, SendBuf,sizeof(SendBuf));
+	    
 #ifdef DEBUG
 	    printf("%s: Waiting for response...\n", Program);
 #endif
+
 	    n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
 	    if (n < 0) 
 	    {   FatalError("reading from socket failed\n");
@@ -224,6 +243,7 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
+	    	n = write(SocketFD,"OK",sizeof(SendBuf));
 	    	//code to read in board data into myBoard
 	    	printf("Attempting to read in from socket\n");
 	    	n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
