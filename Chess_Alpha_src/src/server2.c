@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
 		printf("%s: Received '1' message from client.\n", argv[0]);
 #endif
-		strncpy(SendBuf, "Welcome, nice to meet oyu!", sizeof(SendBuf)-1);
+		strncpy(SendBuf, "Welcome, nice to meet you!", sizeof(SendBuf)-1);
 		SendBuf[sizeof(SendBuf)-1] = 0;
 	    }
 	    else if (0 == strcmp(RecvBuf, "2"))
