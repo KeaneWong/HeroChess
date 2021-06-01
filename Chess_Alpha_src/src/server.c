@@ -198,7 +198,7 @@ void ProcessRequest(        /* process a game request by a client */
                 {
                     FatalError("Somethignn went wrong client side hh\n");
                 }
-                if(strcmp(RecvBuf,"OK")!=0)
+                if(strcmp(RecvBuf,"OK1")!=0)
                 {
                     printf("Receieved: %s instead of OK 1",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
@@ -230,9 +230,9 @@ void ProcessRequest(        /* process a game request by a client */
 
                     FatalError("Somethignn went wrong client side hh\n");
                 }
-                if(strcmp(RecvBuf,"OK")!=0)
+                if(strcmp(RecvBuf,"OK2")!=0)
                 {
-                    printf("Receieved: %s instead of OK 2",RecvBuf);
+                    printf("Receieved: %s instead of OK2",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
                     memset(RecvBuf,0,256);
                     /*
@@ -249,7 +249,7 @@ void ProcessRequest(        /* process a game request by a client */
                 printf("Now requesting move\n");
                 strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
                 printf("Message: %s\n",SendBuf);
-                n = write(curTurnFD,SendBuf,sizeof(SendBuf));
+                n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
                 if(n<0)
                 {FatalError("writing to data socket failed");
                 }
@@ -258,21 +258,25 @@ void ProcessRequest(        /* process a game request by a client */
         
                 //MOVE DATA READ
                 memset(RecvBuf,0,256);
+                printf("Now waiting for move: \n");
+                //printf("In receiv buffer before reading: %s\n",RecvBuf);
                 n  = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
                 if(n<0)
-                {FatalError("writing to data socket failed");
+                {FatalError("reading data socket failed");
                 }
                 if(RecvBuf[0] != '+')
                 {
                     printf("Got this: %s instead of the proper '+' protocol code\n", RecvBuf);
                     FatalError("Dun f'd up");
+                    //n = read(curTurnFD,RecvBuf,sizeof(RecvBuf-1));
+                    //printf("Got this reee%s\n",RecvBuf);
                 }
-        
+                printf("Receieved move: %s\n",RecvBuf);
 
-                int colS = RecvBuf[0]-'A';
-                int rowS = RecvBuf[1]-'1';
-                int colD = RecvBuf[2]-'A';
-                int rowD = RecvBuf[3]-'1';
+                int colS = RecvBuf[1]-'A';
+                int rowS = RecvBuf[2]-'1';
+                int colD = RecvBuf[3]-'A';
+                int rowD = RecvBuf[4]-'1';
                 PIECE **board = myGame->myBoard;
                 MLIST *myList = myGame->myList;
                 if(!MakeMove(board,colS,rowS,colD,rowD,curTurnColor,myList))
@@ -309,14 +313,21 @@ void ProcessRequest(        /* process a game request by a client */
                         strncpy(SendBuf, "VALID_MOVE", sizeof(SendBuf)-1);
                     }
                 }
+
+                printf("Sending to client: %s\n",SendBuf);
+                n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
+                if(n<0)
+                {FatalError("writing to socket failed");
+                }
+
                 memset(RecvBuf,0,256);
-                n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                n = read(curTurnFD,RecvBuf,sizeof(RecvBuf));
                 if(n<0)
                 {FatalError("writing to data socket failed");
                 }
-                if(strcmp(RecvBuf,"OK")!=0)
+                if(strcmp(RecvBuf,"OK3")!=0)
                 {
-                    printf("Receieved: %s instead of OK 3",RecvBuf);
+                    printf("Receieved: %s instead of OK3",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
                 }
             }

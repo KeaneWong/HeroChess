@@ -77,13 +77,13 @@ int main(int argc, char *argv[])
 
 
 	//this is a flag to signify we are between the steps where we printed the thing and now want to send a move. This just prevents the client from closing the connection in the mean time
-	int betweenMenuAndMove = 0;
+	int inMiddleOfTurn = 0;
     do
     {	
 	if (1)
 
 	{   
-		if(!betweenMenuAndMove)
+		if(!inMiddleOfTurn)
 		{
 			SocketFD = socket(AF_INET, SOCK_STREAM, 0);
 	    	if (SocketFD < 0)
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("REQUESTING_MOVE",RecvBuf) == 0)
 	    {
-	    	betweenMenuAndMove = 0;
+	    	
 	    	printf("Your move:\n");
 	    	printf("Select a piece:\n");
 	    	char colS;
@@ -234,19 +234,24 @@ int main(int argc, char *argv[])
 	    	char rowD;
 	    	scanf("%c%c", &colS, &rowS);
 	    	printf("Where would you like to move this piece?\n");
-	    	scanf("%c%c", &colD, &rowD);
+	    	//while ( getchar() != '\n' )
+	    	scanf("\n%c%c", &colD, &rowD);
 	    	printf("OK Moving Piece %c%c to %c%c\n",colS,rowS,colD,rowD);
+	    	memset(SendBuf,0,256);
 			SendBuf[0] = '+';
 			SendBuf[1] = colS;
 			SendBuf[2] = rowS;
 			SendBuf[3] = colD;
 			SendBuf[4] = rowD;
+
 			printf("%s: Sending move '%s'...\n", Program, SendBuf);
-	    	n = write(SocketFD, SendBuf, l);
+	    	n = write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if (n < 0)
 	    	{   FatalError("writing to socket failed");
 	    	}
-
+	    	//n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+	    	//n = read(SocketFD,RecvBuf,sizeof(RecvBuf));
+	    	//inMiddleOfTurn = 0;
 
 	    	
 	    }
@@ -256,7 +261,16 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("VALID_MOVE",RecvBuf) == 0)
 	    {
-	    	printf("Invalid move: Please enter a new move\n");
+	    	printf("Valid move. Now waiting on Opponent:\n");
+	    	memset(SendBuf,0,256);
+	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing to socket");
+	    	}
+	    	//inMiddleOfTurn = 0;
 	    }
 	    else if (strcmp("WIN_ACHIEVED B",RecvBuf) == 0)
 	    {
@@ -271,7 +285,7 @@ int main(int argc, char *argv[])
 	    {
 
 	    	memset(SendBuf,0,256);
-	    	strncpy(SendBuf, "OK", sizeof(SendBuf));
+	    	strncpy(SendBuf, "OK1", sizeof(SendBuf));
 	    	int ll = strlen(SendBuf);
 	    	printf("Sending: %s\n",SendBuf);
 	    	n = write(SocketFD,SendBuf,ll);
@@ -300,7 +314,7 @@ int main(int argc, char *argv[])
 	    	printBoard(myBoard);
 
 	    	memset(SendBuf,0,256);
-	    	strncpy(SendBuf, "OK", sizeof(SendBuf));
+	    	strncpy(SendBuf, "OK2", sizeof(SendBuf)-1);
 	    	ll = strlen(SendBuf);
 	    	printf("Sending: %s\n",SendBuf);
 	    	n = write(SocketFD,SendBuf,ll);
@@ -308,7 +322,7 @@ int main(int argc, char *argv[])
 	    	{
 	    		FatalError("Error writing");
 	    	}
-			betweenMenuAndMove = 1;
+			inMiddleOfTurn = 1;
 
 	    }
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_W",RecvBuf) == 0)
@@ -346,7 +360,7 @@ int main(int argc, char *argv[])
         	    break;
     	}	*/
 
-	    if(!betweenMenuAndMove)
+	    if(!inMiddleOfTurn)
 	    {
 	    	close(SocketFD);
 		}
