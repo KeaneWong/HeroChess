@@ -49,10 +49,10 @@ int checkUser(char user[100])
 
         while(fgets(line, 300, fp1) != NULL)
         {	
-		while(c != EOF)
-		{
-			if(c != '\n')
-			{		
+	//	while(c != EOF)
+	//	{
+	//		if(c != '\n')
+	//		{		
 				if (strcmp(line, user) != NULL)
 				{
 					printf("User exists line %d\n", count);
@@ -66,8 +66,8 @@ int checkUser(char user[100])
 					printf("User does not exist");
 					return 0;
 				}
-			}
-		}
+	//		}
+	//	}
 	}
 	
 	fclose(fp1);
