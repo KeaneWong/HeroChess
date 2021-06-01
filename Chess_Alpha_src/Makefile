@@ -71,11 +71,11 @@ main.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h 
 
 #target to generate server.o
 server.o: src/server.c src/piece.h src/game.h src/board.h src/movelist.h src/settings.h src/replay.h src/ai.h src/move.h src/tree.h
-	$(CC) $(CFLAGS) src/server.c -o src/server.o
+	$(CC) $(CFLAGS) -DDEBUG src/server.c -o src/server.o
 
 #target to generate client.o
 client.o: src/client.c src/game.h src/board.h src/piece.h src/movelist.h src.move.h
-	$(CC) $(CFLAGS) src/client.c -o src/client.o
+	$(CC) $(CFLAGS) -DDEBUG src/client.c -o src/client.o
 
 #target to generate testmain.o
 src/testmain.o: src/main.c src/settings.h src/piece.h src/move.h src/game.h src/board.h src/ai.h src/movelist.h src/replay.h
@@ -93,10 +93,10 @@ TestHeroChess: src/testmain.o src/tree.o src/settings.o src/piece.o src/move.o s
 
 #target to generate Server
 Server:	src/server.o src/settings.o src/game.o src/board.o src/piece.o src/movelist.o src/replay.o src/ai.o src/move.o src/tree.o
-	$(CC) $(LFLAGS) src/tree.o src/server.o src/piece.o src/game.o src/board.o src/movelist.o src/settings.o src/replay.o src/ai.o src/move.o -o bin/Server -lm
+	$(CC) $(LFLAGS) -DDEBUG src/tree.o src/server.o src/piece.o src/game.o src/board.o src/movelist.o src/settings.o src/replay.o src/ai.o src/move.o -o bin/Server -lm
 
 Client: src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o
-	$(CC) $(LFLAGS) src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o -o bin/Client -lm
+	$(CC) $(LFLAGS) -DDEBUG src/client.o src/game.o src/board.o src/piece.o src/movelist.o src/move.o -o bin/Client -lm
 
 # delete all executables currently in the source and binary directories
 clean:

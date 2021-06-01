@@ -46,3 +46,7 @@ char GetColor(PIECE *mypiece){
 void SetType(PIECE *mypiece, char c){
 	mypiece->type = c;
 }
+
+void SetColor(PIECE *mypiece, char c){
+	mypiece->color = c;
+}

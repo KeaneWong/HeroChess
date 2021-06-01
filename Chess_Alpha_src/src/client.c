@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     
     //Code used to verify proper host and port number, as well as initialize socketaddress 
 
+
     if (argc < 3)
     {   fprintf(stderr, "Usage: %s hostname port\n", Program);
 	exit(10);
@@ -69,7 +70,8 @@ int main(int argc, char *argv[])
     ServerAddress.sin_family = AF_INET;
     ServerAddress.sin_port = htons(PortNo);
     ServerAddress.sin_addr = *(struct in_addr*)Server->h_addr_list[0];
-	
+	PIECE **myBoard = NULL;
+	myBoard = makeBoard();
     //
 
 
@@ -86,7 +88,12 @@ int main(int argc, char *argv[])
 			sizeof(ServerAddress)) < 0)
 	    {   FatalError("connecting to server failed");
 	    }
-	   
+	    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+	   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+	   	if (n < 0) 
+	    {   FatalError("writing to socket failed\n");
+	    }
+
 #ifdef DEBUG
 	    printf("%s: Waiting for response...\n", Program);
 #endif
@@ -215,9 +222,25 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
-	    	PIECE **myBoard = NULL;
 	    	//code to read in board data into myBoard
-	    	n = read(SocketFD, myBoard, sizeof(PIECE*) * 64);
+	    	printf("Attempting to read in from socket\n");
+	    	n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+	    	for(int i = 0; i <128; i+=2)
+	    	{
+	    		int realCoord = i/2;
+	    		int col = realCoord/8;
+	    		int row = realCoord%8;
+	    		char chC = RecvBuf[i];
+	    		char chT = RecvBuf[i+1];
+	    		SetColor(getPiece(myBoard,col,row),chC);
+	    		SetType(getPiece(myBoard,col,row),chT);
+
+	    	}
+	    	if(n < 0)
+	    	{
+	    		FatalError("Board data not read, Fatal Error. Exiting\n");
+	    	}
+	    	printBoard(myBoard);
 	    }
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_W",RecvBuf) == 0)
 	    {

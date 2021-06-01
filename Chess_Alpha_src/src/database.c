@@ -37,7 +37,7 @@ int appendUser(char username[100], char password[100])
 int checkUser(char user[100])
 {
 	char line[301];
-	char c;
+	char c = getc(fp1);
 	int count = 0;
 
 	FILE *fp1 = fopen("record.txt", "r");
@@ -49,24 +49,25 @@ int checkUser(char user[100])
 
         while(fgets(line, 300, fp1) != NULL)
         {	
-		for (c = getc(fp1); c != EOF; c = getc(fp1))
-		{
-			if(c == '\n')
-			{
-				count += 1;
-				
-				if (strcmp(user, line) == 0)
+	//	while(c != EOF)
+	//	{
+	//		if(c != '\n')
+	//		{		
+				if (strcmp(line, user) != NULL)
 				{
-					printf("User exists");
-					return count;
+					printf("User exists line %d\n", count);
+					count += 1;
+					break;
+	//				return count;
 				}
 
 				else
 				{
+					printf("User does not exist");
 					return 0;
 				}
-			}
-		}
+	//		}
+	//	}
 	}
 	
 	fclose(fp1);
@@ -112,7 +113,7 @@ int checkPass(int lineNum, char user[100], char pass[100])
 	fclose(fp1);
 }
 
-/* int main()
+int main()
 {
 	char user[100], pass[100];
 	
@@ -124,10 +125,19 @@ int checkPass(int lineNum, char user[100], char pass[100])
 	scanf("%s", pass);
 	checkPass(checkUser(user), user, pass);
 
+//	FILE *fp1 = fopen("record.txt", "r");
+//	char c;
+//	int count = 0;
+//	for (c = getc(fp1); c != EOF; c = getc(fp1))
+//	{
+//		if (c == '\n')
+//			count = count + 1;
+//	}
+//	printf("Number of lines in file: %d", count);
 	return 0;
 }
 
-int changePass(char username[100], char newPass[100])
+/* int changePass(char username[100], char newPass[100])
 {
 	char line[301];
 	char oldPass[100];
