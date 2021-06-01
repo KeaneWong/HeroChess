@@ -243,7 +243,15 @@ int main(int argc, char *argv[])
 			SendBuf[2] = rowS;
 			SendBuf[3] = colD;
 			SendBuf[4] = rowD;
-
+			if(SendBuf[1]>=97 && SendBuf[1]<=104)
+			{
+				SendBuf[1]-=32;
+			}
+			
+			if(SendBuf[3]>=97 && SendBuf[3]<=104)
+			{
+				SendBuf[3]-=32;
+			}
 			printf("%s: Sending move '%s'...\n", Program, SendBuf);
 	    	n = write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if (n < 0)
@@ -252,6 +260,7 @@ int main(int argc, char *argv[])
 	    	//n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
 	    	//n = read(SocketFD,RecvBuf,sizeof(RecvBuf));
 	    	//inMiddleOfTurn = 0;
+	    	while ( getchar() != '\n' );
 
 	    	
 	    }
