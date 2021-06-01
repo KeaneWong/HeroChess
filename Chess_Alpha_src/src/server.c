@@ -1,6 +1,6 @@
 /* ClockServer.c: simple TCP/IP server example with timeout support
  * Author: Rainer Doemer, 2/17/15
- */
+ */ 
 
 #include <stdio.h>
 #include <stdlib.h>
