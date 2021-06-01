@@ -153,6 +153,7 @@ void ProcessRequest(        /* process a game request by a client */
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
 
+    printf("Waiting on REQUESTING BOARD request\n");
     n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
     if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
     {
