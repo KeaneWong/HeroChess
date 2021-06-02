@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("RPS_REQUEST",RecvBuf) == 0)
 	    {
-	    	printf("Enemy player wants your color!\nPlay a game of RPS to be the color you selected (Enter R/P/S)\n");
+	    	printf("Enemy player wants your color!\nPlay an additional game of RPS to be the color you selected (Enter R/P/S)\n");
 	    	char c;
 	    	c = getchar();
 	    	char j;
