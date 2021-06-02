@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	int inGame = 0;
 
 
-	//this is a flag to signify we are between the steps where we printed the thing and now want to send a move. This just prevents the client from closing the connection in the mean time
+	//this is a flag to signify we are in the middle of a game. This just prevents the client from closing the connection in the mean time
 	int inMiddleOfTurn = 0;
     do
     {	
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		    {   FatalError("writing to socket failed\n");
 		    }
 		  
-		  }
+		 }
 		    printf("Now waiting for response:\n");
 		    //printf("Current buffer: %s\n",RecvBuf);
 		    memset(RecvBuf,0,sizeof(RecvBuf));
@@ -348,6 +348,56 @@ int main(int argc, char *argv[])
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_B",RecvBuf) == 0)
 	    {
 	    	printf("Black player is in check\n");
+	    }
+	    else if (strcmp("BLACK_WHITE",RecvBuf) == 0)
+	    {
+	    	printf("Would you like to be the black player or white player? (W/B, capital letter only)\n");
+	    	char c;
+	    	c = getchar();
+	    	char j;
+	    	while((j = getchar()) != EOF && j != '\n'); // This will eat up all other characters
+	    	memset(SendBuf,0,256);
+	    	SendBuf[0] = c;
+	    	printf("Sending %s\n", SendBuf);
+    		n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+    		if(n<0)
+    		{
+    			FatalError("Writing to socket failed");
+    		}
+    		inMiddleOfTurn = 1;
+    		inGame = 1;
+	    }
+	    else if (strcmp("RPS_REQUEST",RecvBuf) == 0)
+	    {
+	    	printf("Enemy player wants your color!\n Play a game of RPS to be the color you selected\n");
+	    	char c;
+	    	c = getchar();
+	    	while((c = getchar()) != EOF && c != '\n'); // This will eat up all other characters
+	    	memset(SendBuf,0,256);
+	    	SendBuf[0] = c;
+	    	printf("Sending %s\n", SendBuf);
+    		n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+    		if(n<0)
+    		{
+    			FatalError("Writing to socket failed");
+    		}
+    		inMiddleOfTurn = 1;
+	    }
+	    else if (strcmp("YOU_ARE_B",RecvBuf) == 0 || strcmp("YOU_ARE_W",RecvBuf) == 0)
+	    {
+	    	printf("Winner decided! You are %s player\n", RecvBuf[8] == 'W' ? "White" : "Black");
+	    	
+	    	//memset(SendBuf,0,256);
+	    	strcpy(SendBuf, "OK4");
+	    	printf("Sending %s\n", SendBuf);
+    		n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+    		//n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+    		if(n<0)
+    		{
+    			FatalError("Writing to socket failed");
+    		}
+    		printf("Sent %s\n",SendBuf);
+    		inMiddleOfTurn = 1;
 	    }
 	    else
 	    {

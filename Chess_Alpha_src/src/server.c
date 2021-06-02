@@ -146,6 +146,32 @@ void PrintCurrentTime(void) /*  print/update the current real time */
     fflush(stdout);
 } /* end of PrintCurrentTime */
 
+int RockPaperScissors(char A, char B)//returns a 2 if A wins, a 1 if B wins, 0 if tie, -1 if error
+{
+    if(A != 'R' && A != 'P' && A != 'S')
+    {
+        printf("ERROR: Character A is invalid\n");
+        return -1;
+    }
+    if(B != 'R' && B != 'P' && B != 'S')
+    {
+        printf("ERROR: Character B is invalid\n");
+        return -1; 
+    }
+    if(A==B)
+    {
+        return 0;
+    }
+    if( (A == 'R' && B == 'S') || (A == 'P' && B == 'R') || (A == 'S' && B == 'P'))
+    {
+        return 2;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 void ProcessRequest(        /* process a game request by a client */
     int DataSocketFD, FullGame *myGame)
 {
@@ -154,9 +180,11 @@ void ProcessRequest(        /* process a game request by a client */
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
 
-    
+    int DecidedWhoIsWhite = 0; 
+
         if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
         {
+
             printf("Waiting on REQUESTING BOARD request\n");
             memset(RecvBuf,0,256);
             n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
@@ -165,6 +193,166 @@ void ProcessRequest(        /* process a game request by a client */
             if(strcmp("REQUESTING_BOARD",RecvBuf)==0)
             {
                 //do nothing, but do continue;
+            }
+            char PColor1;
+            char PColor2;
+            if(!DecidedWhoIsWhite)
+            {
+
+                memset(SendBuf,0,256);
+                strncpy(SendBuf,"BLACK_WHITE",sizeof(SendBuf)-1);
+                printf("Sending turn decision to player 2. Code: %s\n", SendBuf);
+                n = write(myGame->player_fd_2,SendBuf,11);
+                if(n<0)
+                {FatalError("Writing to data socket failed");
+                }
+
+                printf("Receiving responses:\n");
+                memset(RecvBuf,0,256);
+                n = read(myGame->player_fd_2,RecvBuf,1);
+                if(n<0)
+                {FatalError("Reading from data socket failed");
+                }
+                printf("Got %s from User 2\n",RecvBuf);
+                if(strcmp(RecvBuf,"W")!=0 && strcmp(RecvBuf,"B")!=0)
+                {
+                    printf("Receieved: %s instead of 'B' or 'W'",RecvBuf);
+                    FatalError("Somethign went wrong client side\n");
+                }
+                PColor2 = RecvBuf[0];
+
+
+                printf("Sending turn decision to player 1. Code: %s\n", SendBuf);
+                n = write(myGame->player_fd_1,SendBuf,11);
+                if(n<0)
+                {FatalError("Writing to data socket failed");
+                }
+
+                printf("Receiving other player's response:\n");
+                memset(RecvBuf,0,256);
+                n = read(myGame->player_fd_1,RecvBuf,1);
+                if(n<0)
+                {FatalError("Reading from data socket failed");
+                }
+                printf("Got %s from User 1\n", RecvBuf);
+                if(strcmp(RecvBuf,"W") != 0 && strcmp(RecvBuf,"B") != 0)
+                {
+                    printf("Receieved: %s instead of 'B' or 'W'",RecvBuf);
+                    FatalError("Somethign went wrong client side\n");
+                }
+                PColor1 = RecvBuf[0];
+
+                while(PColor1 == PColor2)
+                {
+
+
+                    char RPS2;
+                    char RPS1;
+                    printf("Both players want same color. Sending RPS protocol:\n");
+                    memset(SendBuf,0,256);
+                    strncpy(SendBuf,"RPS_REQUEST",sizeof(SendBuf)-1);
+                    printf("Sending turn decision to each player. Code: %s\n", SendBuf);
+                    n = write(myGame->player_fd_2,SendBuf,11);
+                    if(n<0)
+                    {FatalError("Writing to data socket failed");
+                    }
+                    n = write(myGame->player_fd_1,SendBuf,11);
+                    if(n<0)
+                    {FatalError("Writing to data socket failed");
+                    }
+
+                    printf("Receiving responses:\n");
+                    memset(RecvBuf,0,256);
+                    n = read(myGame->player_fd_2,RecvBuf,sizeof(RecvBuf)-1);
+                    if(n<0)
+                    {FatalError("Reading from data socket failed");
+                    }
+                    if(strcmp(RecvBuf,"R")!=0 && strcmp(RecvBuf,"P")!=0 && strcmp(RecvBuf,"S")!=0)
+                    {
+                        printf("Receieved: %s instead of 'R' or 'P' or 'S' \n",RecvBuf);
+                        FatalError("Somethign went wrong client side\n");
+                    }
+                    RPS2 = RecvBuf[0];
+    
+                    printf("Receiving other player's response:\n");
+                    memset(RecvBuf,0,256);
+                    n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf)-1);
+                    if(n<0)
+                    {FatalError("Reading from data socket failed");
+                    }
+                    if(strcmp(RecvBuf,"R")!=0 && strcmp(RecvBuf,"P")!=0 && strcmp(RecvBuf,"S")!=0)
+                    {
+                        printf("Receieved: %s instead of 'R' or 'P' or 'S'\n ",RecvBuf);
+                        FatalError("Somethign went wrong client side\n");
+                    }
+                    RPS1 = RecvBuf[0];
+                    int RPSResult = RockPaperScissors(RPS1,RPS2);
+                    if(!RPSResult)
+                    {
+                        printf("Both tied. Need another game\n");
+                    }
+                    else if (RPSResult == -1)
+                    {
+                        printf("Invalid RPS inputs\n");
+                    }
+                    else if(RPSResult == 2)
+                    {
+                        //PColor 1 won so they dont have to change their color
+                        PColor2 = (PColor1 == 'W' ? 'B' : 'W');
+                    }
+                    else if (RPSResult == 1)
+                    {
+                        PColor1 = (PColor2 == 'W' ? 'B' : 'W');
+                        //PColor2 won so they dont have to change their color
+                    }
+                }
+                printf("Sending respective colors:\nPlayer 1:%c\nPlayer 2:%c\n",PColor1,PColor2);
+
+                memset(SendBuf,0,256);
+                strncpy(SendBuf,"YOU_ARE_",sizeof(SendBuf)-1);
+                SendBuf[8] = PColor2;
+                printf("Sending color decision to Player 2. Code: %s\n", SendBuf);
+                n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf)-1);
+                if(n<0)
+                {FatalError("Writing to data socket failed");
+                }
+
+                //memset(RecvBuf,0,256);
+                //printf("RecvBuf: %d\n",sizeof(RecvBuf));
+                n = read(myGame->player_fd_2, RecvBuf, sizeof(RecvBuf));
+                if(n<0)
+                {FatalError("Reading from data socket failed");
+                }
+                while(strcmp(RecvBuf,"OK4") != 0)
+                {
+                    printf("Recieved '%s' instead of OK4\n",RecvBuf);
+                    //FatalError("Invalid OK4");
+                    n = read(myGame->player_fd_2,RecvBuf,sizeof(RecvBuf));
+                }
+                #ifdef DEBUG
+                printf("OK4 reached\n");
+                #endif
+                SendBuf[8] = PColor1;
+                printf("Sending color decision to Player 1. Code: %s\n", SendBuf);
+                n = write(myGame->player_fd_1,SendBuf,sizeof(SendBuf)-1);
+                if(n<0)
+                {FatalError("Writing to data socket failed");
+                }
+
+                memset(RecvBuf,0,256);
+                n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf));
+                if(n<0)
+                {FatalError("Writing to data socket failed");
+                }
+                while(strcmp(RecvBuf,"OK4") != 0)
+                {
+                    printf("Recieved '%s' instead of OK4\n",RecvBuf);
+                    //FatalError("Reading from data socket failed");
+                    n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf));
+                }
+                printf("OK4 reached\n");
+
+                DecidedWhoIsWhite = 1;
             }
             int won=0;
             while(!won)
