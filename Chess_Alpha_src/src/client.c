@@ -369,10 +369,11 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("RPS_REQUEST",RecvBuf) == 0)
 	    {
-	    	printf("Enemy player wants your color!\n Play a game of RPS to be the color you selected\n");
+	    	printf("Enemy player wants your color!\nPlay a game of RPS to be the color you selected (Enter R/P/S)\n");
 	    	char c;
 	    	c = getchar();
-	    	while((c = getchar()) != EOF && c != '\n'); // This will eat up all other characters
+	    	char j;
+	    	while((j = getchar()) != EOF && j != '\n'); // This will eat up all other characters
 	    	memset(SendBuf,0,256);
 	    	SendBuf[0] = c;
 	    	printf("Sending %s\n", SendBuf);

@@ -194,8 +194,8 @@ void ProcessRequest(        /* process a game request by a client */
             {
                 //do nothing, but do continue;
             }
-            char PColor1;
-            char PColor2;
+            char PColor1 = 0;
+            char PColor2 = 0;
             if(!DecidedWhoIsWhite)
             {
 
@@ -256,10 +256,6 @@ void ProcessRequest(        /* process a game request by a client */
                     if(n<0)
                     {FatalError("Writing to data socket failed");
                     }
-                    n = write(myGame->player_fd_1,SendBuf,11);
-                    if(n<0)
-                    {FatalError("Writing to data socket failed");
-                    }
 
                     printf("Receiving responses:\n");
                     memset(RecvBuf,0,256);
@@ -267,25 +263,32 @@ void ProcessRequest(        /* process a game request by a client */
                     if(n<0)
                     {FatalError("Reading from data socket failed");
                     }
-                    if(strcmp(RecvBuf,"R")!=0 && strcmp(RecvBuf,"P")!=0 && strcmp(RecvBuf,"S")!=0)
+                    while(strcmp(RecvBuf,"R")!=0 && strcmp(RecvBuf,"P")!=0 && strcmp(RecvBuf,"S")!=0)
                     {
-                        printf("Receieved: %s instead of 'R' or 'P' or 'S' \n",RecvBuf);
-                        FatalError("Somethign went wrong client side\n");
+                        printf("Receieved: %s instead of 'R' or 'P' or 'S'\n",RecvBuf);
+                        n = read(myGame->player_fd_2,RecvBuf,sizeof(RecvBuf));
+                        //FatalError("Reading from data socket failed");
                     }
                     RPS2 = RecvBuf[0];
     
+                    n = write(myGame->player_fd_1,SendBuf,11);
+                    if(n<0)
+                    {FatalError("Writing to data socket failed");
+                    }
                     printf("Receiving other player's response:\n");
                     memset(RecvBuf,0,256);
                     n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf)-1);
                     if(n<0)
                     {FatalError("Reading from data socket failed");
                     }
-                    if(strcmp(RecvBuf,"R")!=0 && strcmp(RecvBuf,"P")!=0 && strcmp(RecvBuf,"S")!=0)
+                    while(strcmp(RecvBuf,"R")!=0 && strcmp(RecvBuf,"P")!=0 && strcmp(RecvBuf,"S")!=0)
                     {
                         printf("Receieved: %s instead of 'R' or 'P' or 'S'\n ",RecvBuf);
-                        FatalError("Somethign went wrong client side\n");
+                        n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf));
+                        //FatalError("Reading from data socket failed");
                     }
                     RPS1 = RecvBuf[0];
+
                     int RPSResult = RockPaperScissors(RPS1,RPS2);
                     if(!RPSResult)
                     {
@@ -355,6 +358,18 @@ void ProcessRequest(        /* process a game request by a client */
                 DecidedWhoIsWhite = 1;
             }
             int won=0;
+            int whitePlayerFD;
+            int blackPlayerFD;
+            if(PColor1 == 'W')
+            {
+                whitePlayerFD = myGame->player_fd_1;
+                blackPlayerFD = myGame->player_fd_2;
+            }
+            else
+            {
+                whitePlayerFD = myGame->player_fd_2;
+                blackPlayerFD = myGame->player_fd_1;
+            }
             while(!won)
             {
 
@@ -365,11 +380,11 @@ void ProcessRequest(        /* process a game request by a client */
                 printf("Player 1 fd: %d\nPlayer 2 fd: %d\n",myGame->player_fd_1,myGame->player_fd_2);
                 if(myGame->curTurnColor == 'w')
                 {
-                    curTurnFD = myGame->player_fd_1;
+                    curTurnFD = whitePlayerFD;
                 }
                 else
                 {
-                    curTurnFD = myGame->player_fd_2;
+                    curTurnFD = blackPlayerFD;
                 }
                 printf("Current fd: %d\n",curTurnFD);
                 printBoard(myGame->myBoard);
