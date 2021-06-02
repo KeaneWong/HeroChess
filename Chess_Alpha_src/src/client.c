@@ -267,6 +267,13 @@ int main(int argc, char *argv[])
 	    else if (strcmp("INVALID_MOVE",RecvBuf) == 0)
 	    {
 	    	printf("Invalid move: Please enter a new move\n");
+	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing to socket");
+	    	}
 	    }
 	    else if (strcmp("VALID_MOVE",RecvBuf) == 0)
 	    {
