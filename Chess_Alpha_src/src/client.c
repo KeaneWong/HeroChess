@@ -274,6 +274,7 @@ int main(int argc, char *argv[])
 	    	{
 	    		FatalError("Error writing to socket");
 	    	}
+
 	    }
 	    else if (strcmp("VALID_MOVE",RecvBuf) == 0)
 	    {
@@ -291,11 +292,30 @@ int main(int argc, char *argv[])
 	    else if (strcmp("WIN_ACHIEVED B",RecvBuf) == 0)
 	    {
 	    	printf("Checkmate; Player Black Wins!\n");
-	    	
+
+	    	memset(SendBuf,0,256);
+	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing to socket");
+	    	}
+	    	inMiddleOfTurn = 0;
 	    }
 	    else if (strcmp("WIN_ACHIEVED W",RecvBuf) == 0)
 	    {
 	    	printf("Checkmate; Player White Wins!\n");
+
+	    	memset(SendBuf,0,256);
+	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing to socket");
+	    	}
+	    	inMiddleOfTurn = 0;
 	    }
 	    else if (strcmp("PRINT_BOARD",RecvBuf) == 0)
 	    {
@@ -343,11 +363,29 @@ int main(int argc, char *argv[])
 	    }
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_W",RecvBuf) == 0)
 	    {
-	    	printf("White player is in check\n");
+	    	printf("Valid move. White player is in check\n");
+
+	    	memset(SendBuf,0,256);
+	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing to socket");
+	    	}
 	    }
 	    else if (strcmp("SUCCESSFUL_MOVE_CHECK_B",RecvBuf) == 0)
 	    {
-	    	printf("Black player is in check\n");
+	    	printf("Valid move. Black player is in check\n");
+	    	
+	    	memset(SendBuf,0,256);
+	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{
+	    		FatalError("Error writing to socket");
+	    	}
 	    }
 	    else if (strcmp("BLACK_WHITE",RecvBuf) == 0)
 	    {
