@@ -179,9 +179,10 @@ void ProcessRequest(        /* process a game request by a client */
     int l, n;
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
-
+    char ChatBuf[256];
     int DecidedWhoIsWhite = 0; 
-
+    int hasMessageToSend = 0;
+    char messageToSendTo;
         if(myGame->player_fd_1 != -1 && myGame->player_fd_2 != -1)//checking if theres one player in each FD, i.e at least two players logged in
         {
 
@@ -389,6 +390,26 @@ void ProcessRequest(        /* process a game request by a client */
                 printf("Current fd: %d\n",curTurnFD);
                 printBoard(myGame->myBoard);
 
+                if(hasMessageToSend && curTurnColor == messageToSendTo)
+                { 
+                    printf("Sending message to user: %s\n",ChatBuf);
+                    n = write(curTurnFD,ChatBuf,sizeof(ChatBuf)-1);
+                    if(n<0)
+                    {FatalError("Error writing to socket");
+                    }
+                    memset(RecvBuf,0,256);
+                    n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                    if(n<0)
+                    {FatalError("Error reading from socket");
+                    }
+                    if(strcmp(RecvBuf,"OK6")!=0)
+                    {
+                        printf("Recieved %s instead of OK6\n", RecvBuf);
+                        FatalError("Somethignn went wrong client side");
+                    }
+                    hasMessageToSend = 0;
+                }
+
                 strncpy(SendBuf,"PRINT_BOARD",sizeof(SendBuf)-1);
                 printf("Sending string: '%s'\n",SendBuf);
                 int n = write(curTurnFD,SendBuf,11);
@@ -423,13 +444,12 @@ void ProcessRequest(        /* process a game request by a client */
                  printf("Now sending Board data: %s\n",SendBuf);
                 n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
                 //n = write(myGame->player_fd_2,SendBuf,sizeof(SendBuf-1));
-        
+                
                 printf("Waiting for ok 2...\n");
                 memset(RecvBuf,0,256);
                 n = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
                 if(n<0)
                 {
-
 
                     FatalError("Somethignn went wrong client side hh\n");
                 }
@@ -447,35 +467,51 @@ void ProcessRequest(        /* process a game request by a client */
                     */
                 }
 
-        
-                //MOVE REQUEST
-                printf("Now requesting move\n");
-                strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
-                printf("Message: %s\n",SendBuf);
-                n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
-                if(n<0)
-                {FatalError("writing to data socket failed");
-                }
-                printf("Skipped requesting move\n");
-                
-        
-                //MOVE DATA READ
-                memset(RecvBuf,0,256);
-                printf("Now waiting for move: \n");
-                //printf("In receiv buffer before reading: %s\n",RecvBuf);
-                n  = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
-                if(n<0)
-                {FatalError("reading data socket failed");
-                }
-                if(RecvBuf[0] != '+')
+                int gotMove = 0;//flag to see if we have a move and not a message
+                while(!gotMove)
                 {
-                    printf("Got this: %s instead of the proper '+' protocol code\n", RecvBuf);
-                    FatalError("Dun f'd up");
-                    //n = read(curTurnFD,RecvBuf,sizeof(RecvBuf-1));
-                    //printf("Got this reee%s\n",RecvBuf);
+                    //MOVE REQUEST
+                    printf("Now requesting move\n");
+                    strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
+                    printf("Message: %s\n",SendBuf);
+                    n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
+                    if(n<0)
+                    {FatalError("writing to data socket failed");
+                    }
+                    printf("Skipped requesting move\n");
+                    
+                    
+                    //MOVE DATA READ
+                    memset(RecvBuf,0,256);
+                    printf("Now waiting for move: \n");
+                    //printf("In receiv buffer before reading: %s\n",RecvBuf);
+                    n  = read(curTurnFD,RecvBuf,sizeof(RecvBuf)-1);
+                    if(n<0)
+                    {FatalError("reading data socket failed");
+                    }
+                    if(RecvBuf[0] == '-')
+                    {
+                        strcpy(ChatBuf,RecvBuf);
+                        hasMessageToSend = 1;
+                        messageToSendTo = (curTurnColor == 'w' ? 'b' : 'w');
+                        printf("Got a message to other client!%s\n\n",ChatBuf);
+    
+                    }
+                    else if(RecvBuf[0] != '+')
+                    {
+                        printf("Got this: %s instead of the proper '+' protocol code\n", RecvBuf);
+                        FatalError("Dun f'd up");
+                        //n = read(curTurnFD,RecvBuf,sizeof(RecvBuf-1));
+                        //printf("Got this reee%s\n",RecvBuf);
+                    }
+                    else
+                    {
+                        gotMove = 1;
+                    }
+                    //executing move
                 }
-                printf("Receieved move: %s\n",RecvBuf);
 
+                printf("Receieved move: %s\n",RecvBuf);
                 int colS = RecvBuf[1]-'A';
                 int rowS = RecvBuf[2]-'1';
                 int colD = RecvBuf[3]-'A';
@@ -533,6 +569,7 @@ void ProcessRequest(        /* process a game request by a client */
                     printf("Receieved: %s instead of OK3",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
                 }
+                
             }
         }
         /*else

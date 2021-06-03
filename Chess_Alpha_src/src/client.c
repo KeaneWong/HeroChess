@@ -226,42 +226,67 @@ int main(int argc, char *argv[])
 	    else if (strcmp("REQUESTING_MOVE",RecvBuf) == 0)
 	    {
 	    	
-	    	printf("Your move:\n");
+	    	printf("Your move: (Or enter '--' to send a message instead)\n");
 	    	printf("Select a piece:\n");
 	    	char colS;
 	    	char rowS;
 	    	char colD;
 	    	char rowD;
 	    	scanf("%c%c", &colS, &rowS);
-	    	printf("Where would you like to move this piece?\n");
-	    	//while ( getchar() != '\n' )
-	    	scanf("\n%c%c", &colD, &rowD);
-	    	printf("OK Moving Piece %c%c to %c%c\n",colS,rowS,colD,rowD);
-	    	memset(SendBuf,0,256);
-			SendBuf[0] = '+';
-			SendBuf[1] = colS;
-			SendBuf[2] = rowS;
-			SendBuf[3] = colD;
-			SendBuf[4] = rowD;
-			if(SendBuf[1]>=97 && SendBuf[1]<=104)
-			{
-				SendBuf[1]-=32;
-			}
-			
-			if(SendBuf[3]>=97 && SendBuf[3]<=104)
-			{
-				SendBuf[3]-=32;
-			}
-			printf("%s: Sending move '%s'...\n", Program, SendBuf);
-	    	n = write(SocketFD, SendBuf, sizeof(SendBuf)-1);
-	    	if (n < 0)
-	    	{   FatalError("writing to socket failed");
-	    	}
-	    	//n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
-	    	//n = read(SocketFD,RecvBuf,sizeof(RecvBuf));
-	    	//inMiddleOfTurn = 0;
-	    	while ( getchar() != '\n' );
+	    	if(colS == '-' && rowS == '-')
+	    	{
+	    		while ( getchar() != '\n' );
+	    		printf("What would you like to say to them?\n");
+	    		fgets(SendBuf, sizeof(SendBuf), stdin);
+				int l = strlen(SendBuf);
+				if (SendBuf[l-1] == '\n')
+				{   SendBuf[--l] = 0;
+				}
+				for(int i = l; i > 0; i--)
+				{
+					SendBuf[i] = SendBuf[i-1];
+				}
+				SendBuf[0] = '-';
+				n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+				if(n<0)
+				{
+					FatalError("Writing to data socket failed");
+				}
+				printf("Sent message: %s\n",SendBuf);
 
+				//while ( getchar() != '\n' );
+	    	}
+	    	else
+	    	{
+	    		printf("Where would you like to move this piece?\n");
+	    		//while ( getchar() != '\n' )
+	    		scanf("\n%c%c", &colD, &rowD);
+	    		printf("OK Moving Piece %c%c to %c%c\n",colS,rowS,colD,rowD);
+	    		memset(SendBuf,0,256);
+				SendBuf[0] = '+';
+				SendBuf[1] = colS;
+				SendBuf[2] = rowS;
+				SendBuf[3] = colD;
+				SendBuf[4] = rowD;
+				if(SendBuf[1]>=97 && SendBuf[1]<=104)
+				{
+					SendBuf[1]-=32;
+				}
+				
+				if(SendBuf[3]>=97 && SendBuf[3]<=104)
+				{
+					SendBuf[3]-=32;
+				}
+				printf("%s: Sending move '%s'...\n", Program, SendBuf);
+	    		n = write(SocketFD, SendBuf, sizeof(SendBuf)-1);
+	    		if (n < 0)
+	    		{   FatalError("writing to socket failed");
+	    		}
+	    		//n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+	    		//n = read(SocketFD,RecvBuf,sizeof(RecvBuf));
+	    		//inMiddleOfTurn = 0;
+	    		while ( getchar() != '\n' );
+	    	}
 	    	
 	    }
 	    else if (strcmp("INVALID_MOVE",RecvBuf) == 0)
@@ -437,6 +462,18 @@ int main(int argc, char *argv[])
     		}
     		printf("Sent %s\n",SendBuf);
     		inMiddleOfTurn = 1;
+	    }
+	    else if (RecvBuf[0] == '-')
+	    {
+
+	    	printf("Message from opponent recieved:\n%s\n",RecvBuf);
+	    	strcpy(SendBuf,"OK6");
+	    	printf("Sending %s\n",SendBuf);
+	    	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
+	    	if(n<0)
+	    	{FatalError("Writign to socket failed");
+	    	}
+
 	    }
 	    else
 	    {
