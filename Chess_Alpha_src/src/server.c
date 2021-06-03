@@ -257,7 +257,6 @@ void ProcessRequest(        /* process a game request by a client */
                     if(n<0)
                     {FatalError("Writing to data socket failed");
                     }
-
                     printf("Receiving responses:\n");
                     memset(RecvBuf,0,256);
                     n = read(myGame->player_fd_2,RecvBuf,sizeof(RecvBuf)-1);
@@ -270,6 +269,7 @@ void ProcessRequest(        /* process a game request by a client */
                         n = read(myGame->player_fd_2,RecvBuf,sizeof(RecvBuf));
                         //FatalError("Reading from data socket failed");
                     }
+                    printf("Ok recieved %s from player 2\n",RecvBuf);
                     RPS2 = RecvBuf[0];
     
                     n = write(myGame->player_fd_1,SendBuf,11);
@@ -288,6 +288,7 @@ void ProcessRequest(        /* process a game request by a client */
                         n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf));
                         //FatalError("Reading from data socket failed");
                     }
+                    printf("Ok recieved %s from player 1\n",RecvBuf);
                     RPS1 = RecvBuf[0];
 
                     int RPSResult = RockPaperScissors(RPS1,RPS2);
