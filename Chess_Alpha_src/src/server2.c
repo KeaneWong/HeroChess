@@ -9,6 +9,7 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "database.h"
 
 /* #define DEBUG */	/* be very verbose */
 
@@ -128,14 +129,18 @@ int main(int argc, char *argv[])
 		strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 		SendBuf[sizeof(SendBuf)-1] = 0;
 	    }
+
 	    else
 	    {   strncpy(SendBuf, "server echo ", sizeof(SendBuf)-1);
 		SendBuf[sizeof(SendBuf)-1] = 0;
 		strncat(SendBuf, RecvBuf, sizeof(SendBuf)-1-strlen(SendBuf));
 	    }
 	    l = strlen(SendBuf);
+
+	/* send message to client(s) */
 	    printf("%s: Sending response: %s.\n", argv[0], SendBuf);
 	    n = write(DataSocketFD, SendBuf, l);
+
 	    if (n < 0)
 	    {   FatalError(argv[0], "writing to data socket failed");
 	    }	
@@ -154,10 +159,15 @@ int main(int argc, char *argv[])
 		/* username and password verification handling */
 		RecvBuf[n] = 0;
 		printf("%s: Received username: %s\n", argv[0], RecvBuf);
+	
+		/* database handling for username */
+		fff
 		
 #ifdef DEBUG
 		printf("%s: Username has successfully been added to the database!\n", argv[0]);
 #endif
+		strncpy(SendBuf, "username added", sizeof(SendBuf)-1);
+		SendBuf[sizeof(SendBuf)-1] = 0;
 
 		next = 1;
 	}
@@ -190,9 +200,9 @@ int main(int argc, char *argv[])
 		RecvBuf[n] = 0;
 		printf("%s: Received username: %s\n", argv[0], RecvBuf);
 		
-#ifdef DEBUG
+/*#ifdef DEBUG*/
 		printf("%s: Username has successfully been added to the database!\n", argv[0]);
-#endif
+/*#endif*/
 
 		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
 		if (n < 0) 
