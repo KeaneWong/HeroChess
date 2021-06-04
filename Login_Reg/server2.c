@@ -9,9 +9,11 @@
 
 /********** function declarations **********/
 void FatalError(const char *Program, const char *ErrorMsg);
-int appendUser(char username[100], char password[100]);
+void appendUser(char username[100]);
+void appendPass(char password[100]);
 int checkUser(char user[100]);
-int checkPass(int lineNum, char user[100], char pass[100]);
+/* int checkPass(char user[100], char pass[100]); */
+
 /********** main function **********/
 int main(int argc, char *argv[])
 {
@@ -154,14 +156,17 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			{   FatalError(argv[0], "reading from data socket failed");
 			}
 			
-			/* irania: username verification handling */
-			int verified = 1; /* 0 indicates the name not being verified, vice versa */
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
+			/* username verification handling */
+			/*char user[100];*/
+			int verified; /* 0 indicates the name not being verified, vice versa */
+			verified = checkUser(RecvBuf);
 			
 			/* if username doesn't already exist in the database: */
 			if(verified == 1) 
 			{
-				/* irania: appending username to the database */
+				/* appending username to the database */
+				appendUser(RecvBuf);
 #ifdef DEBUG
 		printf("%s: Username has successfully been added to the database!\n", argv[0]);
 #endif
@@ -205,7 +210,8 @@ printf("%s: Username has not been added to the database!\n", argv[0]);
 #ifdef DEBUG
 printf("%s: Received password: %s\n", argv[0], RecvBuf);
 #endif
-				/* irania: append password */
+			/* append password */
+			appendPass(RecvBuf);
 #ifdef DEBUG
 printf("Password has successfully been added to the database!\n");
 #endif
@@ -236,13 +242,15 @@ printf("Password has successfully been added to the database!\n");
 			{   FatalError(argv[0], "reading from data socket failed");
 			}
 
-			/* irania: receive then store entered username and password to respective arrays for verification */
-			int verified = 1; /* 0 indicates the name not being verified, vice versa */
 
 			
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
 
 			printf("%s: Received password: %s\n", argv[0], RecvBuf);
+
+
+			/* irania: verify the username and password pair */
+			int verified = 1; /* 0 indicates the name not being verified, vice versa */
 
 			
 			/* if username/password entered are correct */ 
@@ -301,7 +309,8 @@ void FatalError(const char *Program, const char *ErrorMsg)
     fputs(": Exiting!", stderr);
     exit(20);
 } /* end of FatalError */
-int appendUser(char username[100], char password[100])
+ 		
+void appendUser(char username[100])
 {
 	FILE *fp1;
 	
@@ -309,71 +318,68 @@ int appendUser(char username[100], char password[100])
 	if(fp1 == NULL)
 	{
 		printf("error in opening file: \n");
-		return -1;
+		return 1;
 	}
+
 	fprintf(fp1, "Username: %s\n", username);
+	fclose(fp1);
+	return 0;
+}
+
+void appendPass(char password[100])
+{
+	FILE *fp1;
+
+	fp1 = fopen("record.txt", "a+");
+	if(fp1 == NULL)
+	{
+		printf("Error opening file\n");
+		return 1;		
+	}
+
 	fprintf(fp1, "Password: %s\n\n", password);
 	fclose(fp1);
 	return 0;
 }
+
 int checkUser(char user[100])
 {
 	char line[301];
 	int lineNum = 1;
+	int found;
 	
 	FILE *fp1 = fopen("record.txt", "r");
-if (fp1 == NULL)
+	if (fp1 == NULL)
 	{
 		printf("Error! File missing\n");
 		exit (10);
 	}
+
         while(fgets(line, 300, fp1) != NULL)
         {	
 	
 		if (strstr(line, user) != NULL)
 		{
 			printf("User exists line %d\n", lineNum);
-			return lineNum;
+			found = lineNum;
 		}
+
 		lineNum++;
 		if (strstr(line, user) == NULL)
 		{
-			printf("User does not exist\n");
+			/* printf("User does not exist\n"); */
+			found = 0;
 		}
-}
-	fclose(fp1);
-	return 0;	
-}
-int checkPass(int lineNum, char user[100], char pass[100])
-{
-	char line[301];
-	int passLine = 1;
-	
-	FILE *fp1 = fopen("record.txt", "r");	
-	if (fp1 == NULL)
-	{
-		printf("Error! File missing\n");
-		exit(10);
-	}
-	lineNum = checkUser(user);
-	while(fgets(line, 300, fp1) != NULL)
-{
-		if ((strstr(line, pass) != NULL) && (passLine == (lineNum + 1)))
-		{
-			printf("Welcome line %d\n", passLine);
-			return passLine;	
-		}	
-	
-		passLine++;
-		
-		if ((strstr(line, pass) == NULL) || (passLine != (lineNum + 1)))
-		{
-			printf("wrong\n");
-			
-		}					
 	}
 	fclose(fp1);
-	return 0;	
+	return found;	
 }
+
+/* int checkPass(char user[100], char pass[100])
+ 
+*/
+
+
+
 /* EOF server2.c */
 
