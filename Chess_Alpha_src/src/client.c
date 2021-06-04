@@ -8,11 +8,11 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <netdb.h>
-
+#include "database.c"
 #include "game.h"
 #include "board.h"
 #include "piece.h"
- #define DEBUG 	/* be verbose */
+//#define DEBUG 	/* be verbose */
 
 /*** global variables ****************************************************/
 
@@ -99,8 +99,11 @@ int main(int argc, char *argv[])
 		
 	    if(!inGame)
 	    {
+
 		    strncpy(SendBuf,"REQUESTING_BOARD",sizeof(SendBuf)-1);
+		    #ifdef DEBUG
 		    printf("Sending REQUESTING_BOARD request\n");
+		    #endif
 		    //printf("%s\n",SendBuf);
 		    //printf("0 if true: %d\n",strcmp(SendBuf,"REQUESTING_BOARD"));
 		   	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
@@ -109,6 +112,7 @@ int main(int argc, char *argv[])
 		    }
 		  
 		 }
+
 		    printf("Now waiting for response:\n");
 		    //printf("Current buffer: %s\n",RecvBuf);
 		    memset(RecvBuf,0,sizeof(RecvBuf));
@@ -117,10 +121,14 @@ int main(int argc, char *argv[])
 		    {
 		    	FatalError("Error reading from socket");
 		    }
+		    #ifdef DEBUG
 		    printf("Ready to play: %s\n",RecvBuf);
+		    #endif
 		    if(strcmp("MORE_PLAYERS",RecvBuf) != 0)
 		    {
+		    	#ifdef DEBUG
 		    	printf("We are now in game!\n");
+		    	#endif
 		    	inGame=1;
 		    }
 
@@ -146,7 +154,9 @@ int main(int argc, char *argv[])
 			if (SendBuf[l-1] == '\n')
 			{   SendBuf[--l] = 0;	//is this meant to be an escape sequence?
 			}
+			#ifdef DEBUG
 			printf("%s: Sending message '%s'...\n", Program, SendBuf);
+			#endif
 	    	n = write(SocketFD, SendBuf, l);
 	    	if (n < 0)
 	    	{   FatalError("writing to socket failed");
@@ -277,7 +287,9 @@ int main(int argc, char *argv[])
 				{
 					SendBuf[3]-=32;
 				}
+				#ifdef DEBUG
 				printf("%s: Sending move '%s'...\n", Program, SendBuf);
+				#endif
 	    		n = write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    		if (n < 0)
 	    		{   FatalError("writing to socket failed");
@@ -293,7 +305,9 @@ int main(int argc, char *argv[])
 	    {
 	    	printf("Invalid move: Please enter a new move\n");
 	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	#ifdef DEBUG
 	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	#endif
 	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{
@@ -306,7 +320,9 @@ int main(int argc, char *argv[])
 	    	printf("Valid move. Now waiting on Opponent:\n");
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	#ifdef DEBUG
 	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	#endif
 	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{
@@ -320,7 +336,9 @@ int main(int argc, char *argv[])
 
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	#ifdef DEBUG
 	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	#endif
 	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{
@@ -334,7 +352,9 @@ int main(int argc, char *argv[])
 
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	#ifdef DEBUG
 	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	#endif
 	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{
@@ -348,14 +368,18 @@ int main(int argc, char *argv[])
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf, "OK1", sizeof(SendBuf));
 	    	int ll = strlen(SendBuf);
+	    	#ifdef DEBUG
 	    	printf("Sending: %s\n",SendBuf);
+	    	#endif
 	    	n = write(SocketFD,SendBuf,ll);
 	    	if(n<0)
 	    	{
 	    		FatalError("Error writing");
 	    	}
 	    	//code to read in board data into myBoard
+	    	#ifdef DEBUG
 	    	printf("Attempting to read in from socket\n");
+	    	#endif
 	    	n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
 	    	for(int i = 0; i <128; i+=2)
 	    	{
@@ -377,7 +401,9 @@ int main(int argc, char *argv[])
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf, "OK2", sizeof(SendBuf)-1);
 	    	ll = strlen(SendBuf);
+	    	#ifdef DEBUG
 	    	printf("Sending: %s\n",SendBuf);
+	    	#endif
 	    	n = write(SocketFD,SendBuf,ll);
 	    	if(n<0)
 	    	{
@@ -392,7 +418,9 @@ int main(int argc, char *argv[])
 
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	#ifdef DEBUG
 	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	#endif
 	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{
@@ -405,7 +433,9 @@ int main(int argc, char *argv[])
 	    	
 	    	memset(SendBuf,0,256);
 	    	strncpy(SendBuf,"OK3",sizeof(SendBuf)-1);
+	    	#ifdef DEBUG
 	    	printf("Now sending confirmation %s\n",SendBuf);
+	    	#endif
 	    	n  =  write(SocketFD, SendBuf, sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{
@@ -421,7 +451,9 @@ int main(int argc, char *argv[])
 	    	while((j = getchar()) != EOF && j != '\n'); // This will eat up all other characters
 	    	memset(SendBuf,0,256);
 	    	SendBuf[0] = c;
+	    	#ifdef DEBUG
 	    	printf("Sending %s\n", SendBuf);
+	    	#endif
     		n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
     		if(n<0)
     		{
@@ -439,7 +471,9 @@ int main(int argc, char *argv[])
 	    	while((j = getchar()) != EOF && j != '\n'); // This will eat up all other characters
 	    	memset(SendBuf,0,256);
 	    	SendBuf[0] = c;
+	    	#ifdef DEBUG
 	    	printf("Sending %s\n", SendBuf);
+	    	#endif
     		n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
     		if(n<0)
     		{
@@ -453,22 +487,28 @@ int main(int argc, char *argv[])
 	    	
 	    	//memset(SendBuf,0,256);
 	    	strcpy(SendBuf, "OK4");
+	    	#ifdef DEBUG
 	    	printf("Sending %s\n", SendBuf);
+	    	#endif
     		n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
     		//n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
     		if(n<0)
     		{
     			FatalError("Writing to socket failed");
     		}
+    		#ifdef DEBUG
     		printf("Sent %s\n",SendBuf);
+    		#endif
     		inMiddleOfTurn = 1;
 	    }
 	    else if (RecvBuf[0] == '-')
 	    {
 
-	    	printf("Message from opponent recieved:\n%s\n",RecvBuf);
+	    	printf("Message from opponent recieved:\n\"%s\"\n",RecvBuf);
 	    	strcpy(SendBuf,"OK6");
+	    	#ifdef DEBUG
 	    	printf("Sending %s\n",SendBuf);
+	    	#endif
 	    	n = write(SocketFD,SendBuf,sizeof(SendBuf)-1);
 	    	if(n<0)
 	    	{FatalError("Writign to socket failed");
@@ -477,7 +517,9 @@ int main(int argc, char *argv[])
 	    }
 	    else
 	    {
+	    	#ifdef DEBUG
 	    	printf("Message from Server: %s\n", RecvBuf);//else, print the displayed message
+	    	#endif
 	    	n = write(SocketFD,"OK",sizeof(SendBuf)-1);
 	    }
 

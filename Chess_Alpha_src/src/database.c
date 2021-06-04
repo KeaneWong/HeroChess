@@ -101,7 +101,7 @@ int checkPass(char user[100], char pass[100])
 	}
 	fclose(fp1);
 }
-
+/*
 int main()
 {
 	char user[100], pass[100];
@@ -135,7 +135,7 @@ int main()
 
 	return 0;
 } 
-
+*/
 /* 
 int changePass(char username[100], char newPass[100])
 {

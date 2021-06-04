@@ -21,7 +21,7 @@
 #include "replay.h"
 #include "ai.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 //this is a struct that describes a game, 
 //including its associated movelist, board, and whose turn it is
@@ -143,6 +143,7 @@ void PrintCurrentTime(void) /*  print/update the current real time */
     Wheel = WheelChars[WheelIndex];
     printf("\rClock: %s %c",    /* print from beginning of current line */
     ClockBuffer, Wheel);    /* print time plus a rotating wheel */
+
     fflush(stdout);
 } /* end of PrintCurrentTime */
 
@@ -176,7 +177,7 @@ void ProcessRequest(        /* process a game request by a client */
     int DataSocketFD, FullGame *myGame)
 {
     //printf("Something something something power rangers\n");
-    int l, n;
+    int  n;
     char RecvBuf[256];  /* message buffer for receiving a message */
     char SendBuf[256];  /* message buffer for sending a response */
     char ChatBuf[256];
@@ -201,13 +202,12 @@ void ProcessRequest(        /* process a game request by a client */
             {
 
                 memset(SendBuf,0,256);
-                strncpy(SendBuf,"BLACK_WHITE",sizeof(SendBuf)-1);
+                strncpy(SendBuf,"BLACK_WHITE",sizeof(SendBuf)-1);   
                 printf("Sending turn decision to player 2. Code: %s\n", SendBuf);
                 n = write(myGame->player_fd_2,SendBuf,11);
                 if(n<0)
                 {FatalError("Writing to data socket failed");
                 }
-
                 printf("Receiving responses:\n");
                 memset(RecvBuf,0,256);
                 n = read(myGame->player_fd_2,RecvBuf,1);
@@ -355,8 +355,9 @@ void ProcessRequest(        /* process a game request by a client */
                     //FatalError("Reading from data socket failed");
                     n = read(myGame->player_fd_1,RecvBuf,sizeof(RecvBuf));
                 }
+                #ifdef DEBUG
                 printf("OK4 reached\n");
-
+                #endif
                 DecidedWhoIsWhite = 1;
             }
             int won=0;
@@ -388,7 +389,9 @@ void ProcessRequest(        /* process a game request by a client */
                 {
                     curTurnFD = blackPlayerFD;
                 }
+                #ifdef DEBUG
                 printf("Current fd: %d\n",curTurnFD);
+                #endif
                 printBoard(myGame->myBoard);
 
                 if(hasMessageToSend && curTurnColor == messageToSendTo)
@@ -428,8 +431,9 @@ void ProcessRequest(        /* process a game request by a client */
                     printf("Receieved: %s instead of OK 1",RecvBuf);
                     FatalError("Somethign went wrong client side\n");
                 }
+                #ifdef DEBUG
                 printf("First ok reached\n");
-
+                #endif
                 strncpy(SendBuf,"",sizeof(SendBuf)-1);
                 for(int i = 0; i <128; i+=2)
                  {
@@ -474,13 +478,16 @@ void ProcessRequest(        /* process a game request by a client */
                     //MOVE REQUEST
                     printf("Now requesting move\n");
                     strncpy(SendBuf,"REQUESTING_MOVE",sizeof(SendBuf));
+                    #ifdef DEBUG
                     printf("Message: %s\n",SendBuf);
+                    #endif
                     n = write(curTurnFD,SendBuf,sizeof(SendBuf)-1);
                     if(n<0)
                     {FatalError("writing to data socket failed");
                     }
-                    printf("Skipped requesting move\n");
-                    
+                    #ifdef DEBUG
+                    printf("Skipped requesesting move\n");
+                    #endif
                     
                     //MOVE DATA READ
                     memset(RecvBuf,0,256);
@@ -694,8 +701,8 @@ void ServerMainLoop(        /* simple server main loop */
     fd_set ReadFDs; /* socket file descriptors ready to read from */
     struct timeval TimeVal;
     int res, i;
-    char SendBuf[256];
-    int l;
+    //char SendBuf[256];
+    //int l;
     FD_ZERO(&ActiveFDs);        /* set of active sockets */
     FD_SET(ServSocketFD, &ActiveFDs);   /* server socket is active */
     //INITIALIZING GAME BOARD: CURRENTLY ONLY ACCEPTING 2 USERS
@@ -747,7 +754,10 @@ void ServerMainLoop(        /* simple server main loop */
                 ntohs(ClientAddress.sin_port));
 #endif
             
-            printf("Data socket is %d\n",DataSocketFD);
+
+                #ifdef DEBUG
+                printf("Data socket is %d\n",DataSocketFD);
+                #endif 
                 //CODE TO ADD NEW USER TO AVAILABLE GAME BOARD
                 //This code adds the new client to the first available file descriptor
                 if(myGame->player_fd_1 == -1 && DataSocketFD != myGame->player_fd_2)
@@ -820,7 +830,7 @@ int main(int argc, char *argv[])
     printf("%s: Creating the server socket...\n", Program);
 #endif
     ServSocketFD = MakeServerSocket(PortNo);
-    printf("%s: Providing current time at port %d...\n", Program, PortNo);
+    printf("%s: Waiting for connections at port %d...\n", Program, PortNo);
     ServerMainLoop(ServSocketFD, ProcessRequest,
             PrintCurrentTime, 250000);
     printf("\n%s: Shutting down.\n", Program);
