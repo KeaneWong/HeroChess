@@ -21,7 +21,7 @@ void FatalError(const char *Program, const char *ErrorMsg)
 
 int main(int argc, char *argv[])
 {
-	int l, n;
+	int l, n, done;
 	int SocketFD,	/* socket file descriptor */
 	PortNo;		/* port number */
 	struct sockaddr_in
@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
 	}
 
 	/***************** Main Login/Registration Menu *****************/ 
-	do{ printf("%s: Please select 1 or 2\n"
+	do{	done=0;
+		printf("%s: Please select 1 or 2\n"
 		"         1. New User\n"
 		"         2. Returning User\n"
 		"         3. Exit\n"
@@ -107,42 +108,10 @@ int main(int argc, char *argv[])
 	
 
 	/***************** New User *****************/
-	if( 0 == strcmp("Welcome, nice to meet you!", RecvBuf) )
+	while((0==strcmp("Welcome, nice to meet you!", RecvBuf)) || (0==strcmp("Username already exists!", RecvBuf)))
 	{
-		/*char user[256];
-		char pass[256];
-		
-		
-		int length = strlen(user);
-		int flag = 1;
-
-		while (flag == 1) 
-		{
-			printf("Enter a unique username: ");
-			scanf("%s", user);	
-			length = strlen(user);
-
-			if (length > 8)
-			{
-				printf("Username too long! Must be 6-8 characters\n");		
-				flag = 1;
-			}
-		
-			else if (length < 6)
-			{
-				printf("Username too short! Must be 6-8 characters\n");
-				flag = 1;
-			}
-
-			else if ((length >= 6) || (length <= 8))
-			{
-				flag = 0;
-				memcpy(SendBuf, user, sizeof(SendBuf));
-			}
-	 
-		}*/
-		
-		printf("%s: Enter a unique username: ", argv[0]);
+		/* client is prompted to enter a username */
+		printf("%s: Enter a unique username: ", argv[0]);		
 		fgets(SendBuf, sizeof(SendBuf), stdin);
 		l = strlen(SendBuf);
 		if (SendBuf[l-1] == '\n')
@@ -150,21 +119,22 @@ int main(int argc, char *argv[])
 		}
 		if (l)
 		{
+			/* username is sent to the server to get verified by the database */
 			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
 			n = write(SocketFD, SendBuf, l);
-			if (n < 0)
-			{   FatalError(argv[0], "writing to socket failed");
-			}
-			#ifdef DEBUG
-			printf("%s: Waiting for response...\n", argv[0]);
-			#endif
-			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
-			if (n < 0) 
-			{   FatalError(argv[0], "reading from socket failed");
-			}
-			RecvBuf[n] = 0;
-			printf("%s: Received response: %s\n", argv[0], RecvBuf);
-		}
+				if (n < 0)
+				{   FatalError(argv[0], "writing to socket failed");
+				}
+				#ifdef DEBUG
+				printf("%s: Waiting for response...\n", argv[0]);
+				#endif
+				n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+				if (n < 0) 
+				{   FatalError(argv[0], "reading from socket failed");
+				}
+			/*	RecvBuf[n] = 0;*/
+				printf("%s: Received response: %s\n", argv[0], RecvBuf);
+		} 
 		
 	}
 	
@@ -190,6 +160,7 @@ int main(int argc, char *argv[])
 			}
 			RecvBuf[n] = 0;
 			printf("%s: Received response: %s\n", argv[0], RecvBuf);
+			done = 1;
 		}
 
 	/***************** Returning User *****************/
@@ -261,7 +232,7 @@ int main(int argc, char *argv[])
 	}
 
 	/***************** Closing the Socket *****************/
-	else if( 0 == strcmp("server shutdown", RecvBuf) )
+	else if( (0 == strcmp("server shutdown", RecvBuf)) || done == 1)
 	{
 		printf("%s: Exiting...\n", argv[0]);
 		close(SocketFD);

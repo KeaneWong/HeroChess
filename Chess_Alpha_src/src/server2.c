@@ -9,7 +9,7 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include "database.h"
+/* #include "database.h" */
 
 /* #define DEBUG */	/* be very verbose */
 
@@ -17,7 +17,7 @@
 void FatalError(const char *Program, const char *ErrorMsg);
 int appendUser(char username[100], char password[100]);
 int checkUser(char user[100]);
-int checkPass(int lineNum, char user[100], char pass[100]);
+/* int checkPass(char user[100], char pass[100]); */
 
 /********** main function **********/
 int main(int argc, char *argv[])
@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
 	/********** code below relates to login/registration **********/
     do{ new = 0;
 	reg = 0;
+	next = 0;
 	ClientLen = sizeof(ClientAddress);
 	DataSocketFD = accept(ServSocketFD, (struct sockaddr*)&ClientAddress,
 		&ClientLen);
@@ -99,7 +100,7 @@ int main(int argc, char *argv[])
 	    RecvBuf[n] = 0;
 	    printf("%s: Received message: %s\n", argv[0], RecvBuf);
 	
-	/* new user welcome */
+	/********** new user welcome **********/
 	    if (0 == strcmp(RecvBuf, "1"))
 	    {   new = 1;
 #ifdef DEBUG
@@ -110,7 +111,7 @@ int main(int argc, char *argv[])
 		
 	    }
 	
-	/* registered user welcome */
+	/********** registered user welcome **********/
 	    else if (0 == strcmp(RecvBuf, "2"))
 	    {   reg = 1;
 #ifdef DEBUG
@@ -120,7 +121,8 @@ int main(int argc, char *argv[])
 		SendBuf[sizeof(SendBuf)-1] = 0;
 	    }		
 
-	/* shutdown server (exit) */
+
+	/********** shutdown server (exit) **********/
 	    else if (0 == strcmp(RecvBuf, "3"))
 	    {   shutdown = 1;
 #ifdef DEBUG
@@ -148,28 +150,58 @@ int main(int argc, char *argv[])
 
 	} while((new == 0) && (reg == 0) && (shutdown == 0));
 
-	/* handling a new user */
-	if ((new == 1) && (reg == 0) && (shutdown == 0))
+	/********** handling a new user **********/
+	while (((new == 1) && (reg == 0) && (shutdown == 0)) || next == 0)
 	{
 		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
 		if (n < 0) 
 		{   FatalError(argv[0], "reading from data socket failed");
 		}
 
-		/* username and password verification handling */
-		RecvBuf[n] = 0;
+		/* username verification handling */
+		int verified = 1; /* 0 indicates the name not being verified, vice versa */
 		printf("%s: Received username: %s\n", argv[0], RecvBuf);
 	
-		/* database handling for username */
-		fff
 		
-#ifdef DEBUG
-		printf("%s: Username has successfully been added to the database!\n", argv[0]);
-#endif
-		strncpy(SendBuf, "username added", sizeof(SendBuf)-1);
-		SendBuf[sizeof(SendBuf)-1] = 0;
+		
+		
+		/* if username doesn't already exist in the database: */
+		if(verified == 1) 
+		{
+			/* appending username to the database */
+			
+	#ifdef DEBUG
+			printf("%s: Username has successfully been added to the database!\n", argv[0]);
+	#endif
+			strncpy(SendBuf, "Username has been verified!", sizeof(SendBuf)-1);
+			SendBuf[sizeof(SendBuf)-1] = 0;
+			printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+			n = write(DataSocketFD, SendBuf, l);
+			if (n < 0)
+			{   
+				FatalError(argv[0], "writing to data socket failed");
+			}
+			next = 1;
+		}
 
-		next = 1;
+		/* if username already exists in the database: */
+		if(verified == 0) 
+		{
+	#ifdef DEBUG
+			printf("%s: Username has not been added to the database!\n", argv[0]);
+	#endif
+			strncpy(SendBuf, "Username already exists!", sizeof(SendBuf)-1);
+			SendBuf[sizeof(SendBuf)-1] = 0;
+			printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+			n = write(DataSocketFD, SendBuf, l);
+			if (n < 0)
+			{   
+				FatalError(argv[0], "writing to data socket failed");
+			}
+		}
+
+		RecvBuf[n] = 0;
+		
 	}
 
 	if (next == 1)
@@ -178,17 +210,28 @@ int main(int argc, char *argv[])
 		if (n < 0) 
 		{   FatalError(argv[0], "reading from data socket failed");
 		}
-
-		/* password verification handling */
-		RecvBuf[n] = 0;
-		printf("Received password\n");
+#ifdef DEBUG
+		printf("%s: Received password: %s\n", argv[0], RecvBuf);
+#endif
+		/* password append handling */
+		
 		
 #ifdef DEBUG
 		printf("Password has successfully been added to the database!\n");
 #endif
+		strncpy(SendBuf, "Password received!", sizeof(SendBuf)-1);
+		SendBuf[sizeof(SendBuf)-1] = 0;
+		printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+		n = write(DataSocketFD, SendBuf, l);
+		if (n < 0)
+		{   
+			FatalError(argv[0], "writing to data socket failed");
+		}
+		next = 0;
+		shutdown = 1;
 	}
 	
-	/* handling a registered user */
+	/********** handling a registered user **********/
 	if ((new == 0) && (reg == 1) && (shutdown == 0))
 	{
 		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
@@ -196,13 +239,13 @@ int main(int argc, char *argv[])
 		{   FatalError(argv[0], "reading from data socket failed");
 		}
 
-		/* username and password verification handling */
+		/* username verification handling */
 		RecvBuf[n] = 0;
 		printf("%s: Received username: %s\n", argv[0], RecvBuf);
 		
-/*#ifdef DEBUG*/
+#ifdef DEBUG
 		printf("%s: Username has successfully been added to the database!\n", argv[0]);
-/*#endif*/
+#endif
 
 		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
 		if (n < 0) 
@@ -290,41 +333,40 @@ int checkUser(char user[100])
 	fclose(fp1);
 	return 0;	
 }
-
-int checkPass(int lineNum, char user[100], char pass[100])
+/*
+int checkPass(char user[100], char pass[100])
 {
 	char line[301];
-	int passLine = 1;
-	
-	FILE *fp1 = fopen("record.txt", "r");	
-	if (fp1 == NULL)
-	{
-		printf("Error! File missing\n");
-		exit(10);
-	}
+        int passLine = 1;
 
-	lineNum = checkUser(user);
+        FILE *fp1 = fopen("record.txt", "r");
+        if (fp1 == NULL)
+        {
+                printf("Error! File missing\n");
+                exit(10);
+        }
 
-	while(fgets(line, 300, fp1) != NULL)
-	{
-		if ((strstr(line, pass) != NULL) && (passLine == (lineNum + 1)))
-		{
-			printf("Welcome line %d\n", passLine);
-			return passLine;	
-		}	
-	
-		passLine++;
-		
-		if ((strstr(line, pass) == NULL) || (passLine != (lineNum + 1)))
-		{
-			printf("wrong\n");
-			
-		}					
-	}
-	fclose(fp1);
-	return 0;	
+        lineNum = checkUser(user);
+
+        while(fgets(line, 300, fp1) != NULL)
+                if ((strstr(line, pass) != NULL) && (passLine == (lineNum + 1)))
+                {
+                        printf("Welcome line %d\n", passLine);
+                        return passLine;
+                }
+
+                passLine++;
+
+                if ((strstr(line, pass) == NULL) || (passLine != (lineNum + 1)))
+                {
+                        printf("wrong\n");
+
+                }
+        }
+        fclose(fp1);
+        return 0;	
 }
-
+*/
 
 /* EOF server2.c */
 
