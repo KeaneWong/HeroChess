@@ -21,7 +21,7 @@ void FatalError(const char *Program, const char *ErrorMsg)
 
 int main(int argc, char *argv[])
 {
-	int l, n, done;
+	int l, n;
 	int SocketFD,	/* socket file descriptor */
 	PortNo;		/* port number */
 	struct sockaddr_in
@@ -75,40 +75,40 @@ int main(int argc, char *argv[])
 	}
 
 	/***************** Main Login/Registration Menu *****************/ 
-	do{	done=0;
+	do{
 		printf("%s: Please select 1 or 2\n"
 		"         1. New User\n"
 		"         2. Returning User\n"
 		"         3. Exit\n"
 		"Your Selection: ", argv[0]);
-	fgets(SendBuf, sizeof(SendBuf), stdin);
-	l = strlen(SendBuf);
-	if (SendBuf[l-1] == '\n')
-	{   SendBuf[--l] = 0;
-	}
-	if (l)
-	{
-		printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
-		n = write(SocketFD, SendBuf, l);
-		if (n < 0)
-		{   FatalError(argv[0], "writing to socket failed");
+		fgets(SendBuf, sizeof(SendBuf), stdin);
+		l = strlen(SendBuf);
+		if (SendBuf[l-1] == '\n')
+		{   SendBuf[--l] = 0;
 		}
-		#ifdef DEBUG
-		printf("%s: Waiting for response...\n", argv[0]);
-		#endif
-		n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
-		if (n < 0) 
-		{   FatalError(argv[0], "reading from socket failed");
+		if (l)
+		{
+			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
+			n = write(SocketFD, SendBuf, l);
+			if (n < 0)
+			{   FatalError(argv[0], "writing to socket failed");
+			}
+			#ifdef DEBUG
+			printf("%s: Waiting for response...\n", argv[0]);
+			#endif
+			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0) 
+			{   FatalError(argv[0], "reading from socket failed");
+			}
+			RecvBuf[n] = 0;
+			printf("%s: Received response: %s\n", argv[0], RecvBuf);
 		}
-		RecvBuf[n] = 0;
-		printf("%s: Received response: %s\n", argv[0], RecvBuf);
-	}
 	} while( (0 != strcmp("Welcome, nice to meet you!", RecvBuf)) && (0 != strcmp("Welcome!", RecvBuf)) && (0 != strcmp("server shutdown", RecvBuf)) );
 
 	
 
 	/***************** New User *****************/
-	while((0==strcmp("Welcome, nice to meet you!", RecvBuf)) || (0==strcmp("Username already exists!", RecvBuf)))
+	while((0==strcmp("Welcome, nice to meet you!", RecvBuf)) || (0==strcmp("Username already exists!", RecvBuf)) )
 	{
 		/* client is prompted to enter a username */
 		printf("%s: Enter a unique username: ", argv[0]);		
@@ -134,105 +134,101 @@ int main(int argc, char *argv[])
 				}
 			/*	RecvBuf[n] = 0;*/
 				printf("%s: Received response: %s\n", argv[0], RecvBuf);
-		} 
-		
+		} 	
 	}
 	
-		printf("%s: Enter a password: ", argv[0]);
-		fgets(SendBuf, sizeof(SendBuf), stdin);
-		l = strlen(SendBuf);
-		if (SendBuf[l-1] == '\n')
-		{   SendBuf[--l] = 0;
-		}
-		if (l)
-		{
-			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
-			n = write(SocketFD, SendBuf, l);
-			if (n < 0)
-			{   FatalError(argv[0], "writing to socket failed");
-			}
-			#ifdef DEBUG
-			printf("%s: Waiting for response...\n", argv[0]);
-			#endif
-			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
-			if (n < 0) 
-			{   FatalError(argv[0], "reading from socket failed");
-			}
-			RecvBuf[n] = 0;
-			printf("%s: Received response: %s\n", argv[0], RecvBuf);
-			done = 1;
-		}
-
-	/***************** Returning User *****************/
-	else if( 0 == strcmp("Welcome!", RecvBuf) )
+	/* client is prompted to enter a password */
+	printf("%s: Enter a password: ", argv[0]);
+	fgets(SendBuf, sizeof(SendBuf), stdin);
+	l = strlen(SendBuf);
+	if (SendBuf[l-1] == '\n')
+	{   SendBuf[--l] = 0;
+	}
+	if (l)
 	{
-		/*char user[50];
-		char pass[50];
-		
-		
-		int length = strlen(user);
-		int flag = 1;
-
-		while (flag == 1) 
-		{
-			printf("Username: ");
-			scanf("%s", user);
-			
-			printf("Password: ");
-			scanf("%s", pass);
-		}*/
-		
-		printf("%s: Enter your username: ", argv[0]);
-		fgets(SendBuf, sizeof(SendBuf), stdin);
-		l = strlen(SendBuf);
-		if (SendBuf[l-1] == '\n')
-		{   SendBuf[--l] = 0;
+		/* password is sent to the server to get appended to the database */
+		printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
+		n = write(SocketFD, SendBuf, l);
+		if (n < 0)
+		{   FatalError(argv[0], "writing to socket failed");
 		}
-		if (l)
-		{
-			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
-			n = write(SocketFD, SendBuf, l);
-			if (n < 0)
-			{   FatalError(argv[0], "writing to socket failed");
-			}
-			#ifdef DEBUG
-			printf("%s: Waiting for response...\n", argv[0]);
-			#endif
-			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
-			if (n < 0) 
-			{   FatalError(argv[0], "reading from socket failed");
-			}
-			RecvBuf[n] = 0;
-			printf("%s: Received response: %s\n", argv[0], RecvBuf);
+		#ifdef DEBUG
+		printf("%s: Waiting for response...\n", argv[0]);
+		#endif
+		n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+		if (n < 0) 
+		{   FatalError(argv[0], "reading from socket failed");
 		}
-
-		/*printf("%s: Enter your password: ", argv[0]);
-		fgets(SendBuf, sizeof(SendBuf), stdin);
-		l = strlen(SendBuf);
-		if (SendBuf[l-1] == '\n')
-		{   SendBuf[--l] = 0;
-		}
-		if (l)
-		{
-			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
-			n = write(SocketFD, SendBuf, l);
-			if (n < 0)
-			{   FatalError(argv[0], "writing to socket failed");
-			}
-			#ifdef DEBUG
-			printf("%s: Waiting for response...\n", argv[0]);
-			#endif
-			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
-			if (n < 0) 
-			{   FatalError(argv[0], "reading from socket failed");
-			}
-			RecvBuf[n] = 0;
-			printf("%s: Received response: %s\n", argv[0], RecvBuf);
-		}	*/
+		printf("%s: Received response: %s\n", argv[0], RecvBuf);
+		
+		/* go to main game menu (close socket for separate module testing) */
+		printf("%s: Heading to Game Menu...\n", argv[0]);
+		close(SocketFD);
 	}
 
+	/***************** Returning User *****************/
+	while((0==strcmp("Welcome back!", RecvBuf)) || (0==strcmp("Incorrect Username/Password!", RecvBuf)))
+	{
+		/* client is prompted to enter their username */
+		printf("%s: Enter your username: ", argv[0]);		
+		fgets(SendBuf, sizeof(SendBuf), stdin);
+		l = strlen(SendBuf);
+		if (SendBuf[l-1] == '\n')
+		{   SendBuf[--l] = 0;
+		}
+		if (l)
+		{
+			/* username is sent to the server to get appended to the verification function */
+			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
+			n = write(SocketFD, SendBuf, l);
+				if (n < 0)
+				{   FatalError(argv[0], "writing to socket failed");
+				}
+				#ifdef DEBUG
+				printf("%s: Waiting for response...\n", argv[0]);
+				#endif
+				n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+				if (n < 0) 
+				{   FatalError(argv[0], "reading from socket failed");
+				}
+				printf("%s: Received response: %s\n", argv[0], RecvBuf);
+		} 
+
+		/* client is prompted to enter their password */
+		RecvBuf[n] = 0;
+		printf("%s: Enter your password: ", argv[0]);
+		fgets(SendBuf, sizeof(SendBuf), stdin);
+		l = strlen(SendBuf);
+		if (SendBuf[l-1] == '\n')
+		{   SendBuf[--l] = 0;
+		}
+		if (l)
+		{
+			/* password is sent to the server to get appended to the verification function */
+			printf("%s: Sending message '%s'...\n", argv[0], SendBuf);
+			n = write(SocketFD, SendBuf, l);
+			if (n < 0)
+			{   FatalError(argv[0], "writing to socket failed");
+			}
+			#ifdef DEBUG
+			printf("%s: Waiting for response...\n", argv[0]);
+			#endif
+			n = read(SocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0) 
+			{   FatalError(argv[0], "reading from socket failed");
+			}
+			/* user is notified if username & password combination is correct */
+			printf("%s: Received response: %s\n", argv[0], RecvBuf);
+		}
+	
+	}
+
+	/* go to main game menu (close socket for separate module testing) */
+	printf("%s: Heading to Game Menu...\n", argv[0]);
+	close(SocketFD);
+
 	/***************** Closing the Socket *****************/
-	else if( (0 == strcmp("server shutdown", RecvBuf)) || done == 1)
+	if( (0 == strcmp("server shutdown", RecvBuf)))
 	{
 		printf("%s: Exiting...\n", argv[0]);
 		close(SocketFD);

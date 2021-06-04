@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 	printf("%s: Client address:port = %u:%hu.\n", argv[0],
 			ClientAddress.sin_addr.s_addr, ntohs(ClientAddress.sin_port));
 #endif
-	 do{ shutdown = 0; 
+	 do{  
 	    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
 	    if (n < 0) 
 	    {   FatalError(argv[0], "reading from data socket failed");
@@ -100,15 +100,95 @@ int main(int argc, char *argv[])
 	    RecvBuf[n] = 0;
 	    printf("%s: Received message: %s\n", argv[0], RecvBuf);
 	
-	/********** new user welcome **********/
+	/********** new user **********/
 	    if (0 == strcmp(RecvBuf, "1"))
 	    {   new = 1;
+
 #ifdef DEBUG
-		printf("%s: Received '1' message from client.\n", argv[0]);
+printf("%s: Received '1' message from client.\n", argv[0]);
 #endif
+		/* welcome the new user */
 		strncpy(SendBuf, "Welcome, nice to meet you!", sizeof(SendBuf)-1);
 		SendBuf[sizeof(SendBuf)-1] = 0;
 		
+		/* new username handling loop */
+		while( (new == 1) || (0==strcmp(SendBuf, "Username already exists!" ))) 
+		{
+
+			n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0) 
+			{   FatalError(argv[0], "reading from data socket failed");
+			}
+
+			/* username verification handling */
+			int verified = 1; /* 0 indicates the name not being verified, vice versa */
+			printf("%s: Received username: %s\n", argv[0], RecvBuf);
+			
+			/* if username doesn't already exist in the database: */
+			if(verified == 1) 
+			{
+				/* appending username to the database */
+			
+#ifdef DEBUG
+printf("%s: Username has successfully been added to the database!\n", argv[0]);
+#endif
+				strncpy(SendBuf, "Username has been verified!", sizeof(SendBuf)-1);
+				SendBuf[sizeof(SendBuf)-1] = 0;
+				printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+				n = write(DataSocketFD, SendBuf, l);
+				if (n < 0)
+				{   
+					FatalError(argv[0], "writing to data socket failed");
+				}
+				next = 1;
+			}
+
+			/* if username already exists in the database: */
+			if(verified == 0) 
+			{
+#ifdef DEBUG
+printf("%s: Username has not been added to the database!\n", argv[0]);
+#endif
+				strncpy(SendBuf, "Username already exists!", sizeof(SendBuf)-1);
+				SendBuf[sizeof(SendBuf)-1] = 0;
+				printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+				n = write(DataSocketFD, SendBuf, l);
+				if (n < 0)
+				{   
+					FatalError(argv[0], "writing to data socket failed");
+				}
+			}
+			RecvBuf[n] = 0;	
+		} /* end of new username loop */
+
+		/* password handling */
+		if (next == 1)
+		{
+			n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0) 
+			{   FatalError(argv[0], "reading from data socket failed");
+			}
+/*delete later*/
+#ifdef DEBUG
+printf("%s: Received password: %s\n", argv[0], RecvBuf);
+#endif
+				/* append password */
+				
+				
+#ifdef DEBUG
+printf("Password has successfully been added to the database!\n");
+#endif
+			strncpy(SendBuf, "Password received!", sizeof(SendBuf)-1);
+			SendBuf[sizeof(SendBuf)-1] = 0;
+			printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+			n = write(DataSocketFD, SendBuf, l);
+			if (n < 0)
+			{   
+				FatalError(argv[0], "writing to data socket failed");
+			}
+			new = 0;
+		}
+		shutdown = 1;
 	    }
 	
 	/********** registered user welcome **********/
@@ -117,8 +197,63 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
 		printf("%s: Received '2' message from client.\n", argv[0]);
 #endif
+		/* welcome the registered user */
 		strncpy(SendBuf, "Welcome!", sizeof(SendBuf)-1);
 		SendBuf[sizeof(SendBuf)-1] = 0;
+
+		/* registered username login handling loop */
+		while( (reg == 1) || (0==strcmp(SendBuf, "Incorrect Username/Password!" ))) 
+		{
+
+			n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0) 
+			{   FatalError(argv[0], "reading from data socket failed");
+			}
+
+			/* username and password verification handling */
+			int verified = 1; /* 0 indicates the name not being verified, vice versa */
+
+			/* receive then store entered username and password to respective arrays for verification */
+			printf("%s: Received username: %s\n", argv[0], RecvBuf);
+
+			printf("%s: Received password: %s\n", argv[0], RecvBuf);
+
+			
+			/* if username/password entered are correct */ 
+			if(verified == 1) 
+			{
+#ifdef DEBUG
+printf("%s: Entered Username/Password pair exist in the database!\n", argv[0]);
+#endif
+				strncpy(SendBuf, "Username & Password are verified!", sizeof(SendBuf)-1);
+				SendBuf[sizeof(SendBuf)-1] = 0;
+				printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+				n = write(DataSocketFD, SendBuf, l);
+				if (n < 0)
+				{   
+					FatalError(argv[0], "writing to data socket failed");
+				}
+				next = 1;
+			}
+
+			/* if username/password entered are incorrect */
+			if(verified == 0) 
+			{
+#ifdef DEBUG
+printf("%s:Entered  Username/Password pair do NOT exist in the database!\n", argv[0]);
+#endif
+				strncpy(SendBuf, "Incorrect Username/Password!", sizeof(SendBuf)-1);
+				SendBuf[sizeof(SendBuf)-1] = 0;
+				printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+				n = write(DataSocketFD, SendBuf, l);
+				if (n < 0)
+				{   
+					FatalError(argv[0], "writing to data socket failed");
+				}
+			}
+			RecvBuf[n] = 0;	
+		} /* end of registered user login loop */
+		shutdown = 1;
 	    }		
 
 
@@ -139,7 +274,7 @@ int main(int argc, char *argv[])
 	    }
 	    l = strlen(SendBuf);
 
-	/* send message to client(s) */
+	/* send message to client */
 	    printf("%s: Sending response: %s.\n", argv[0], SendBuf);
 	    n = write(DataSocketFD, SendBuf, l);
 
@@ -148,122 +283,11 @@ int main(int argc, char *argv[])
 	    }	
 
 
-	} while((new == 0) && (reg == 0) && (shutdown == 0));
-
-	/********** handling a new user **********/
-	while (((new == 1) && (reg == 0) && (shutdown == 0)) || next == 0)
-	{
-		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
-		if (n < 0) 
-		{   FatalError(argv[0], "reading from data socket failed");
-		}
-
-		/* username verification handling */
-		int verified = 1; /* 0 indicates the name not being verified, vice versa */
-		printf("%s: Received username: %s\n", argv[0], RecvBuf);
-	
-		
-		
-		
-		/* if username doesn't already exist in the database: */
-		if(verified == 1) 
-		{
-			/* appending username to the database */
-			
-	#ifdef DEBUG
-			printf("%s: Username has successfully been added to the database!\n", argv[0]);
-	#endif
-			strncpy(SendBuf, "Username has been verified!", sizeof(SendBuf)-1);
-			SendBuf[sizeof(SendBuf)-1] = 0;
-			printf("%s: Sending response: %s.\n", argv[0], SendBuf);
-			n = write(DataSocketFD, SendBuf, l);
-			if (n < 0)
-			{   
-				FatalError(argv[0], "writing to data socket failed");
-			}
-			next = 1;
-		}
-
-		/* if username already exists in the database: */
-		if(verified == 0) 
-		{
-	#ifdef DEBUG
-			printf("%s: Username has not been added to the database!\n", argv[0]);
-	#endif
-			strncpy(SendBuf, "Username already exists!", sizeof(SendBuf)-1);
-			SendBuf[sizeof(SendBuf)-1] = 0;
-			printf("%s: Sending response: %s.\n", argv[0], SendBuf);
-			n = write(DataSocketFD, SendBuf, l);
-			if (n < 0)
-			{   
-				FatalError(argv[0], "writing to data socket failed");
-			}
-		}
-
-		RecvBuf[n] = 0;
-		
-	}
-
-	if (next == 1)
-	{
-		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
-		if (n < 0) 
-		{   FatalError(argv[0], "reading from data socket failed");
-		}
-#ifdef DEBUG
-		printf("%s: Received password: %s\n", argv[0], RecvBuf);
-#endif
-		/* password append handling */
-		
-		
-#ifdef DEBUG
-		printf("Password has successfully been added to the database!\n");
-#endif
-		strncpy(SendBuf, "Password received!", sizeof(SendBuf)-1);
-		SendBuf[sizeof(SendBuf)-1] = 0;
-		printf("%s: Sending response: %s.\n", argv[0], SendBuf);
-		n = write(DataSocketFD, SendBuf, l);
-		if (n < 0)
-		{   
-			FatalError(argv[0], "writing to data socket failed");
-		}
-		next = 0;
-		shutdown = 1;
-	}
-	
-	/********** handling a registered user **********/
-	if ((new == 0) && (reg == 1) && (shutdown == 0))
-	{
-		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
-		if (n < 0) 
-		{   FatalError(argv[0], "reading from data socket failed");
-		}
-
-		/* username verification handling */
-		RecvBuf[n] = 0;
-		printf("%s: Received username: %s\n", argv[0], RecvBuf);
-		
-#ifdef DEBUG
-		printf("%s: Username has successfully been added to the database!\n", argv[0]);
-#endif
-
-		n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
-		if (n < 0) 
-		{   FatalError(argv[0], "reading from data socket failed");
-		}
-
-		/* username and password verification handling */
-		RecvBuf[n] = 0;
-		printf("Received password\n");
-		
-#ifdef DEBUG
-		printf("Password has successfully been added to the database!\n");
-#endif
-	}
+	} while((new == 0) && (reg == 0) && (shutdown == 0));	
 
 
 	/* closing the socket */
-	printf("%s: Received last message from client, closing data connection.\n", argv[0]);
+	printf("%s: Heading to Game Menu...\n", argv[0]);
 	close(DataSocketFD);
 
     } while(shutdown == 0);
