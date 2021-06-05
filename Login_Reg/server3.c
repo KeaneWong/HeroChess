@@ -73,8 +73,10 @@ memset(&ServerAddress, 0, sizeof(ServerAddress));
 
 
 /********** code below relates to login/registration **********/
-    do{ new = 0;
+do{
+	new = 0;
 	reg = 0;
+	next = 0;	
 	ClientLen = sizeof(ClientAddress);
 	DataSocketFD = accept(ServSocketFD, (struct sockaddr*)&ClientAddress,
 		&ClientLen);
@@ -86,7 +88,9 @@ memset(&ServerAddress, 0, sizeof(ServerAddress));
 	printf("%s: Client address:port = %u:%hu.\n", argv[0],
 			ClientAddress.sin_addr.s_addr, ntohs(ClientAddress.sin_port));
 #endif
-	 do{ shutdown = 0; 
+	/* loop for main login/registration menu handling */
+	do{
+	    shutdown = 0;
 	    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
 	    if (n < 0) 
 	    {   FatalError(argv[0], "reading from data socket failed");
@@ -139,7 +143,7 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 	    }	
 
 	} while((new == 0) && (reg == 0) && (shutdown == 0));
-
+	/* end of main login/registration menu handling loop */
 
 
 
@@ -158,16 +162,16 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
 			/* username verification handling */
-			int verified = 0; /* 0 indicates the name not being verified, vice versa */
+			int verified; /* 0 indicates the name not being verified, vice versa */
 			verified = checkUser(RecvBuf);
-
+			
 			/* if username doesn't already exist in the database: */
-			if (verified == 0) 
+			if(verified == 0) 
 			{
 				/* appending username to the database */
 				appendUser(RecvBuf);
 #ifdef DEBUG
-			printf("%s: Username has successfully been added to the database!\n", argv[0]);
+		printf("%s: Username has successfully been added to the database!\n", argv[0]);
 #endif
 				strncpy(SendBuf, "Username has been verified!", sizeof(SendBuf)-1);
 				SendBuf[sizeof(SendBuf)-1] = 0;
@@ -177,14 +181,15 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 				{   
 					FatalError(argv[0], "writing to data socket failed");
 				}
+				new = 0;
 				next = 1;
 			}
 		
 			/* if username already exists in the database: */
-			if(verified >= 1) 
+			else if(verified >= 1) 
 			{
 #ifdef DEBUG
-			printf("%s: Username has not been added to the database!\n", argv[0]);
+printf("%s: Username has not been added to the database!\n", argv[0]);
 #endif
 				strncpy(SendBuf, "Username already exists!", sizeof(SendBuf)-1);
 				SendBuf[sizeof(SendBuf)-1] = 0;
@@ -244,11 +249,13 @@ printf("Password has successfully been added to the database!\n");
 
 			
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
-			/* int user = checkUser(RecvBuf); */
+
 			printf("%s: Received password: %s\n", argv[0], RecvBuf);
-		
+
+
 			/* irania: verify the username and password pair */
 			int verified = 1; /* 0 indicates the name not being verified, vice versa */
+
 			
 			/* if username/password entered are correct */ 
 			if(verified == 1) 
@@ -312,13 +319,13 @@ void appendUser(char username[100])
 	FILE *fp1;
 	
 	fp1 = fopen("record.txt", "a+");
-	/* if(fp1 == NULL)
+	/*if(fp1 == NULL)
 	{
 		printf("error in opening file: \n");
 		return 1;
-	} */
+	}*/
 
-	fprintf(fp1, "\nUsername: %s", username);
+	fprintf(fp1, "Username: %s", username);
 	fclose(fp1);
 }
 
@@ -327,13 +334,13 @@ void appendPass(char password[100])
 	FILE *fp1;
 
 	fp1 = fopen("record.txt", "a+");
-	/* if(fp1 == NULL)
+	/*if(fp1 == NULL)
 	{
 		printf("Error opening file\n");
 		return 1;		
 	}*/
 
-	fprintf(fp1, "Password: %s\n\n", password);
+	fprintf(fp1, "\nPassword: %s\n\n", password);
 	fclose(fp1);
 }
 
@@ -360,22 +367,51 @@ int checkUser(char user[100])
 		}
 
 		lineNum++;
+		/* if (strstr(line, user) == NULL)
+		{
+			 printf("User does not exist\n"); 
+			found = 0;
+		} */
 	}
 	
 	if ((found < 1) || (found > lineNum))
 	{
-		found = 0;
+		found= 0;
 	}
 
 	fclose(fp1);
 	return found;	
 }
 
-/* int checkPass(char user[100], char pass[100])
- 
-*/
+int checkPass(char user[100], char pass[100])
+{
+	char line[301];
+	int lineNum, found;
+	int passLine = 1;
 
+	FILE *fp1;
+	fp1 = fopen("record.txt", "r");
 
+	lineNum = checkUser(user);
+	
+	while(fgets(line, 300, fp1) != NULL)
+	{
+		if ((strstr(line, pass) != NULL) && (passLine == (lineNum +1)))
+		{
+			found = passLine;
+		}
+		
+		passLine++;
+	}
+
+	if ((passLine < 1) || (found > passLine))
+	{
+		found = 0;
+	}
+	
+	fclose(fp1);
+	return found;
+} 
 
 /* EOF server2.c */
 
