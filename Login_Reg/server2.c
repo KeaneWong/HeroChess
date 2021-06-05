@@ -159,14 +159,14 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
 			/* username verification handling */
 			/*char user[100];*/
-			int verified; /* 0 indicates the name not being verified, vice versa */
-			verified = checkUser(RecvBuf);
+			int verified=1; /* 0 indicates the name not being verified, vice versa */
+			/*verified = checkUser(RecvBuf);*/
 			
 			/* if username doesn't already exist in the database: */
 			if(verified == 1) 
 			{
 				/* appending username to the database */
-				appendUser(RecvBuf);
+				/*appendUser(RecvBuf);*/
 #ifdef DEBUG
 		printf("%s: Username has successfully been added to the database!\n", argv[0]);
 #endif
@@ -211,7 +211,7 @@ printf("%s: Username has not been added to the database!\n", argv[0]);
 printf("%s: Received password: %s\n", argv[0], RecvBuf);
 #endif
 			/* append password */
-			appendPass(RecvBuf);
+			/* appendPass(RecvBuf);*/
 #ifdef DEBUG
 printf("Password has successfully been added to the database!\n");
 #endif
