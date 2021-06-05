@@ -315,15 +315,14 @@ void appendUser(char username[100])
 	FILE *fp1;
 	
 	fp1 = fopen("record.txt", "a+");
-	if(fp1 == NULL)
+	/* if(fp1 == NULL)
 	{
 		printf("error in opening file: \n");
 		return 1;
-	}
+	} */
 
 	fprintf(fp1, "Username: %s\n", username);
 	fclose(fp1);
-	return 0;
 }
 
 void appendPass(char password[100])
@@ -331,15 +330,14 @@ void appendPass(char password[100])
 	FILE *fp1;
 
 	fp1 = fopen("record.txt", "a+");
-	if(fp1 == NULL)
+	/* if(fp1 == NULL)
 	{
 		printf("Error opening file\n");
 		return 1;		
-	}
+	}*/
 
 	fprintf(fp1, "Password: %s\n\n", password);
 	fclose(fp1);
-	return 0;
 }
 
 int checkUser(char user[100])
