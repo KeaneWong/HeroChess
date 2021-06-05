@@ -73,8 +73,10 @@ memset(&ServerAddress, 0, sizeof(ServerAddress));
 
 
 /********** code below relates to login/registration **********/
-    do{ new = 0;
+do{
+	new = 0;
 	reg = 0;
+	next = 0;	
 	ClientLen = sizeof(ClientAddress);
 	DataSocketFD = accept(ServSocketFD, (struct sockaddr*)&ClientAddress,
 		&ClientLen);
@@ -86,7 +88,9 @@ memset(&ServerAddress, 0, sizeof(ServerAddress));
 	printf("%s: Client address:port = %u:%hu.\n", argv[0],
 			ClientAddress.sin_addr.s_addr, ntohs(ClientAddress.sin_port));
 #endif
-	 do{ shutdown = 0; 
+	/* loop for main login/registration menu handling */
+	do{
+	    shutdown = 0;
 	    n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
 	    if (n < 0) 
 	    {   FatalError(argv[0], "reading from data socket failed");
@@ -139,7 +143,7 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 	    }	
 
 	} while((new == 0) && (reg == 0) && (shutdown == 0));
-
+	/* end of main login/registration menu handling loop */
 
 
 
@@ -160,7 +164,7 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			/* username verification handling */
 			/*char user[100];*/
 			int verified=1; /* 0 indicates the name not being verified, vice versa */
-			/*verified = checkUser(RecvBuf);*/
+	/*		verified = checkUser(RecvBuf);*/
 			
 			/* if username doesn't already exist in the database: */
 			if(verified == 1) 
@@ -178,11 +182,12 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 				{   
 					FatalError(argv[0], "writing to data socket failed");
 				}
+				new = 0;
 				next = 1;
 			}
 		
 			/* if username already exists in the database: */
-			if(verified == 0) 
+			else if(verified == 0) 
 			{
 #ifdef DEBUG
 printf("%s: Username has not been added to the database!\n", argv[0]);
@@ -211,7 +216,7 @@ printf("%s: Username has not been added to the database!\n", argv[0]);
 printf("%s: Received password: %s\n", argv[0], RecvBuf);
 #endif
 			/* append password */
-			/* appendPass(RecvBuf);*/
+		/*	appendPass(RecvBuf);*/
 #ifdef DEBUG
 printf("Password has successfully been added to the database!\n");
 #endif
@@ -315,11 +320,11 @@ void appendUser(char username[100])
 	FILE *fp1;
 	
 	fp1 = fopen("record.txt", "a+");
-	/* if(fp1 == NULL)
+	/*if(fp1 == NULL)
 	{
 		printf("error in opening file: \n");
 		return 1;
-	} */
+	}*/
 
 	fprintf(fp1, "Username: %s\n", username);
 	fclose(fp1);
@@ -330,7 +335,7 @@ void appendPass(char password[100])
 	FILE *fp1;
 
 	fp1 = fopen("record.txt", "a+");
-	/* if(fp1 == NULL)
+	/*if(fp1 == NULL)
 	{
 		printf("Error opening file\n");
 		return 1;		
