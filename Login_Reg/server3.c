@@ -362,7 +362,7 @@ int checkUser(char user[100])
 	
 		if (strstr(line, user) != NULL)
 		{
-			printf("User exists line %d\n", lineNum);
+			/* printf("User exists line %d\n", lineNum); */
 			found = lineNum;
 		}
 
