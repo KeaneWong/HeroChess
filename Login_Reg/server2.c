@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <strings.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
@@ -164,12 +165,13 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			/* username verification handling */
 			int verified = 0; /* 0 indicates the name not being verified, vice versa */
 			verified = checkUser(RecvBuf);
-			printf("%d\n", verified);		
+					
 			/* if username doesn't already exist in the database: */
 			if(verified == 0) 
 			{
 				/* appending username to the database */
 				appendUser(RecvBuf);
+				bzero(RecvBuf, sizeof(RecvBuf));
 #ifdef DEBUG
 		printf("%s: Username has successfully been added to the database!\n", argv[0]);
 #endif
@@ -188,6 +190,7 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			/* if username already exists in the database: */
 			else if(verified >= 1) 
 			{
+				bzero(RecvBuf, sizeof(RecvBuf));
 #ifdef DEBUG
 printf("%s: Username has not been added to the database!\n", argv[0]);
 #endif
@@ -201,7 +204,7 @@ printf("%s: Username has not been added to the database!\n", argv[0]);
 				}
 			}
 		} /* end of username handling while loop */
-		RecvBuf[n] = 0;	
+		 	
 
 		/* password handling */
 		if (next == 1)
@@ -385,20 +388,18 @@ int checkUser(char user[100])
 	return found;	
 }
 
-int checkPass(char user[100], char pass[100])
+int checkPass(int lineNum, char pass[100])
 {
 	char line[301];
-	int lineNum, found;
+	int found;
 	int passLine = 1;
 
 	FILE *fp1;
 	fp1 = fopen("record.txt", "r");
-
-	lineNum = checkUser(user);
 	
 	while(fgets(line, 300, fp1) != NULL)
 	{
-		if ((strstr(line, pass) != NULL) && (passLine == (lineNum +1)))
+		if ((strstr(line, pass) != NULL) && (passLine == (lineNum + 1)))
 		{
 			found = passLine;
 		}
