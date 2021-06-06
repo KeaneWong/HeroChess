@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 	*Server;	/* server host */
     char SendBuf[256];	/* message buffer for sending a message */
     char RecvBuf[256];	/* message buffer for receiving a response */
-
+	char UsrNme[100];
+	char PassWd[100];
     Program = argv[0];	/* publish program name (for diagnostics) */
 #ifdef DEBUG
     printf("%s: Starting...\n", argv[0]);
@@ -74,6 +75,82 @@ int main(int argc, char *argv[])
 	myBoard = makeBoard();
     //
 	int inGame = 0;
+	int LoggedIn = 0;
+	printf("Welcome! Lets begin by logging you in.\n");
+	while(!LoggedIn)
+	{
+		printf("1. New User\n2. Returning User\n3. Exit\n");
+		fgets(UsrNme, sizeof(UsrNme), stdin);
+		l = strlen(UsrNme);
+		if (UsrNme[l-1] == '\n')
+		{   UsrNme[--l] = 0;
+		}
+		if(strcmp(UsrNme,"1")==0)
+		{
+			printf("Welcome, new agent, to the Avengineers initiative\nEnter your designated S.H.I.E.L.D ID (Username):\n");
+			printf("(No Spaces, newline characters, or a preexisting name)\n");
+			fgets(UsrNme, sizeof(UsrNme), stdin);
+			l = strlen(UsrNme);
+			if (UsrNme[l-1] == '\n')
+			{   UsrNme[--l] = 0;
+			}
+			printf("Enter your desired Credentials:\n");
+			fgets(PassWd, sizeof(PassWd), stdin);
+			l = strlen(PassWd);
+			if (PassWd[l-1] == '\n')
+			{   PassWd[--l] = 0;
+			}
+			appendUser(UsrNme);
+			
+			appendPass(PassWd);
+			printf("User now registered. Redirecting to main menu now:\n");
+			
+		}
+		else if(strcmp(UsrNme,"2")==0)
+		{
+			printf("Welcome back.\nDesignated S.H.I.E.L.D ID (Username):\n");
+			fgets(UsrNme, sizeof(UsrNme), stdin);
+			l = strlen(UsrNme);
+			if (UsrNme[l-1] == '\n')
+			{   UsrNme[--l] = 0;
+			}
+			int p = checkUser(UsrNme);
+			if(p)
+			{
+				printf("Hello User: %s\nDesignated S.H.I.E.L.D CREDENTIALS (Password):\n",UsrNme);
+				fgets(UsrNme, sizeof(PassWd), stdin);
+				l = strlen(PassWd);
+				if (PassWd[l-1] == '\n')
+				{   PassWd[--l] = 0;
+				}
+
+				if(checkPass(p,PassWd))
+				{
+					LoggedIn = 1;
+				}
+				else
+				{
+					printf("Credentials unverified. Returning to main menu now\n");
+				}
+			}
+			else
+			{
+				printf("ID not found. Redirecting to main menu\n");
+			}
+		}
+		else if(strcmp(UsrNme,"3")==0)
+		{
+			printf("Goodbye!\n");
+			printf("Ending socket connections....\n");
+			if(SocketFD!=-1)
+			{
+				close(SocketFD);
+			}
+			return 0;
+		}
+		memset(UsrNme,0,100);
+		memset(PassWd,0,100);
+	}	
 
 
 	//this is a flag to signify we are in the middle of a game. This just prevents the client from closing the connection in the mean time

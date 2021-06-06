@@ -5,39 +5,46 @@
 #include <stdlib.h>
 #include <string.h>
 
-int appendUser(char username[100], char password[100]);
+void appendUser(char username[100]);
+void appendPass(char password[100]);
 int checkUser(char user[100]);
-int checkPass(char user[100], char pass[100]);
-
-int appendUser(char username[100], char password[100])
+int checkPass(int lineNum, char pass[100]);
+		
+void appendUser(char username[100])
 {
-	//char username[100];
-	//char password[100];
 	FILE *fp1;
 	
 	fp1 = fopen("record.txt", "a+");
-	if(fp1 == NULL)
+	/*if(fp1 == NULL)
 	{
 		printf("error in opening file: \n");
-		return -1;
-	}
-	
-	//printf("Enter username: ");
-	//scanf("%s", username);
-	fprintf(fp1, "Username: %s\n", username);
+		return 1;
+	}*/
 
-	//printf("Enter password: ");
-	//scanf("%s", password);
-	fprintf(fp1, "Password: %s\n\n", password);
-
+	fprintf(fp1, "Username: %s", username);
 	fclose(fp1);
-	return 0;
+}
+
+void appendPass(char password[100])
+{
+	FILE *fp1;
+
+	fp1 = fopen("record.txt", "a+");
+	/*if(fp1 == NULL)
+	{
+		printf("Error opening file\n");
+		return 1;		
+	}*/
+
+	fprintf(fp1, "\nPassword: %s\n\n", password);
+	fclose(fp1);
 }
 
 int checkUser(char user[100])
 {
 	char line[301];
 	int lineNum = 1;
+	int found;
 	
 	FILE *fp1 = fopen("record.txt", "r");
 	if (fp1 == NULL)
@@ -51,115 +58,53 @@ int checkUser(char user[100])
 	
 		if (strstr(line, user) != NULL)
 		{
-			//printf("User exists line %d\n", lineNum);
-			return lineNum;
+			/* printf("User exists line %d\n", lineNum); */
+			found = lineNum;
 		}
-		
-		lineNum++;
-	}
 
-	if (lineNum < 1)
+		lineNum++;
+		/* if (strstr(line, user) == NULL)
+		{
+			 printf("User does not exist\n"); 
+			found = 0;
+		} */
+	}
+	
+	if ((found < 1) || (found > lineNum))
 	{
-		return 0;
+		found= 0;
 	}
 
 	fclose(fp1);
+	return found;	
 }
 
-int checkPass(char user[100], char pass[100])
+int checkPass(int lineNum, char pass[100])
 {
 	char line[301];
-	int lineNum;
+	int found;
 	int passLine = 1;
-	
-	FILE *fp1 = fopen("record.txt", "r");	
-	if (fp1 == NULL)
-	{
-		printf("Error! File missing\n");
-		exit(10);
-	}
 
-	lineNum = checkUser(user);
-	//lineNum = lineNum + 1;
-	//printf("%d", lineNum);
+	FILE *fp1;
+	fp1 = fopen("record.txt", "r");
 	
 	while(fgets(line, 300, fp1) != NULL)
 	{
 		if ((strstr(line, pass) != NULL) && (passLine == (lineNum + 1)))
 		{
+			found = passLine;
+		}
 		
-			//printf("Welcome line %d\n", passLine);
-			return passLine;
-		}	
-	
-		passLine++;					
+		passLine++;
 	}
 
-	if (passLine == 0)
+	if ((passLine < 1) || (found > passLine))
 	{
-		return 0;
+		found = 0;
 	}
+	
 	fclose(fp1);
-}
-/*
-int main()
-{
-	char user[100], pass[100];
-	int name, match;
-	
-	printf("Username: ");
-	scanf("%s", user);
-	name = checkUser(user);
-	
-	if (name >= 1)
-	{
-		printf("Password: ");
-		scanf("%s", pass);
-		match = checkPass(user, pass);
-		
-		if (match == name + 1)
-		{
-			printf("Welcome back!\n");
-		}
-
-		else
-		{
-			printf("Wrong password...\n");
-		}
-	}
-	
-	else
-	{
-		printf("User does not exist\n");
-	}
-
-	return 0;
+	return found;
 } 
-*/
-/* 
-int changePass(char username[100], char newPass[100])
-{
-	char line[301];
-	char oldPass[100];
-	int found;
-	
-	FILE *fp1 = fopen("record.txt", "r");
-	if (fp1 == NULL)
-	{
-		printf("Error! File missing\n");
-		exit (10);
-	}
-
-        while(!feof(fp1))
-        {
-                fgets(line, 300, fp1);
-		
-		if(strncmp(user, line, strlen(user)) == 0)
-		{
-					
-		}
-		
-	} 
-} */
 
 // EOF //

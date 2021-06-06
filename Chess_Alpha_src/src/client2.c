@@ -30,7 +30,8 @@ int main(int argc, char *argv[])
 	*Server;	/* server host */
 	char SendBuf[256];	/* message buffer for sending a message */
 	char RecvBuf[256];	/* message buffer for receiving a response */
-
+	char UsrNme[100];
+	char PassWd[100];
 	printf("%s: Starting...\n", argv[0]);
 	if (argc < 3)
 	{   fprintf(stderr, "Usage: %s hostname port\n", argv[0]);
