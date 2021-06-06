@@ -13,7 +13,7 @@ void FatalError(const char *Program, const char *ErrorMsg);
 void appendUser(char username[100]);
 void appendPass(char password[100]);
 int checkUser(char user[100]);
-/* int checkPass(char user[100], char pass[100]); */
+int checkPass(int lineNum, char pass[100]); 
 
 /* int checkUser(char username[256]); */
 /* int checkPass(char passwod[256], int lineNum); */
@@ -263,6 +263,7 @@ printf("Password has successfully been added to the database!\n");
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
 			/* server checks if user exists and stores the line number of the username if it exists */
 			/* suggestion: int lineNum = checkUser(RecvBuf); */
+			int user = checkUser(RecvBuf);
 
 			/* notify user the username was received */
 			bzero(RecvBuf, sizeof(RecvBuf));
@@ -273,14 +274,22 @@ printf("Password has successfully been added to the database!\n");
 			if (n < 0)
 			{   
 				FatalError(argv[0], "writing to data socket failed");
-			}
-			bzero(SendBuf, sizeof(SendBuf));
+			} 
+			bzero(SendBuf, sizeof(SendBuf)); 
 
+			if (user >= 1)
+			{
+			n = read(DataSocketFD, RecvBuf, sizeof(RecvBuf)-1);
+			if (n < 0)
+			{
+				FatalError(argv[0], "reading from data socket failed");
+			}
 			/* server receives password from client */
 			printf("%s: Received password: %s\n", argv[0], RecvBuf);
+			
 			/*temporary hardcode */
-			int verified = 1;
-			/* suggestion: int verified = checkPass(Recvbuf, lineNum); */
+			int verified;
+			verified = checkPass(user, RecvBuf); 
 			
 			
 			/* if username/password entered are correct */ 
@@ -316,8 +325,9 @@ printf("%s:Entered  Username/Password pair do NOT exist in the database!\n", arg
 				}
 				reg = 1;
 			}
-			bzero(SendBuf, sizeof(SendBuf);
-			bzero(RecvBuf, sizeof(RecvBuf);	
+			bzero(SendBuf, sizeof(SendBuf));
+			bzero(RecvBuf, sizeof(RecvBuf));
+			}	
 		} /* end of registered user login loop */
 		shutdown = 1;
 	} /* end of registered user handling */
