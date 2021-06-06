@@ -15,6 +15,9 @@ void appendPass(char password[100]);
 int checkUser(char user[100]);
 /* int checkPass(char user[100], char pass[100]); */
 
+/* int checkUser(char username[256]); */
+/* int checkPass(char passwod[256], int lineNum); */
+
 /********** main function **********/
 int main(int argc, char *argv[])
 {
@@ -144,8 +147,10 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 	    }	
 
 	} while((new == 0) && (reg == 0) && (shutdown == 0));
+	bzero(SendBuf, sizeof(SendBuf));
+	bzero(RecvBuf, sizeof(RecvBuf));
 	/* end of main login/registration menu handling loop */
-
+	
 
 
 
@@ -162,6 +167,7 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 			}
 			
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
+
 			/* username verification handling */
 			int verified = 0; /* 0 indicates the name not being verified, vice versa */
 			verified = checkUser(RecvBuf);
@@ -183,6 +189,7 @@ strncpy(SendBuf, "server shutdown", sizeof(SendBuf)-1);
 				{   
 					FatalError(argv[0], "writing to data socket failed");
 				}
+				bzero(SendBuf, sizeof(SendBuf));
 				new = 0;
 				next = 1;
 			}
@@ -202,6 +209,7 @@ printf("%s: Username has not been added to the database!\n", argv[0]);
 				{   
 					FatalError(argv[0], "writing to data socket failed");
 				}
+				bzero(SendBuf, sizeof(SendBuf));
 			}
 		} /* end of username handling while loop */
 		 	
@@ -230,6 +238,8 @@ printf("Password has successfully been added to the database!\n");
 			{   
 				FatalError(argv[0], "writing to data socket failed");
 			}
+			bzero(SendBuf, sizeof(SendBuf));
+			bzero(RecvBuf, sizeof(RecvBuf));
 			new = 0;
 		}
 
@@ -249,18 +259,29 @@ printf("Password has successfully been added to the database!\n");
 			{   FatalError(argv[0], "reading from data socket failed");
 			}
 
-
-			
+			/* server receives username from client */
 			printf("%s: Received username: %s\n", argv[0], RecvBuf);
-			/* int user = checkUser(RecvBuf);
-			if (user >= 1) */
-			printf("%s: Received password: %s\n", argv[0], RecvBuf);
-			int verified = 1;
-			/* int pass = checkPass(user, RecvBuf); supposed to be the string of the user, thinking of changing the parameter to line number but haven't tried */
-			
-			/* irania: verify the username and password pair */
-			/*int verified = 1;*/ /* 0 indicates the name not being verified, vice versa */
+			/* server checks if user exists and stores the line number of the username if it exists */
+			/* suggestion: int lineNum = checkUser(RecvBuf); */
 
+			/* notify user the username was received */
+			bzero(RecvBuf, sizeof(RecvBuf));
+			strncpy(SendBuf, "Username received!", sizeof(SendBuf)-1);
+			SendBuf[sizeof(SendBuf)-1] = 0;
+			printf("%s: Sending response: %s.\n", argv[0], SendBuf);
+			n = write(DataSocketFD, SendBuf, l);
+			if (n < 0)
+			{   
+				FatalError(argv[0], "writing to data socket failed");
+			}
+			bzero(SendBuf, sizeof(SendBuf));
+
+			/* server receives password from client */
+			printf("%s: Received password: %s\n", argv[0], RecvBuf);
+			/*temporary hardcode */
+			int verified = 1;
+			/* suggestion: int verified = checkPass(Recvbuf, lineNum); */
+			
 			
 			/* if username/password entered are correct */ 
 			if(verified >= 1) 
@@ -293,8 +314,10 @@ printf("%s:Entered  Username/Password pair do NOT exist in the database!\n", arg
 				{   
 					FatalError(argv[0], "writing to data socket failed");
 				}
+				reg = 1;
 			}
-			RecvBuf[n] = 0;	
+			bzero(SendBuf, sizeof(SendBuf);
+			bzero(RecvBuf, sizeof(RecvBuf);	
 		} /* end of registered user login loop */
 		shutdown = 1;
 	} /* end of registered user handling */
